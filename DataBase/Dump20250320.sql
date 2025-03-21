@@ -2,7 +2,7 @@ CREATE DATABASE  IF NOT EXISTS `seniorproject` /*!40100 DEFAULT CHARACTER SET ut
 USE `seniorproject`;
 -- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: seniorproject
+-- Host: localhost    Database: seniorproject
 -- ------------------------------------------------------
 -- Server version	8.0.41
 
@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `class`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `class` (
-  `ClassID` int NOT NULL,
+  `ClassID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `SemesterID` int DEFAULT NULL,
   `MeetingTimesID` int DEFAULT NULL,
@@ -40,15 +40,15 @@ CREATE TABLE `class` (
   `StartDate` date DEFAULT NULL,
   `EndDate` date DEFAULT NULL,
   PRIMARY KEY (`ClassID`),
-  KEY `SemesterID` (`SemesterID`),
-  KEY `MeetingTimesID` (`MeetingTimesID`),
-  KEY `OfficeHoursID` (`OfficeHoursID`),
-  KEY `class_ibfk_3` (`UserID`),
+  KEY `class_ibfk_3_idx` (`UserID`),
+  KEY `class_ibfk_1_idx` (`SemesterID`),
+  KEY `class_ibfk_2_idx` (`MeetingTimesID`),
+  KEY `class_ibfk_4_idx` (`OfficeHoursID`),
   CONSTRAINT `class_ibfk_1` FOREIGN KEY (`SemesterID`) REFERENCES `semester` (`SemesterID`),
   CONSTRAINT `class_ibfk_2` FOREIGN KEY (`MeetingTimesID`) REFERENCES `meetingtimes` (`MeetingTimesID`),
   CONSTRAINT `class_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
   CONSTRAINT `class_ibfk_4` FOREIGN KEY (`OfficeHoursID`) REFERENCES `meetingtimes` (`MeetingTimesID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,6 +57,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
+INSERT INTO `class` VALUES (1,'Algorithm Desighn',1,1,'WCM 105',1,'Yousef','Learn to deisgn and analyze algorithms',1,'816-555-1234','Yousef@ucmo.edu','Algorithm Stuff','2025-01-12','2025-05-10');
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,8 +77,8 @@ CREATE TABLE `event` (
   `ClassID` int DEFAULT NULL,
   `UserID` int NOT NULL,
   PRIMARY KEY (`EventID`),
-  KEY `ClassID` (`ClassID`),
   KEY `UserID` (`UserID`),
+  KEY `event_ibfk_1_idx` (`ClassID`),
   CONSTRAINT `event_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`),
   CONSTRAINT `event_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -100,23 +101,23 @@ DROP TABLE IF EXISTS `meetingtimes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `meetingtimes` (
-  `MeetingTimesID` int NOT NULL,
-  `MondayStart` datetime DEFAULT NULL,
-  `MondayEnd` datetime DEFAULT NULL,
-  `TuesdayStart` datetime DEFAULT NULL,
-  `TuesdayEnd` datetime DEFAULT NULL,
-  `WednesdayStart` datetime DEFAULT NULL,
-  `WednesdayEnd` datetime DEFAULT NULL,
-  `ThursdayStart` datetime DEFAULT NULL,
-  `ThursdayEnd` datetime DEFAULT NULL,
-  `FridayStart` datetime DEFAULT NULL,
-  `FridayEnd` datetime DEFAULT NULL,
-  `SatrudayStart` datetime DEFAULT NULL,
-  `SaturdayEnd` datetime DEFAULT NULL,
-  `SundayStart` datetime DEFAULT NULL,
-  `SundayEnd` datetime DEFAULT NULL,
+  `MeetingTimesID` int NOT NULL AUTO_INCREMENT,
+  `MondayStart` time DEFAULT NULL,
+  `MondayEnd` time DEFAULT NULL,
+  `TuesdayStart` time DEFAULT NULL,
+  `TuesdayEnd` time DEFAULT NULL,
+  `WednesdayStart` time DEFAULT NULL,
+  `WednesdayEnd` time DEFAULT NULL,
+  `ThursdayStart` time DEFAULT NULL,
+  `ThursdayEnd` time DEFAULT NULL,
+  `FridayStart` time DEFAULT NULL,
+  `FridayEnd` time DEFAULT NULL,
+  `SaturdayStart` time DEFAULT NULL,
+  `SaturdayEnd` time DEFAULT NULL,
+  `SundayStart` time DEFAULT NULL,
+  `SundayEnd` time DEFAULT NULL,
   PRIMARY KEY (`MeetingTimesID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,6 +126,7 @@ CREATE TABLE `meetingtimes` (
 
 LOCK TABLES `meetingtimes` WRITE;
 /*!40000 ALTER TABLE `meetingtimes` DISABLE KEYS */;
+INSERT INTO `meetingtimes` VALUES (1,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,NULL,NULL),(2,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,NULL,NULL),(3,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `meetingtimes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,8 +143,8 @@ CREATE TABLE `notes` (
   `Date` date DEFAULT NULL,
   `Notes` binary(64) DEFAULT NULL,
   PRIMARY KEY (`NotesID`),
-  KEY `ClassID` (`ClassID`),
-  CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`)
+  KEY `notes_ifbk_1_idx` (`ClassID`),
+  CONSTRAINT `notes_ifbk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -163,10 +165,10 @@ DROP TABLE IF EXISTS `semester`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `semester` (
-  `SemesterID` int NOT NULL,
+  `SemesterID` int NOT NULL AUTO_INCREMENT,
   `SemesterName` varchar(30) NOT NULL,
   PRIMARY KEY (`SemesterID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,6 +177,7 @@ CREATE TABLE `semester` (
 
 LOCK TABLES `semester` WRITE;
 /*!40000 ALTER TABLE `semester` DISABLE KEYS */;
+INSERT INTO `semester` VALUES (1,'Fall 2024'),(2,'Spring 2024'),(3,'Summer 2024');
 /*!40000 ALTER TABLE `semester` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,13 +189,12 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `UserID` int NOT NULL,
+  `UserID` int NOT NULL AUTO_INCREMENT,
   `UserName` varchar(255) NOT NULL,
-  `PasswordHash` binary(64) NOT NULL,
-  `usercol` varchar(45) NOT NULL,
+  `PasswordHash` varchar(255) NOT NULL,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `UserName` (`UserName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,6 +203,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'MilesL35','VeryStrongPassword'),(2,'IsaiahH','VeryStrongPassword2'),(4,'Justus','VeryStrongPassword3');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -213,4 +216,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-19 13:01:13
+-- Dump completed on 2025-03-20 19:45:18
