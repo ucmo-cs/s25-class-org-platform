@@ -1,7 +1,7 @@
 <template>
   <!--Calendar-->
   <div class="calendar">
-    <h2>
+    <h2>x
       <button @click="prevMonth">Previous Month</button>
       {{ currentMonth }} {{ currentYear }}
       <button @click="nextMonth">Next Month</button>
@@ -31,14 +31,7 @@
         currentMonth: this.returnMonth(new Date().getMonth() + 1),
         currentYear: new Date().getFullYear(),
         daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        weeks: [
-          [null, null, null, null, null, null, 1],
-          [2, 3, 4, 5, 6, 7, 8],
-          [9, 10, 11, 12, 13, 14, 15],
-          [16, 17, 18, 19, 20, 21, 22],
-          [23, 24, 25, 26, 27, 28, 29],
-          [30, 31, null, null, null, null]
-        ]
+        weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear())
       };
     },
     methods: {
@@ -50,6 +43,7 @@
           this.monthNum--;
         }
         this.currentMonth = this.returnMonth(this.monthNum);
+        this. weeks = this.updateCalendar(this.monthNum, this.currentYear);
       },
       nextMonth() {
         if (this.monthNum === 12) {
@@ -59,128 +53,98 @@
           this.monthNum++;
         }
         this.currentMonth = this.returnMonth(this.monthNum);
+        this.weeks = this.updateCalendar(this.monthNum, this.currentYear);
+      },
+      isLeepYear(year) {
+        if(year % 4 ==0) {
+          if(year % 100 == 0) {
+            return year % 400 == 0;
+          }
+          return true;
+        } else {
+          return false;
+        }
+      },
+      getDaysInMonth(month, year) {
+        switch(month) {
+          case(1):
+          case(3):
+          case(5):
+          case(7):
+          case(8):
+          case(10):
+          case(12):
+            return 31;
+          case(4):
+          case(6):
+          case(9):
+          case(11):
+            return 30;
+          case(2):
+            return this.isLeepYear(year) ? 29 : 28;
+          default:
+            return -1; //Should never be reached
+        }
+      },
+      getStartingDay(month, year) {
+        let date = new Date(year, month - 1, 1);
+        console.log(year + " " + month + " " + date.getDay());
+        return date.getDay();
+      },
+      updateCalendar(month, year) {
+        let k = 1;
+        let start = this.getStartingDay(month, year);
+        let end = this.getDaysInMonth(month, year);
+        let calendar = [
+          [],[],[],[],[],[]
+        ];
+        for(let i = 0; i < 6; i++) {
+          for(let j = 0; j < 7; j ++) {
+            if(k == 1) {
+              if(j == start) {
+                calendar[i][j] = k;
+                k++;
+              } else {
+                calendar[i][j] = null;
+              }
+            } else {
+              if(k <= end) {
+                calendar[i][j] = k;
+                k++;
+              }
+              else {
+                calendar[i][j] = null;
+              }
+            }
+          }
+        }
+        return calendar;
       },
       returnMonth(month) {
         switch (month) {
           case(1):
-            this.weeks = [
-              [null, null, 1, 2, 3, 4, 5],
-              [6, 7, 8, 9, 10, 11, 12],
-              [13, 14, 15, 16, 17, 18, 19],
-              [20, 21, 22, 23, 24, 25, 26],
-              [27, 28, 29, 30, 31, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "January";
           case(2):
-            this.weeks = [
-              [null, null, null, null, null, null, 1],
-              [2, 3, 4, 5, 6, 7, 8],
-              [9, 10, 11, 12, 13, 14, 15],
-              [16, 17, 18, 19, 20, 21, 22],
-              [23, 24, 25, 26, 27, 28, null],
-              [null, null, null, null, null, null]
-            ]
             return "February";
           case(3):
-            this.weeks = [
-              [null, null, null, null, null, null, 1],
-              [2, 3, 4, 5, 6, 7, 8],
-              [9, 10, 11, 12, 13, 14, 15],
-              [16, 17, 18, 19, 20, 21, 22],
-              [23, 24, 25, 26, 27, 28, 29],
-              [30, 31, null, null, null, null]
-            ]
             return "March";
           case(4):
-            this.weeks = [
-              [null, null, 1, 2, 3, 4, 5],
-              [6, 7, 8, 9, 10, 11, 12],
-              [13, 14, 15, 16, 17, 18, 19],
-              [20, 21, 22, 23, 24, 25, 26],
-              [27, 28, 29, 30, null, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "April";
           case(5):
-            this.weeks = [
-              [null, null, null, null, 1, 2, 3],
-              [4, 5, 6, 7, 8, 9, 10],
-              [11, 12, 13, 14, 15, 16, 17],
-              [18, 19, 20, 21, 22, 23, 24],
-              [25, 26, 27, 28, 29, 30, 31],
-              [null, null, null, null, null, null]
-            ]
             return "May";
           case(6):
-            this.weeks = [
-              [1, 2, 3, 4, 5, 6, 7],
-              [8, 9, 10, 11, 12, 13, 14],
-              [15, 16, 17, 18, 19, 20, 21],
-              [22, 23, 24, 25, 26, 27, 28],
-              [29, 30, null, null, null, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "June";
           case(7):
-            this.weeks = [
-              [null, null, 1, 2, 3, 4, 5],
-              [6, 7, 8, 9, 10, 11, 12],
-              [13, 14, 15, 16, 17, 18, 19],
-              [20, 21, 22, 23, 24, 25, 26],
-              [27, 28, 29, 30, 31, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "July";
           case(8):
-            this.weeks = [
-              [null, null, null, null, null, 1, 2],
-              [3, 4, 5, 6, 7, 8, 9],
-              [10, 11, 12, 13, 14, 15, 16],
-              [17, 18, 19, 20, 21, 22, 23],
-              [24, 25, 26, 27, 28, 29, 30],
-              [31, null, null, null, null, null]
-            ]
             return "August";
           case(9):
-            this.weeks = [
-              [null, 1, 2, 3, 4, 5, 6],
-              [7, 8, 9, 10, 11, 12, 13],
-              [14, 15, 16, 17, 18, 19, 20],
-              [21, 22, 23, 24, 25, 26, 27],
-              [28, 29, 30, null, null, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "September";
           case(10):
-            this.weeks = [
-              [null, null, null, 1, 2, 3, 4],
-              [5, 6, 7, 8, 9, 10, 11],
-              [12, 13, 14, 15, 16, 17, 18],
-              [19, 20, 21, 22, 23, 24, 25],
-              [26, 27, 28, 29, 30, 31, null],
-              [null, null, null, null, null, null]
-            ]
             return "October";
           case(11):
-            this.weeks = [
-              [null, null, null, null, null, null, 1],
-              [2, 3, 4, 5, 6, 7, 8],
-              [9, 10, 11, 12, 13, 14, 15],
-              [16, 17, 18, 19, 20, 21, 22],
-              [23, 24, 25, 26, 27, 28, 29],
-              [30, null, null, null, null, null]
-            ]
             return "November";
           case(12):
-            this.weeks = [
-              [null, 1, 2, 3, 4, 5, 6],
-              [7, 8, 9, 10, 11, 12, 13],
-              [14, 15, 16, 17, 18, 19, 20],
-              [21, 22, 23, 24, 25, 26, 27],
-              [28, 29, 30, 31, null, null, null],
-              [null, null, null, null, null, null]
-            ]
             return "December";
         }
       }
