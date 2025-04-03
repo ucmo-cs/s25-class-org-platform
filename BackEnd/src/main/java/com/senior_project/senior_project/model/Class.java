@@ -27,7 +27,7 @@ public class Class {
     private MeetingTimes meetingTimes;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "UserID", nullable = false)
     private User user;
 
     @Column(name = "Instructor")

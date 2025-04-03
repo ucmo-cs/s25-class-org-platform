@@ -48,7 +48,7 @@ CREATE TABLE `class` (
   CONSTRAINT `class_ibfk_2` FOREIGN KEY (`MeetingTimesID`) REFERENCES `meetingtimes` (`MeetingTimesID`),
   CONSTRAINT `class_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
   CONSTRAINT `class_ibfk_4` FOREIGN KEY (`OfficeHoursID`) REFERENCES `meetingtimes` (`MeetingTimesID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +57,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,'Algorithm Desighn',1,1,'WCM 105',1,'Yousef','Learn to deisgn and analyze algorithms',1,'816-555-1234','Yousef@ucmo.edu','Algorithm Stuff','2025-01-12','2025-05-10');
+INSERT INTO `class` VALUES (1,'Algorithm Desighn',1,1,'WCM 105',1,'Yousef','Learn to deisgn and analyze algorithms',1,'816-555-1234','Yousef@ucmo.edu','Algorithm Stuff','2025-01-12','2025-05-10'),(2,'Operating Systems',1,5,'WCM 231',1,'Park','Learn about threads and stuff',6,'816-555-1234','Park@ucmo.edu','','2025-01-12','2025-05-10'),(3,'Senior Project',1,7,'WCM 131',1,'Grebe and Johnson','Make a big project and go way overboard on the scope',8,'816-555-1234','Johnson@ucmo.edu','','2025-01-12','2025-05-10'),(5,'Compputer Networking',1,13,'Online',1,'Jin','Learn about computer networking',14,'816-555-1234','jin@ucmo.edu','Computer Networking stuff','2025-01-12','2025-05-10');
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +69,7 @@ DROP TABLE IF EXISTS `event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event` (
-  `EventID` int NOT NULL,
+  `EventID` int NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
   `Start` datetime DEFAULT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE `event` (
   KEY `event_ibfk_1_idx` (`ClassID`),
   CONSTRAINT `event_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`),
   CONSTRAINT `event_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,6 +90,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
+INSERT INTO `event` VALUES (1,'HW1','HW1 is due.','2025-01-21 00:00:00','2025-01-21 00:00:00',1,1),(2,'Host Smash tournament','Host a big smash tournement in the untion building','2025-03-29 08:00:00','2025-03-29 22:00:00',NULL,2),(3,'HW2','HW2 is due.','2025-02-21 00:00:00','2025-02-21 00:00:00',5,1),(4,'HW3','HW3 is due.','2025-03-21 00:00:00','2025-03-21 00:00:00',5,1),(6,'Random','Random','2025-03-21 00:00:00','2025-03-21 00:00:00',NULL,1);
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +118,7 @@ CREATE TABLE `meetingtimes` (
   `SundayStart` time DEFAULT NULL,
   `SundayEnd` time DEFAULT NULL,
   PRIMARY KEY (`MeetingTimesID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +127,7 @@ CREATE TABLE `meetingtimes` (
 
 LOCK TABLES `meetingtimes` WRITE;
 /*!40000 ALTER TABLE `meetingtimes` DISABLE KEYS */;
-INSERT INTO `meetingtimes` VALUES (1,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,NULL,NULL),(2,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,NULL,NULL),(3,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL);
+INSERT INTO `meetingtimes` VALUES (1,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,'11:00:00','11:50:00',NULL,NULL,NULL,NULL),(2,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,NULL,NULL),(3,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL),(5,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,NULL,NULL),(6,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,'12:00:00','12:50:00',NULL,NULL,NULL,NULL),(7,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL),(8,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL),(11,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL),(12,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,'13:00:00','13:50:00',NULL,NULL,NULL,NULL),(13,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(14,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `meetingtimes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,14 +139,14 @@ DROP TABLE IF EXISTS `notes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notes` (
-  `NotesID` int NOT NULL,
+  `NotesID` int NOT NULL AUTO_INCREMENT,
   `ClassID` int NOT NULL,
   `Date` date DEFAULT NULL,
-  `Notes` binary(64) DEFAULT NULL,
+  `Notes` int DEFAULT NULL,
   PRIMARY KEY (`NotesID`),
   KEY `notes_ifbk_1_idx` (`ClassID`),
   CONSTRAINT `notes_ifbk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,6 +155,7 @@ CREATE TABLE `notes` (
 
 LOCK TABLES `notes` WRITE;
 /*!40000 ALTER TABLE `notes` DISABLE KEYS */;
+INSERT INTO `notes` VALUES (1,1,'2025-01-01',100),(2,1,'2025-01-01',200),(3,2,'2025-01-01',700),(4,2,'2025-01-01',200);
 /*!40000 ALTER TABLE `notes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,4 +218,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-20 19:45:18
+-- Dump completed on 2025-04-03 15:24:37
