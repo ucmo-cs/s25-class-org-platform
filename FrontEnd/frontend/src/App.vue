@@ -32,12 +32,13 @@
     <div class="sideBar">
       <h1>{{ semester }}</h1>
       <hr>
-      <button @click="navigateToClass(className)">Class</button>
+      <button class="class_button" @click="navigateToClass(className)">Class</button>
       <hr>
-      <button @click="navigateToClass(className)">Class</button>
+      <button class="class_button" @click="navigateToClass(className)">Class</button>
       <hr>
-      <button @click="navigateToClass(className)">Class</button>
+      <button class="class_button" @click="navigateToClass(className)">Class</button>
       <hr>
+      <button class="add_button">Add Class</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
@@ -59,7 +60,7 @@
     margin-left: 300px;
     width: 100%;
     height: 100%;
-    position: fixed;
+    position: auto;
   }
   .topBar {
     width: 100%;
@@ -89,7 +90,7 @@
     text-align: center;
     color: white;
   }
-  .sideBar button {
+  .sideBar .class_button {
     background-color: #2c3e50;
     width: 300px;
     height: 50px;
@@ -97,5 +98,18 @@
     font-size: 15px;
     cursor: pointer;
     border: none;
+  }
+  .sideBar .add_button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
   }
 </style>

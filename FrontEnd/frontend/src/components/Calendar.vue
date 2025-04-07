@@ -1,10 +1,10 @@
 <template>
   <!--Calendar-->
   <div class="calendar">
-    <h2>x
-      <button @click="prevMonth">Previous Month</button>
+    <h2>
+      <button class="calendar_button" @click="prevMonth"><</button>
       {{ currentMonth }} {{ currentYear }}
-      <button @click="nextMonth">Next Month</button>
+      <button class="calendar_button" @click="nextMonth">></button>
     </h2>
     <table>
       <thead>
@@ -98,7 +98,7 @@
         let calendar = [
           [],[],[],[],[],[]
         ];
-        for(let i = 0; i < 6; i++) {
+        for(let i = 0; i < Math.ceil((start+end)/7); i++) {
           for(let j = 0; j < 7; j ++) {
             if(k == 1) {
               if(j == start) {
@@ -182,5 +182,14 @@
       justify-content: center;
       margin-left: 5%;
       margin-right: 5%;
+    }
+    .calendar_button {
+      background: none;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: large;
     }
 </style>
