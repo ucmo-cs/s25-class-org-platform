@@ -10,7 +10,10 @@
     data() {
       return {
         currentPage: "Calendar",
-        semester: "Spring 2025"
+        semester: "Spring 2025",
+        Classes: ["Class A", "Class B", "Class C"],
+        clickClass: "None",
+        newClassComponent: false,
       }
     },
     methods: {
@@ -18,6 +21,7 @@
         this.currentPage = "Calendar"
       },
       navigateToClass(className) {
+        this.clickClass = className
         this.currentPage = "Class"
       }
     }
@@ -32,17 +36,17 @@
     <div class="sideBar">
       <h1>{{ semester }}</h1>
       <hr>
-      <button class="class_button" @click="navigateToClass(className)">Class</button>
-      <hr>
-      <button class="class_button" @click="navigateToClass(className)">Class</button>
-      <hr>
-      <button class="class_button" @click="navigateToClass(className)">Class</button>
-      <hr>
+      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className)">
+        <p>{{ className }}</p>
+        <hr>
+      </button>
       <button class="add_button">Add Class</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
-      <Class v-if="currentPage === 'Class'" />
+      <div v-for="className in Classes">
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass"/>
+      </div>
     </div>
   </body>
 </template>
@@ -58,9 +62,9 @@
   .mainScreen {
     margin-top: 100px;
     margin-left: 300px;
-    width: 100%;
+    width: 85%;
     height: 100%;
-    position: auto;
+    position: fixed;
   }
   .topBar {
     width: 100%;
@@ -74,7 +78,7 @@
     width: 300px;
     height: 100%;
     color: white;
-    font-size: 25px;
+    font-size: 30px;
     cursor: pointer;
     border: none;
   }
@@ -91,7 +95,7 @@
     color: white;
   }
   .sideBar .class_button {
-    background-color: #2c3e50;
+    background-color: transparent;
     width: 300px;
     height: 50px;
     color: white;
@@ -100,16 +104,19 @@
     border: none;
   }
   .sideBar .add_button {
-    background-color: #4CAF50;
+    background-color: green;
     color: white;
     padding: 15px 20px;
+    height: 50px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    display: block;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-    display: block;
     margin: 0 auto;
+  }
+  .sideBar li {
+    list-style-type: none;
   }
 </style>
