@@ -8,15 +8,18 @@ import java.time.LocalDate;
 @Table(name = "class")
 public class Class {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Classid")
     private int classID;
 
     @Column(name = "Name")
     private String name;
 
-//    @Column(name = "Semesterid")
-//    private Semester semester;
+
+    @ManyToOne
+    @JoinColumn(name = "Semesterid")
+    private Semester semester;
 
     @Column(name = "Meetinglocation")
     private String meetingLocation;
@@ -25,8 +28,9 @@ public class Class {
     @JoinColumn(name = "meetingtimesid", referencedColumnName = "meetingTimesId")
     private MeetingTimes meetingTimes;
 
-//    @Column(name = "Userid")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "UserID", nullable = false)
+    private User user;
 
     @Column(name = "Instructor")
     private String instructor;
@@ -56,12 +60,16 @@ public class Class {
     public Class() {
     }
 
-    public Class(int classID, String name, String meetingLocation, String instructor, String description, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
-        this.classID = classID;
+
+    public Class(String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
         this.name = name;
+        this.semester = semester;
         this.meetingLocation = meetingLocation;
+        this.meetingTimes = meetingTimes;
+        this.user = user;
         this.instructor = instructor;
         this.description = description;
+        this.officeHours = officeHours;
         this.instructorPhone = instructorPhone;
         this.instructorEmail = instructorEmail;
         this.textbook = textbook;
@@ -69,11 +77,16 @@ public class Class {
         this.endDate = endDate;
     }
 
-    public Class(String name, String meetingLocation, String instructor, String description, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+    public Class(int classID, String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+        this.classID = classID;
         this.name = name;
+        this.semester = semester;
         this.meetingLocation = meetingLocation;
+        this.meetingTimes = meetingTimes;
+        this.user = user;
         this.instructor = instructor;
         this.description = description;
+        this.officeHours = officeHours;
         this.instructorPhone = instructorPhone;
         this.instructorEmail = instructorEmail;
         this.textbook = textbook;
@@ -171,6 +184,23 @@ public class Class {
 
     public void setOfficeHours(MeetingTimes officeHours) {
         this.officeHours = officeHours;
+    }
+
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
