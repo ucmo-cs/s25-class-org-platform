@@ -40,7 +40,7 @@
         currentYear: new Date().getFullYear(),
         daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear()),
-        events: ["class1", "hw", "whatever"]
+        events: ["Algorithms 11am"]
       };
     },
     methods: {
@@ -192,6 +192,7 @@
       justify-content: center;
       margin-left: 5%;
       margin-right: 5%;
+      padding-bottom: 250px;
     }
     .calendar_button {
       background: none;

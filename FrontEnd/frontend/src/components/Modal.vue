@@ -1,46 +1,64 @@
+<script>
+    import { VDateInput } from 'vuetify/labs/VDateInput'
+
+    export default {
+        components: {
+        VDateInput,
+    },
+    data() {
+        return {
+            startDate: null,
+            endDate: null,
+        }
+    },
+}
+</script>
+
+
 <template>
     <div class="backdrop">
         <div class="modal">
             <div class="modal-header">
-                kill you with tungsten hammers and twelve cars
+                Add Class
             </div>
             <div class="modal-body">
                 <p>Class Name:</p>
-                <input placeholder="I hope you die in a fire" />
+                <v-text-field label="ex. College Algebra"></v-text-field>
                 <br>
                 <p>Meeting Times:</p>
-                <input placeholder="Get some sleep"/>
+                <v-text-field label="ex. 10am"></v-text-field>
                 <br>
                 <p>Teacher's Name:</p>
-                <input placeholder="Ashes to ashes"/>
+                <v-text-field label="ex. Professor Smith"></v-text-field>
                 <br>
                 <p>Class Description:</p>
-                <input placeholder="Kings rise and fall"/>
+                <v-textarea label="Things to remember about the class"></v-textarea>
                 <br>
                 <p>Office Hours:</p>
-                <input placeholder="Assasians in my eyes"/>
+                <v-text-field label="ex. 10am-11am"></v-text-field>
                 <br>
                 <p>Room Number/Zoom Link:</p>
-                <input placeholder="If looks could kill"/>
+                <v-text-field label="ex. Room 202"></v-text-field>
                 <br>
                 <p>Instructors Phone Number:</p>
-                <input placeholder="You used to call me on my cellphone"/>
+                <v-text-field label="ex. 816-999-9999"></v-text-field>
                 <br>
                 <p>Instructors Email:</p>
-                <input placeholder="unction"/>
+                <v-text-field label="smith@email.com"></v-text-field>
                 <br>
                 <p>Textbook:</p>
-                <input placeholder="heart jumps out of your chest"/>
+                <v-text-field label="Link to textbook here"></v-text-field>
                 <br>
                 <p>Start Date:</p>
-                <input placeholder="Wake up, its the first of the month"/>
+                <v-date-input label="Date input"></v-date-input>
                 <br>
                 <p>End Date:</p>
-                <input placeholder="Chains are off"/>
+                <v-date-input label="Date input"></v-date-input>
                 <br>
             </div>
             <div class="modal-footer">
-                <button @click="$emit('close')">Close</button>
+                <button class="submit_button">Submit</button>
+                <button class="close_button" @click="$emit('close')">Close</button>
             </div>
         </div>
     </div>
@@ -72,7 +90,7 @@
         bottom: 20px;
         left: 20px;
         right: 20px;
-        font-family: "Comic Sans MS", "Comic Sans", cursive;
+        text-align: right;
     }
 
     .modal-header {
@@ -81,9 +99,33 @@
         font-size: x-large;
         font-weight: bold;
         font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
 
     }
     .modal-body {
         margin: 20px 0;
+        text-align: left;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .submit_button {
+        background-color: green;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px;
+    }
+    .close_button {
+        background-color: red;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px;
+    }
+    .date_input {
+        text-align: left;
     }
 </style>
