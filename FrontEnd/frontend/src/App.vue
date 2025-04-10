@@ -7,7 +7,7 @@
     components: {
       Calendar,
       Class,
-      Modal
+      Modal,
     },
     data() {
       return {
@@ -74,6 +74,7 @@
     width: 85%;
     height: 100%;
     position: fixed;
+    overflow-y: scroll;
   }
   .topBar {
     width: 100%;
