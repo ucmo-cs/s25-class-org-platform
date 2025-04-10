@@ -16,6 +16,14 @@
       <tr v-for="(week, index) in weeks" :key="index">
         <td v-for="(day, i) in week" :key="i">
           {{ day || '' }}
+          <div class="event-container">
+            
+          </div>
+          <div class="event-container" v-if="day">
+            <div class="event" v-for="event in events">
+              {{ event }}
+            </div>
+          </div>
         </td>
       </tr>
       </tbody>
@@ -31,7 +39,8 @@
         currentMonth: this.returnMonth(new Date().getMonth() + 1),
         currentYear: new Date().getFullYear(),
         daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear())
+        weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear()),
+        events: ["class1", "hw", "whatever"]
       };
     },
     methods: {
@@ -165,13 +174,14 @@
       padding: 25px;
     }
     td {
-      padding-top: 10px;
-      padding-left: 10px;
-      padding-bottom: 100px;
-      padding-right: 175px;
       text-align: left;
       background-color: white;
       border: 1px solid #2c3e50;
+      width: 250px;
+      height: 150px;
+      padding-top: 5px;
+      padding-left: 5px;
+      padding-right: 15px;
     }
     h2 {
       text-align: center;
@@ -191,5 +201,15 @@
       cursor: pointer;
       font-weight: bold;
       font-size: large;
+    }
+    .event-container {
+      width: 100%;
+      height: 75px;
+    }
+    .event-container .event {
+      width: 100%;
+      height: 20px;
+      background-color: green;
+      margin: 5px;
     }
 </style>

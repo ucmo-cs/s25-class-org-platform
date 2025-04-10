@@ -1,11 +1,13 @@
 <script>
   import Calendar from './components/Calendar.vue'
   import Class from "./components/Class.vue";
+  import Modal from "./components/Modal.vue"
 
   export default {
     components: {
       Calendar,
-      Class
+      Class,
+      Modal
     },
     data() {
       return {
@@ -14,6 +16,7 @@
         Classes: ["Class A", "Class B", "Class C"],
         clickClass: "None",
         newClassComponent: false,
+        showModal: false
       }
     },
     methods: {
@@ -40,14 +43,20 @@
         <p>{{ className }}</p>
         <hr>
       </button>
-      <button class="add_button">Add Class</button>
+      <button class="add_button" @click="showModal = true">Add Class</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
       <div v-for="className in Classes">
         <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass"/>
       </div>
+      
     </div>
+    <modal v-if="showModal" @close="showModal = false">
+        <template v-slot:default>
+          <p></p>
+        </template>
+    </modal>
   </body>
 </template>
 
