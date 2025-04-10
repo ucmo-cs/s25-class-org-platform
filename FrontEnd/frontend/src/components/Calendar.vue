@@ -20,8 +20,11 @@
             
           </div>
           <div class="event-container" v-if="day">
-            <div class="event" v-for="event in events">
-              {{ event }}
+            <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 3)" :key="event.title + day + index">
+              {{ event.title }}
+            </div>
+            <div v-if="eventsForDate(day).length > 3" class="event more">
+              +{{ eventsForDate(day).length - 3 }} more
             </div>
           </div>
         </td>
@@ -40,7 +43,13 @@
         currentYear: new Date().getFullYear(),
         daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear()),
-        events: ["Algorithms 11am"]
+        events: [
+          { title: "Algorithms 10am", repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Operating Systems 11am", repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Senior Project 12pm", repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Call of duty zombies 1pm", repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Math Test", day: 22, month: 4, year: 2025 }
+        ]
       };
     },
     methods: {
@@ -156,6 +165,23 @@
           case(12):
             return "December";
         }
+      },
+      eventsForDate(day) {
+        if (!day) return [];
+
+        const currentDate = new Date(this.currentYear, this.monthNum - 1, day);
+        const currentWeekday = currentDate.getDay();
+
+        return this.events.filter(event => {
+          const isDateMatch = event.day === day &&
+          event.month === this.monthNum &&
+          event.year === this.currentYear
+
+          const isRepeatMatch = event.repeatWeekly === true && Array.isArray(event.weekdays) && event.weekdays.includes(currentWeekday);
+
+          return isDateMatch || isRepeatMatch;
+        }
+        );
       }
     }
   }
@@ -212,5 +238,13 @@
       height: 20px;
       background-color: green;
       margin: 5px;
+      text-align: center;
+    }
+    .event.more {
+      background-color: transparent;
+      color: #888;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 2px;
     }
 </style>

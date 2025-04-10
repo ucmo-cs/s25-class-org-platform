@@ -16,7 +16,8 @@
         Classes: ["Class A", "Class B", "Class C"],
         clickClass: "None",
         newClassComponent: false,
-        showModal: false
+        showModal: false,
+        isClass: true
       }
     },
     methods: {
@@ -26,6 +27,10 @@
       navigateToClass(className) {
         this.clickClass = className
         this.currentPage = "Class"
+      },
+      openModal(isClass) {
+        this.isClass = isClass
+        this.showModal = true
       }
     }
   }
@@ -43,7 +48,9 @@
         <p>{{ className }}</p>
         <hr>
       </button>
-      <button class="add_button" @click="showModal = true">Add Class</button>
+      <button class="add_button" @click="openModal(true)">Add Class</button>
+      <br>
+      <button class="add_button" @click="openModal(false)">Create Event</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
@@ -52,7 +59,7 @@
       </div>
       
     </div>
-    <modal v-if="showModal" @close="showModal = false">
+    <modal v-if="showModal" :isClass="isClass" @close="showModal = false">
         <template v-slot:default>
           <p></p>
         </template>
@@ -129,4 +136,11 @@
   .sideBar li {
     list-style-type: none;
   }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  .example {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
 </style>
