@@ -13,11 +13,12 @@
       return {
         currentPage: "Calendar",
         semester: "Spring 2025",
-        Classes: ["Class A", "Class B", "Class C"],
+        Classes: ["Class A", "Class B", "Class C", "Class D"],
         clickClass: "None",
         newClassComponent: false,
         showModal: false,
-        isClass: true
+        isClass: true,
+        semesterID: -1,
       }
     },
     methods: {
@@ -31,7 +32,11 @@
       openModal(isClass) {
         this.isClass = isClass
         this.showModal = true
-      }
+      },
+      loadSemester(id) {
+        // API call for semester data based on semester id. Set data values to dynamically update screen.
+
+      },
     }
   }
 </script>
@@ -42,28 +47,21 @@
       <button @click="navigateToHome">Student Helper</button>
     </div>
     <div class="sideBar">
+      <div class="semester_buttons" @click="loadSemester(semesterID-1)"><</div>
       <h1>{{ semester }}</h1>
-      <hr>
-      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className)">
-        <p>{{ className }}</p>
-        <hr>
-      </button>
+      <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
+      <hr><hr>
+      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className)">{{ className }}</button>
       <button class="add_button" @click="openModal(true)">Add Class</button>
-      <br>
-      <button class="add_button" @click="openModal(false)">Create Event</button>
+      <button class="add_button" @click="openModal(false)">Add Event</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
       <div v-for="className in Classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass"/>
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(true)"/>
       </div>
-      
     </div>
-    <modal v-if="showModal" :isClass="isClass" @close="showModal = false">
-        <template v-slot:default>
-          <p></p>
-        </template>
-    </modal>
+    <modal v-if="showModal" :isClass="isClass" @close="showModal = false" />
   </body>
 </template>
 
@@ -101,24 +99,31 @@
   }
   .sideBar {
     margin-top: 100px;
-    margin-left: 0;
     width: 300px;
     height: 100%;
     background: #2c3e50;
     position: fixed;
   }
+  .sideBar .semester_buttons {
+    color: white;
+    font-size: 30px;
+    width: auto;
+    display: inline-flex;
+    margin: 22px;
+    cursor: pointer;
+  }
   .sideBar h1 {
     text-align: center;
     color: white;
+    display: inline-flex;
   }
   .sideBar .class_button {
-    background-color: transparent;
     width: 300px;
-    height: 50px;
+    height: 75px;
     color: white;
-    font-size: 15px;
+    font-size: 20px;
     cursor: pointer;
-    border: none;
+    border-bottom: 2px solid white;
   }
   .sideBar .add_button {
     background-color: green;
@@ -127,11 +132,10 @@
     height: 50px;
     text-align: center;
     text-decoration: none;
-    display: block;
     font-size: 16px;
-    border-radius: 5px;
     cursor: pointer;
-    margin: 0 auto;
+    margin: 6%;
+    border-radius: 5px;
   }
   .sideBar li {
     list-style-type: none;

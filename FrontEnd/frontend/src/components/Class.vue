@@ -1,53 +1,56 @@
 <script>
-export default {
-  components: {
-  },
-  props: ['currentClass'],
-  data() {
-    return {
-      currentPage: "Home",
-      items: [
-        {name: "itemA", isFav: true, type: "Homework"},
-        {name: "itemB", isFav: true, type: "Note"},
-        {name: "itemC", isFav: true, type: "Homework"}
-      ],
-    }
-  },
-  methods: {
-    getHome() {
-      this.currentPage = "Home"
+  export default {
+    components: {
     },
-    getFavorites() {
-      this.currentPage = "Favorites"
+    props: ['currentClass'],
+    data() {
+      return {
+        currentPage: "Home",
+        items: [
+          {name: "itemA", isFav: true, type: "Homework"},
+          {name: "itemB", isFav: true, type: "Note"},
+          {name: "itemC", isFav: true, type: "Homework"}
+        ],
+      }
     },
-    getNotes() {
-      this.currentPage = "Notes"
+    methods: {
+      getHome() {
+        this.currentPage = "Home"
+      },
+      getFavorites() {
+        this.currentPage = "Favorites"
+      },
+      getNotes() {
+        this.currentPage = "Notes"
+      },
+      getHomework() {
+        this.currentPage = "Homework"
+      },
+      getSyllabus() {
+        this.currentPage = "Syllabus"
+      },
+      toggleFav(item) {
+        item.isFav = !item.isFav
+      },
+      callModal() {
+        this.$emit('openModal');
+      }
     },
-    getHomework() {
-      this.currentPage = "Homework"
-    },
-    getSyllabus() {
-      this.currentPage = "Syllabus"
-    },
-    toggleFav(item) {
-      item.isFav = !item.isFav
-    }
-  },
-  computed: {
-    displayFavorites() {
-        // do api call for favorites of all types here.
+    computed: {
+      displayFavorites() {
+          // do api call for favorites of all types here.
+          return this.items
+      },
+      displayNotes() {
+        // do api call for notes here.
         return this.items
-    },
-    displayNotes() {
-      // do api call for notes here.
-      return this.items
-    },
-    displayHomework() {
-      // do api call for notes here.
-      return this.items
+      },
+      displayHomework() {
+        // do api call for notes here.
+        return this.items
+      }
     }
   }
-}
 </script>
 
 <template>
@@ -56,7 +59,7 @@ export default {
     <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
     <h2 v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
     <div class="space"></div>
-    <button class="add_button" v-if="currentPage === 'Home'">Edit Class</button>
+    <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
   </div>
   <h1 v-if="currentPage === 'Home'">
     {{ currentClass }}
@@ -64,6 +67,7 @@ export default {
   <h1 v-if="currentPage !== 'Home'">
     {{ currentPage }}
   </h1>
+  <hr>
   <div class="classHome" v-if="currentPage === 'Home'">
     <button @click="getFavorites">Favorites</button>
     <button @click="getNotes">Notes</button>
@@ -71,7 +75,6 @@ export default {
     <button @click="getSyllabus">Syllabus</button>
   </div>
   <div class="subPages" v-if="currentPage === 'Favorites'">
-    <hr>
     <li v-for="item in displayFavorites" class="subPages">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
@@ -80,7 +83,6 @@ export default {
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Notes'">
-    <hr>
     <li class="subPages" v-for="item in displayNotes">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
@@ -88,7 +90,6 @@ export default {
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
-    <hr>
     <li class="subPages" v-for="item in displayHomework">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
@@ -96,7 +97,6 @@ export default {
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Syllabus'">
-    <hr>
     <iframe src="http://localhost:5174/src/public/CS4920SyllabusSpring2025.pdf" width="100%" height="1000px"></iframe>
   </div>
   </body>
@@ -125,12 +125,16 @@ export default {
     text-decoration: none;
     display: block;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 20px;
     background-color: green;
     color: white;
   }
   .classButtons h2 {
-    width: 100px;
+    width: 300px;
+    font-size: 25px;
+    text-align: left;
+    height: 50px;
+    padding-top: 17.5px;
   }
   .classButtons .space {
     height: 50px;
@@ -192,6 +196,11 @@ export default {
     border-width: 2px;
     border-color: black;
     margin-left: 12.5%;
-    width: 75%
+    width: 75%;
+    margin-bottom: 10px;
+  }
+  iframe {
+    width: 75%;
+    margin-bottom: 100px;
   }
 </style>
