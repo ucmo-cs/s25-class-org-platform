@@ -94,7 +94,7 @@
                 </div>
                 <div class="modal-body">
                     <div v-for="(event, index) in this.info[3]" :key="event.title + index" class="plans_style">
-                        <button @click="() => { $emit('close'); $emit('navigateToClass', 'Class A'); }">{{ event.title }}</button>
+                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.title); }">{{ event.title }}</button>
                         <br>
                     </div>
                 </div>
