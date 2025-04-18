@@ -32,19 +32,27 @@ public class Event {
     @JoinColumn(name = "userid", nullable = false)
     private User user;
 
+    @Column(name = "ishomework")
+    private Boolean isHomework;
+
+    @Column(name = "file")
+    private Integer file;
+
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user) {
+    public Event(String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file) {
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
         this.classID = classID;
         this.user = user;
+        this.isHomework = isHomework;
+        this.file = file;
     }
 
-    public Event(int eventID, String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user) {
+    public Event(int eventID, String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file) {
         this.eventID = eventID;
         this.name = name;
         this.description = description;
@@ -52,6 +60,8 @@ public class Event {
         this.end = end;
         this.classID = classID;
         this.user = user;
+        this.isHomework = isHomework;
+        this.file = file;
     }
 
     public int getEventID() {
@@ -98,11 +108,44 @@ public class Event {
         this.classID = classID;
     }
 
+    public Boolean isHomework() {
+        return isHomework;
+    }
+
+    public void setHomework(Boolean homework) {
+        isHomework = homework;
+    }
+
+    public Integer getFile() {
+        return file;
+    }
+
+    public void setFile(Integer file) {
+        this.file = file;
+    }
+
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventID=" + eventID +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", classID=" + classID +
+                ", user=" + user +
+                ", isHomework=" + isHomework +
+                ", file=" + file +
+                '}';
     }
 }

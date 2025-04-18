@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("http://localhost:5173")
 @RestController
 @RequestMapping(path = "user")
 public class UserController {
@@ -24,6 +25,8 @@ public class UserController {
 
     @PostMapping("/")
     public void addUser(@RequestBody User user) {
+        user.setPassword("Doesn't matter anymore. We're not getting to authentication.");
+        System.out.println(user.toString());
         userService.addNewUser(user);
     }
 

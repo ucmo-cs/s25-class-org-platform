@@ -33,8 +33,9 @@
     </table>
   </div>
 </template>
-
 <script>
+  import {addUser} from "../data/api"
+  import { User } from "../data/Model/User";
   export default {
     data() {
       return {
@@ -62,6 +63,8 @@
         }
         this.currentMonth = this.returnMonth(this.monthNum);
         this. weeks = this.updateCalendar(this.monthNum, this.currentYear);
+        let user = new User(null, "JohnD");
+        console.log(user.userName);
       },
       nextMonth() {
         if (this.monthNum === 12) {

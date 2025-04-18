@@ -80,6 +80,8 @@ public class EventService {
         updatingEvent.get().setStart(event.getStart());
         updatingEvent.get().setEnd(event.getEnd());
         updatingEvent.get().setClassID(event.getClassID());
+        updatingEvent.get().setHomework(event.isHomework());
+        updatingEvent.get().setFile(event.getFile());
     }
 
 }
