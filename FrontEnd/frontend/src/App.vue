@@ -65,7 +65,11 @@
       <h1>{{ semester }}</h1>
       <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
       <hr><hr>
-      <button class="class_button" v-for="(event, index) in events" :class="{ button: className }" @click="navigateToClass(event.title)">{{ event.title }}</button>
+      <div v-for="(event, index) in events">
+        <div v-if="event.isEvent === false">
+          <button class="class_button" :class="{ button: className }" @click="navigateToClass(event.title)">{{ event.title }}</button>
+        </div>
+      </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
       <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button>
     </div>
