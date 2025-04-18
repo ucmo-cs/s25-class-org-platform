@@ -13,12 +13,23 @@
       return {
         currentPage: "Calendar",
         semester: "Spring 2025",
-        Classes: ["Class A", "Class B", "Class C", "Class D"],
+        Classes: ["Algorithms", "Operating Systems", "Senior Project", "Call of Duty Zombies"],
         clickClass: "None",
         newClassComponent: false,
         showModal: false,
         isClass: true,
         semesterID: -1,
+        selectedDay: null,
+        eventModalMonth: null,
+        eventModalYear: null,
+        mode: null,
+        events: [
+          { title: "Algorithms", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Operating Systems", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Senior Project", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Call of duty zombies", isEvent: true, repeatWeekly: true, weekdays: [1, 3, 5] },
+          { title: "Math Test", isEvent: true, day: 22, month: 4, year: 2025 }
+        ]
       }
     },
     methods: {
@@ -26,17 +37,20 @@
         this.currentPage = "Calendar"
       },
       navigateToClass(className) {
+        console.log(className)
         this.clickClass = className
         this.currentPage = "Class"
       },
-      openModal(isClass) {
-        this.isClass = isClass
+      openModal(data) {
+        console.log(data[1])
+        this.mode = data[0]
         this.showModal = true
+        this.info = data[1]
       },
       loadSemester(id) {
         // API call for semester data based on semester id. Set data values to dynamically update screen.
 
-      },
+      }
     }
   }
 </script>
@@ -51,17 +65,17 @@
       <h1>{{ semester }}</h1>
       <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
       <hr><hr>
-      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className)">{{ className }}</button>
-      <button class="add_button" @click="openModal(true)">Add Class</button>
-      <button class="add_button" @click="openModal(false)">Add Event</button>
+      <button class="class_button" v-for="(event, index) in events" :class="{ button: className }" @click="navigateToClass(event.title)">{{ event.title }}</button>
+      <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
+      <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button>
     </div>
     <div class="mainScreen">
-      <Calendar v-if="currentPage === 'Calendar'" />
+      <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events"/>
       <div v-for="className in Classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(true)"/>
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal('addClass', null)"/>
       </div>
     </div>
-    <modal v-if="showModal" :isClass="isClass" @close="showModal = false" />
+    <modal v-if="showModal" :mode="this.mode" :info="this.info" @close="showModal = false" @navigateToClass="navigateToClass" />
   </body>
 </template>
 
@@ -109,7 +123,7 @@
     font-size: 30px;
     width: auto;
     display: inline-flex;
-    margin: 22px;
+    margin: 20px;
     cursor: pointer;
   }
   .sideBar h1 {

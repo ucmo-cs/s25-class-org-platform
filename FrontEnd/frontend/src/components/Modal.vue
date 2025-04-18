@@ -5,13 +5,13 @@
         components: {
         VDateInput,
         },
-        props: {
-            isClass: Boolean,
-        },
+        props: ['mode', 'info'],
     data() {
         return {
             startDate: null,
             endDate: null,
+            showEventsModal: false,
+            selectedDay: null,
         }
     },
 }
@@ -21,7 +21,7 @@
 <template>
     <div class="backdrop">
         <div class="modal">
-            <div v-if="isClass === true">
+            <div v-if="mode === 'addClass'">
                 <div class="modal-header">
                     Add Class
                 </div>
@@ -65,7 +65,7 @@
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
-            <div v-if="isClass === false">
+            <div v-if="mode === 'addEvent'">
                 <div class="modal-header">
                     Creat Event
                 </div>
@@ -85,6 +85,21 @@
                 </div>
                 <div class="modal-footer">
                     <button class="submit_button">Submit</button>
+                    <button class="close_button" @click="$emit('close')">Close</button>
+                </div>
+            </div>
+            <div v-if="mode === 'events'">
+                <div class="modal-header">
+                    All Events on {{ info[1] }} {{ info[0] }}, {{ info[2] }}
+                </div>
+                <div class="modal-body">
+                    <div v-for="(event, index) in this.info[3]" :key="event.title + index" class="plans_style">
+                        <button @click="() => { $emit('close'); $emit('navigateToClass', 'Class A'); }">{{ event.title }}</button>
+                        <br>
+                    </div>
+                </div>
+                <br>
+                <div class="modal-footer">
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
@@ -165,5 +180,12 @@
     .example {
         -ms-overflow-style: none;
         scrollbar-width: none;
+    }
+    .plans_style {
+        width: 100%;
+        height: 20px;
+        background-color: green;
+        margin: 5px;
+        text-align: center;
     }
 </style>

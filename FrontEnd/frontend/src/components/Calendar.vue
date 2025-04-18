@@ -20,11 +20,11 @@
             
           </div>
           <div class="event-container" v-if="day">
-            <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 3)" :key="event.title + day + index">
-              {{ event.title }}
+            <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 2)" :key="event.title + day + index">
+              <button @click="$emit('navigateToClass', 'Algorithms')">{{ event.title }}</button>
             </div>
-            <div v-if="eventsForDate(day).length > 3" class="event more">
-              +{{ eventsForDate(day).length - 3 }} more
+            <div v-if="eventsForDate(day).length > 2" class="event more">
+              <button class="event_more" @click="$emit('openModal', ['events', [day, currentMonth, currentYear, allEventsForDate(day)]])"> +{{ eventsForDate(day).length - 2 }} more</button>
             </div>
           </div>
         </td>
@@ -43,14 +43,13 @@
         currentYear: new Date().getFullYear(),
         daysOfWeek: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         weeks: this.updateCalendar(new Date().getMonth() + 1, new Date().getFullYear()),
-        events: [
-          { title: "Algorithms 10am", repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Operating Systems 11am", repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Senior Project 12pm", repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Call of duty zombies 1pm", repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Math Test", day: 22, month: 4, year: 2025 }
-        ]
       };
+    },
+    props: {
+      events: {
+        type: Array,
+        required: true,
+      }
     },
     methods: {
       prevMonth() {
@@ -182,6 +181,9 @@
           return isDateMatch || isRepeatMatch;
         }
         );
+      },
+      allEventsForDate(day) {
+        return this.eventsForDate(day)
       }
     }
   }
