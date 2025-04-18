@@ -1,7 +1,6 @@
 <script>
   export default {
-    components: {
-    },
+    components: {},
     props: ['currentClass'],
     data() {
       return {
@@ -34,6 +33,12 @@
       },
       callModal() {
         this.$emit('openModal');
+      },
+      goToHomework(homeworkID) {
+        this.$emit('navigateToHomework', homeworkID)
+      },
+      goToNotes(notesID) {
+        this.$emit('navigateToNotes', notesID)
       }
     },
     computed: {
@@ -86,14 +91,14 @@
     <li class="subPages" v-for="item in displayNotes">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages">{{ item.name }}</h2>
+      <h2 class="subPages" @click="goToNotes(item.name)">{{ item.name }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
     <li class="subPages" v-for="item in displayHomework">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages">{{ item.name }}</h2>
+      <h2 class="subPages" @click="goToHomework(item.name)">{{ item.name }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Syllabus'">
@@ -134,7 +139,7 @@
     font-size: 25px;
     text-align: left;
     height: 50px;
-    padding-top: 17.5px;
+    padding-top: 17px;
   }
   .classButtons .space {
     height: 50px;

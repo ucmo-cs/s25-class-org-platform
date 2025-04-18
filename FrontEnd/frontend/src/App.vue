@@ -2,12 +2,16 @@
   import Calendar from './components/Calendar.vue'
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
+  import Homework from '@/components/Homework.vue'
+  import Notes from '@/components/Notes.vue'
 
   export default {
     components: {
       Calendar,
       Class,
       Modal,
+      Homework,
+      Notes
     },
     data() {
       return {
@@ -19,6 +23,8 @@
         showModal: false,
         isClass: true,
         semesterID: -1,
+        homeworkID: 0,
+        notesID: 0
       }
     },
     methods: {
@@ -28,6 +34,14 @@
       navigateToClass(className) {
         this.clickClass = className
         this.currentPage = "Class"
+      },
+      navigateToHomework(homeworkID) {
+        this.currentPage = "Homework"
+        this.homeworkID = homeworkID
+      },
+      navigateToNotes(notesID) {
+        this.currentPage = "Notes"
+        this.notesID = notesID
       },
       openModal(isClass) {
         this.isClass = isClass
@@ -58,8 +72,10 @@
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
       <div v-for="className in Classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(true)"/>
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(true)"  @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
+      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID"/>
+      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID"/>
     </div>
     <modal v-if="showModal" :isClass="isClass" @close="showModal = false" />
   </body>
