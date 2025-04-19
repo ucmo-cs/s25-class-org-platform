@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("http://localhost:5173")
 @RestController
 @RequestMapping("/event")
 public class EventController {
@@ -22,7 +23,7 @@ public class EventController {
         return this.eventService.getEventsByUser(userID);
     }
 
-    @GetMapping("byClass{id}")
+    @GetMapping("/byClass{id}")
     public List<Event> getEventsByClass(@PathVariable("id")int classID) {
         return this.eventService.getEventsByClass(classID);
     }

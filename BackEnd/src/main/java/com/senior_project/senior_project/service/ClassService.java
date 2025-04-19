@@ -76,6 +76,7 @@ public class ClassService {
         editingClass.get().setMeetingTimes(in.getMeetingTimes());
         editingClass.get().setInstructor(in.getInstructor());
         editingClass.get().setDescription(in.getDescription());
+        editingClass.get().setOfficeLocation(in.getOfficeLocation());
         editingClass.get().setOfficeHours(in.getOfficeHours());
         editingClass.get().setInstructorPhone(in.getInstructorPhone());
         editingClass.get().setInstructorEmail(in.getInstructorEmail());

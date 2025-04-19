@@ -20,18 +20,18 @@ public class Notes {
     private LocalDate date;
 
     @Column(name = "notes")
-    private int notes;
+    private Integer notes;
 
     public Notes() {
     }
 
-    public Notes(Class _class, LocalDate date, int notes) {
+    public Notes(Class _class, LocalDate date, Integer notes) {
         this._class = _class;
         this.date = date;
         this.notes = notes;
     }
 
-    public Notes(int notesID, Class _class, LocalDate date, int notes) {
+    public Notes(int notesID, Class _class, LocalDate date, Integer notes) {
         this.notesID = notesID;
         this._class = _class;
         this.date = date;
@@ -58,11 +58,11 @@ public class Notes {
         this.date = date;
     }
 
-    public int getNotes() {
+    public Integer getNotes() {
         return notes;
     }
 
-    public void setNotes(int notes) {
+    public void setNotes(Integer notes) {
         this.notes = notes;
     }
 }
