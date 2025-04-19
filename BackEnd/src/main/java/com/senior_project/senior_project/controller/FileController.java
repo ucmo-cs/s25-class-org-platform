@@ -19,7 +19,7 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public File getFile (@PathVariable("id")int id) {
         return fileService.getFile(id);
     }
@@ -33,7 +33,7 @@ public class FileController {
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public void updateFile(@PathVariable("id")int id, @RequestParam("file")MultipartFile data) {
         try {
             fileService.updateFile(id, data);
@@ -42,7 +42,7 @@ public class FileController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteFile(@PathVariable("id")int id) {
         fileService.deleteFile(id);
     }

@@ -23,7 +23,7 @@ public class EventController {
         return this.eventService.getEventsByUser(userID);
     }
 
-    @GetMapping("byClass{id}")
+    @GetMapping("/byClass{id}")
     public List<Event> getEventsByClass(@PathVariable("id")int classID) {
         return this.eventService.getEventsByClass(classID);
     }

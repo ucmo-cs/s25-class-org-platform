@@ -10,7 +10,7 @@ export class Event {
     classID: Class;
     user: User;
     isHomework: Boolean;
-    file: Number;
+    file;
 
     constructor(eventID, name, description, start, end, classID, user, isHomework, file) {
         this.eventID = eventID;
