@@ -42,7 +42,7 @@
         this.currentPage = "Class"
       },
       openModal(data) {
-        console.log(data[1])
+        console.log(data[0])
         this.mode = data[0]
         this.showModal = true
         this.info = data[1]
@@ -60,7 +60,7 @@
     <div class="topBar">
       <button @click="navigateToHome">Student Helper</button>
     </div>
-    <div class="sideBar">
+    <div class="sideBar"> 
       <div class="semester_buttons" @click="loadSemester(semesterID-1)"><</div>
       <h1>{{ semester }}</h1>
       <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
@@ -76,7 +76,7 @@
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events"/>
       <div v-for="className in Classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal('addClass', null)"/>
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(['addClass', null])"/>
       </div>
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" @close="showModal = false" @navigateToClass="navigateToClass" />

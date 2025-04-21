@@ -184,7 +184,7 @@
     .plans_style {
         width: 100%;
         height: 20px;
-        background-color: green;
+        background-color: #53708d;
         margin: 5px;
         text-align: center;
     }
