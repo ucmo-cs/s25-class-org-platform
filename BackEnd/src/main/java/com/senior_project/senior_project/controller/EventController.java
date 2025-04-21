@@ -3,6 +3,7 @@ package com.senior_project.senior_project.controller;
 import com.senior_project.senior_project.model.Event;
 import com.senior_project.senior_project.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,14 +19,29 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    @GetMapping("/{id}")
+    public Event getEventByID(@PathVariable("id")int eventID) {
+        return this.eventService.getEventByID(eventID);
+    }
+
     @GetMapping("/byUser{id}")
     public List<Event> getEventsByUser(@PathVariable("id")int userID) {
         return this.eventService.getEventsByUser(userID);
     }
 
+    @GetMapping("/byUserAndFavorite{id}")
+    public List<Event> getEventByUserAndIsFavorite(@PathVariable("id")int userID, @Param("isFavorite")Boolean isFavorite) {
+        return this.eventService.getEventsByUserAndIsFavorite(userID, isFavorite);
+    }
+
     @GetMapping("/byClass{id}")
     public List<Event> getEventsByClass(@PathVariable("id")int classID) {
         return this.eventService.getEventsByClass(classID);
+    }
+
+    @GetMapping("/byClassAndFavorite{id}")
+    public List<Event> getEventByClassAndIsFavorite(@PathVariable("id")int classID, @Param("isFavorite")Boolean isFavorite) {
+        return this.eventService.getEventsByClassAndIsFavorite(classID, isFavorite);
     }
 
     @PostMapping("/")

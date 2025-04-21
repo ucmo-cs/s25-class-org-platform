@@ -26,6 +26,14 @@ public class EventService {
         this.classRepository = classRepository;
     }
 
+    public Event getEventByID(int eventID) {
+        Optional<Event> event = this.eventRepository.findById(eventID);
+        if(event.isEmpty()) {
+            throw new IllegalArgumentException("Event does note exist.");
+        }
+        return event.get();
+    }
+
     public List<Event> getEventsByUser(int userID) {
         Optional<User> user = this.userRepository.findById(userID);
         if(user.isEmpty()) {
@@ -34,12 +42,28 @@ public class EventService {
         return eventRepository.findAllByUser(user.get());
     }
 
+    public List<Event> getEventsByUserAndIsFavorite(int userID, Boolean isFavorite) {
+        Optional<User> user = this.userRepository.findById(userID);
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("User ID is invalid");
+        }
+        return eventRepository.findAllByUserAndIsFavorite(user.get(),isFavorite);
+    }
+
     public List<Event> getEventsByClass(int classID) {
         Optional<Class> classToFindBy = this.classRepository.findById(classID);
         if(classToFindBy.isEmpty()) {
             throw new IllegalArgumentException("Class ID is invalid");
         }
         return eventRepository.findAllByClassID(classToFindBy.get());
+    }
+
+    public List<Event> getEventsByClassAndIsFavorite(int classID, Boolean isFavorite) {
+        Optional<Class> classToFindBy = this.classRepository.findById(classID);
+        if(classToFindBy.isEmpty()) {
+            throw new IllegalArgumentException("Class ID is invalid");
+        }
+        return eventRepository.findAllByClassIDAndIsFavorite(classToFindBy.get(), isFavorite);
     }
 
     public void addNewEvent(Event event) {

@@ -4,7 +4,9 @@ import com.senior_project.senior_project.model.Class;
 import com.senior_project.senior_project.model.Notes;
 import com.senior_project.senior_project.repository.ClassRepository;
 import com.senior_project.senior_project.repository.NotesRepository;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,28 @@ public class NotesService {
         this.classRepository = classRepository;
     }
 
+    public Notes getNotesByID(int notesID) {
+        Optional<Notes> notes = notesRepository.findById(notesID);
+        if(notes.isEmpty()) {
+            throw new IllegalArgumentException("Notes does not exist.");
+        }
+        return notes.get();
+    }
+
     public List<Notes> getNotesByClass(int classID) {
         Optional<Class> classToSearchBy = classRepository.findById(classID);
         if(classToSearchBy.isEmpty()) {
             throw new IllegalArgumentException("Class does not exist.");
         }
         return notesRepository.findAllBy_class(classToSearchBy.get());
+    }
+
+    public List<Notes> getNotesByClassAndFavorites(int classID, Boolean isFavorites) {
+        Optional<Class> classToSearchBy = classRepository.findById(classID);
+        if(classToSearchBy.isEmpty()) {
+            throw new IllegalArgumentException("Class does not exist.");
+        }
+        return notesRepository.findAllBy_classAndIsFavorite(classToSearchBy.get(),isFavorites);
     }
 
     public void addNewNotes(Notes notes) {

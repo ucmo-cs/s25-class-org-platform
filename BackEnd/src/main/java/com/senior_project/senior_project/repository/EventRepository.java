@@ -12,5 +12,9 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByClassID(Class classIn);
 
-    List<Event> findAllByUser(User event);
+    List<Event> findAllByUser(User user);
+
+    List<Event> findAllByClassIDAndIsFavorite(Class classIn, Boolean isFavorite);
+
+    List<Event> findAllByUserAndIsFavorite(User user, Boolean isFavorite);
 }

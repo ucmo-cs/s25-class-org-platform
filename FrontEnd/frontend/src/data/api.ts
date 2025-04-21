@@ -143,14 +143,32 @@ export async function updateClass(classToModify: Class) {
 }
 
 //The functions for events api
+export async function getEventsById(eventID: Number) {
+    const res = await axios.get(`${baseURL}event/${eventID}`);
+
+    return res.data as Event;
+}
+
 export async function getEventsByUser(userID: Number) {
     const res = await axios.get(`${baseURL}event/byUser${userID}`);
 
     return res.data as Event[];
 }
 
+export async function getEventsByUserAndIsFavorite(userID: Number, isFavorite: Boolean) {
+    const res = await axios.get(`${baseURL}event/byUserAndFavorite${userID}?isFavorite=${isFavorite}`);
+
+    return res.data as Event[];
+}
+
 export async function getEventsByClass(classID: Number) {
     const res = await axios.get(`${baseURL}event/byClass${classID}`);
+
+    return res.data as Event[];
+}
+
+export async function getEventsByClassAndIsFavorite(classID: Number, isFavorite: Boolean) {
+    const res = await axios.get(`${baseURL}event/byClassAndFavorite${classID}?isFavorite=${isFavorite}`);
 
     return res.data as Event[];
 }
@@ -183,8 +201,20 @@ export async function updateEvent(event: Event) {
 }
 
 //Functions for notes api
+export async function getNotesByID(notesID: Number) {
+    const res = await axios.get(`${baseURL}notes/${notesID}`);
+
+    return res.data as Notes;
+}
+
 export async function getNotesByClassID(classID: Number) {
-    const res = await axios.get(`${baseURL}notes/${classID}`);
+    const res = await axios.get(`${baseURL}notes/class${classID}`);
+
+    return res.data as Notes[];
+}
+
+export async function getNotesByClassIDAndIsFavorite(classID: Number, isFavorite: Boolean) {
+    const res = await axios.get(`${baseURL}notes/isFavorite${classID}?IsFavorite=${isFavorite}`);
 
     return res.data as Notes[];
 }

@@ -38,10 +38,13 @@ public class Event {
     @Column(name = "file")
     private Integer file;
 
+    @Column(name = "isfavorite")
+    private Boolean isFavorite;
+
     public Event() {
     }
 
-    public Event(String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file) {
+    public Event(String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file, Boolean isFavorite) {
         this.name = name;
         this.description = description;
         this.start = start;
@@ -50,9 +53,10 @@ public class Event {
         this.user = user;
         this.isHomework = isHomework;
         this.file = file;
+        this.isFavorite = isFavorite;
     }
 
-    public Event(int eventID, String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file) {
+    public Event(int eventID, String name, String description, LocalDateTime start, LocalDateTime end, Class classID, User user, Boolean isHomework, Integer file, Boolean isFavorite) {
         this.eventID = eventID;
         this.name = name;
         this.description = description;
@@ -62,6 +66,7 @@ public class Event {
         this.user = user;
         this.isHomework = isHomework;
         this.file = file;
+        this.isFavorite = isFavorite;
     }
 
     public int getEventID() {
@@ -132,7 +137,13 @@ public class Event {
         this.user = user;
     }
 
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
 
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
 
     @Override
     public String toString() {
@@ -146,6 +157,7 @@ public class Event {
                 ", user=" + user +
                 ", isHomework=" + isHomework +
                 ", file=" + file +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 }

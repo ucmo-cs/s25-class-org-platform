@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface NotesRepository extends JpaRepository<Notes, Integer> {
     List<Notes> findAllBy_class(Class class_);
+    List<Notes> findAllBy_classAndIsFavorite(Class class_, Boolean isFavorite);
 }

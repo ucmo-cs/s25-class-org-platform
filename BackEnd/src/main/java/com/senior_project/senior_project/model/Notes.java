@@ -22,20 +22,25 @@ public class Notes {
     @Column(name = "notes")
     private Integer notes;
 
+    @Column(name = "isfavorite")
+    private Boolean isFavorite;
+
     public Notes() {
     }
 
-    public Notes(Class _class, LocalDate date, Integer notes) {
+    public Notes(Class _class, LocalDate date, Integer notes, Boolean isFavorite) {
         this._class = _class;
         this.date = date;
         this.notes = notes;
+        this.isFavorite = isFavorite;
     }
 
-    public Notes(int notesID, Class _class, LocalDate date, Integer notes) {
+    public Notes(int notesID, Class _class, LocalDate date, Integer notes, Boolean isFavorite) {
         this.notesID = notesID;
         this._class = _class;
         this.date = date;
         this.notes = notes;
+        this.isFavorite = isFavorite;
     }
 
     public int getNotesID() {
@@ -64,5 +69,24 @@ public class Notes {
 
     public void setNotes(Integer notes) {
         this.notes = notes;
+    }
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    @Override
+    public String toString() {
+        return "Notes{" +
+                "notesID=" + notesID +
+                ", _class=" + _class +
+                ", date=" + date +
+                ", notes=" + notes +
+                ", isFavorite=" + isFavorite +
+                '}';
     }
 }
