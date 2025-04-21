@@ -4,6 +4,7 @@ import com.senior_project.senior_project.model.Class;
 import com.senior_project.senior_project.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,6 +28,11 @@ public class ClassController {
     @GetMapping("/{id}")
     public Class getClass(@PathVariable("id")int id) {
         return classService.getClass(id);
+    }
+
+    @GetMapping("/getByClassandSemester")
+    public List<Class> getAllClassesByUserAndSemester(@Param("userID")int classID, @Param("semesterID")int semesterID) {
+        return classService.getClassByUserAndSemester(classID, semesterID);
     }
 
     @PostMapping("/")

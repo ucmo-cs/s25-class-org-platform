@@ -118,6 +118,12 @@ export async function getClassByID(classID: Number) {
     return res.data as Class;
 }
 
+export async function getClassByUserAndSemester(userID: Number, semester: Number) {
+    const res = await axios.get(`${baseURL}class/getByClassandSemester?userID=${userID}&semesterID=${semester}`);
+
+    return res.data as Class[];
+}
+
 export async function addClass(classToAdd: Class) {
     const res = await axios.post(`${baseURL}class/`, classToAdd);
 

@@ -1,8 +1,11 @@
 package com.senior_project.senior_project.service;
 
 import com.senior_project.senior_project.model.Class;
+import com.senior_project.senior_project.model.Semester;
+import com.senior_project.senior_project.model.User;
 import com.senior_project.senior_project.repository.ClassRepository;
 
+import com.senior_project.senior_project.repository.SemesterRepository;
 import com.senior_project.senior_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,13 @@ import java.util.Optional;
 public class ClassService {
     final private ClassRepository classRepository;
     final private UserRepository userRepository;
+    final private SemesterRepository semesterRepository;
 
     @Autowired
-    public ClassService(ClassRepository classRepository, UserRepository userRepository) {
+    public ClassService(ClassRepository classRepository, UserRepository userRepository, SemesterRepository semesterRepository) {
         this.classRepository = classRepository;
         this.userRepository = userRepository;
+        this.semesterRepository = semesterRepository;
     }
 
     public List<Class> getAllClasses() {
@@ -33,6 +38,20 @@ public class ClassService {
             throw new IllegalArgumentException("Class does not exist.");
         }
         return out.get();
+    }
+
+    public List<Class> getClassByUserAndSemester(int userID, int semesterID) {
+        Optional<User> user = userRepository.findById(userID);
+        Optional<Semester> semester = semesterRepository.findById(semesterID);
+
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        if(semester.isEmpty()) {
+            throw new IllegalArgumentException("Semester does not exist.");
+        }
+
+        return classRepository.findAllByUserAndSemester(user.get(), semester.get());
     }
 
     public void addClass(Class in) {
