@@ -31,8 +31,8 @@ public class ClassController {
     }
 
     @GetMapping("/getByClassandSemester")
-    public List<Class> getAllClassesByUserAndSemester(@Param("userID")int classID, @Param("semesterID")int semesterID) {
-        return classService.getClassByUserAndSemester(classID, semesterID);
+    public List<Class> getAllClassesByUserAndSemester(@Param("userID")int userID, @Param("semesterID")int semesterID) {
+        return classService.getClassByUserAndSemester(userID, semesterID);
     }
 
     @PostMapping("/")

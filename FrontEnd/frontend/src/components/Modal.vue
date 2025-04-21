@@ -1,5 +1,12 @@
 <script>
     import { VDateInput } from 'vuetify/labs/VDateInput'
+    import { addClass } from '@/data/api';
+    import { Class } from '@/data/Model/Class';
+    import { User } from '@/data/Model/User';
+    import { MeetingTimes } from '@/data/Model/MeetingTimes';
+    import { Semester } from '@/data/Model/Semester';
+    import { addEvent } from '@/data/api';
+    import { Event } from '@/data/Model/Event';
 
     export default {
         components: {
@@ -12,8 +19,29 @@
             endDate: null,
             showEventsModal: false,
             selectedDay: null,
+            courseName: null,
+            location: null,
+            description: null,
+            phoneNum: null,
+            email: null,
+            textbook: null,
+            startDate: null,
+            endDate: null,
+            instructor: null,
+            eventName: null,
+            eventDescription: null,
+            eventStartDate: null,
+            eventEndDate: null,
         }
     },
+    methods: {
+        addClass() {
+            addClass(new Class(null, this.courseName, null, this.location, null, new User(1,"MilesL35"), this.instructor, this.description, null, null, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
+        },
+        addEvent() {
+            addEvent(new Event(null, this.eventName, this.eventDescription, this.eventStartDate, this.eventEndDate, new Class(1, null, null, null, null, null, null, null, null, null, null, null, null, null, null), new User(1, "MilesL35"), null, null))
+        }
+    }
 }
 </script>
 
@@ -27,41 +55,41 @@
                 </div>
                 <div class="modal-body">
                     <p>Class Name:</p>
-                    <v-text-field label="ex. College Algebra"></v-text-field>
+                    <v-text-field label="ex. College Algebra" v-model="courseName"></v-text-field>
                     <br>
                     <p>Meeting Times:</p>
                     <v-text-field label="ex. 10am"></v-text-field>
                     <br>
                     <p>Teacher's Name:</p>
-                    <v-text-field label="ex. Professor Smith"></v-text-field>
+                    <v-text-field label="ex. Professor Smith" v-model="instructor"></v-text-field>
                     <br>
                     <p>Class Description:</p>
-                    <v-textarea label="Things to remember about the class"></v-textarea>
+                    <v-textarea label="Things to remember about the class" v-model="description"></v-textarea>
                     <br>
                     <p>Office Hours:</p>
                     <v-text-field label="ex. 10am-11am"></v-text-field>
                     <br>
                     <p>Room Number/Zoom Link:</p>
-                    <v-text-field label="ex. Room 202"></v-text-field>
+                    <v-text-field label="ex. Room 202" v-model="location"></v-text-field>
                     <br>
                     <p>Instructors Phone Number:</p>
-                    <v-text-field label="ex. 816-999-9999"></v-text-field>
+                    <v-text-field label="ex. 816-999-9999" v-model="phoneNum"></v-text-field>
                     <br>
                     <p>Instructors Email:</p>
-                    <v-text-field label="smith@email.com"></v-text-field>
+                    <v-text-field label="smith@email.com" v-model="email"></v-text-field>
                     <br>
                     <p>Textbook:</p>
-                    <v-text-field label="Link to textbook here"></v-text-field>
+                    <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
                     <br>
                     <p>Start Date:</p>
-                    <v-date-input label="Date input" class="date_input"></v-date-input>
+                    <v-date-input label="Date input" class="date_input" v-model="startDate"></v-date-input>
                     <br>
                     <p>End Date:</p>
-                    <v-date-input label="Date input"></v-date-input>
+                    <v-date-input label="Date input" v-model="endDate"></v-date-input>
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button">Submit</button>
+                    <button class="submit_button" @click="addClass">Submit</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
@@ -71,20 +99,20 @@
                 </div>
                 <div class="modal-body">
                     <p>Event Name:</p>
-                    <v-text-field label="ex. Hang out with friends"></v-text-field>
+                    <v-text-field label="ex. Hang out with friends" v-model="eventName"></v-text-field>
                     <br>
                     <p>Event Description:</p>
-                    <v-textarea label="Things to remember about the event"></v-textarea>
+                    <v-textarea label="Things to remember about the event" v-model="eventDescription"></v-textarea>
                     <br>
                     <p>Start Date:</p>
-                    <v-date-input label="Date input" class="date_input"></v-date-input>
+                    <v-date-input label="Date input" class="date_input" v-model="eventStartDate"></v-date-input>
                     <br>
                     <p>End Date:</p>
-                    <v-date-input label="Date input"></v-date-input>
+                    <v-date-input label="Date input" v-model="eventEndDate"></v-date-input>
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button">Submit</button>
+                    <button class="submit_button" @click="addEvent">Submit</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>

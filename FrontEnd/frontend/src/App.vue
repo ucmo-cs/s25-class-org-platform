@@ -2,6 +2,7 @@
   import Calendar from './components/Calendar.vue'
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
+  import { getClassByUserAndSemester, getEventsByUser } from './data/api';
 
   export default {
     components: {
@@ -23,13 +24,7 @@
         eventModalMonth: null,
         eventModalYear: null,
         mode: null,
-        events: [
-          { title: "Algorithms", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Operating Systems", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Senior Project", isEvent: false, repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Call of duty zombies", isEvent: true, repeatWeekly: true, weekdays: [1, 3, 5] },
-          { title: "Math Test", isEvent: true, day: 22, month: 4, year: 2025 }
-        ]
+        events: this.loadEvents(),
       }
     },
     methods: {
@@ -50,6 +45,44 @@
       loadSemester(id) {
         // API call for semester data based on semester id. Set data values to dynamically update screen.
 
+      },
+      loadEvents() {
+        let eventsOut = [];
+        getClassByUserAndSemester(1,1).then(classes => {
+          for(let i = 0; i < classes.length; i++) {
+            let weekDays = [];
+            if(classes[i].meetingTimes.sundayStart) {
+              weekDays.push(0);
+            }
+            if(classes[i].meetingTimes.mondayStart) {
+              weekDays.push(1);
+            }
+            if(classes[i].meetingTimes.tuesdayStart) {
+              weekDays.push(2);
+            }
+            if(classes[i].meetingTimes.wednesdayStart) {
+              weekDays.push(3);
+            }
+            if(classes[i].meetingTimes.thursdayStart) {
+              weekDays.push(4);
+            }
+            if(classes[i].meetingTimes.fridayStart) {
+              weekDays.push(5);
+            }
+            if(classes[i].meetingTimes.saturdayStart) {
+              weekDays.push(6);
+            }
+            eventsOut.push({title: classes[i].name, isEvent: false, repeatWeekly: true, weekdays: weekDays})
+          }
+        })
+        console.log(eventsOut);
+        getEventsByUser(1).then(events => {
+          for (let i = 0; i < events.length; i++) {
+            eventsOut.push({title: events[i].name, isEvent: true, day: events[i].start.day, month: events[i].start.month, year: events[i].start.year});
+          }
+        });
+        console.log(eventsOut);
+        return eventsOut;
       }
     }
   }
