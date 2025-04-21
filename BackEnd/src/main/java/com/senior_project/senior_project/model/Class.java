@@ -38,6 +38,9 @@ public class Class {
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Officelocation")
+    private String officeLocation;
+
     @OneToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "Officehoursid", referencedColumnName = "meetingTimesId")
     private MeetingTimes officeHours;
@@ -61,7 +64,7 @@ public class Class {
     }
 
 
-    public Class(String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+    public Class(String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
         this.name = name;
         this.semester = semester;
         this.meetingLocation = meetingLocation;
@@ -69,6 +72,7 @@ public class Class {
         this.user = user;
         this.instructor = instructor;
         this.description = description;
+        this.officeLocation = officeLocation;
         this.officeHours = officeHours;
         this.instructorPhone = instructorPhone;
         this.instructorEmail = instructorEmail;
@@ -77,7 +81,7 @@ public class Class {
         this.endDate = endDate;
     }
 
-    public Class(int classID, String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+    public Class(int classID, String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
         this.classID = classID;
         this.name = name;
         this.semester = semester;
@@ -86,6 +90,7 @@ public class Class {
         this.user = user;
         this.instructor = instructor;
         this.description = description;
+        this.officeLocation = officeLocation;
         this.officeHours = officeHours;
         this.instructorPhone = instructorPhone;
         this.instructorEmail = instructorEmail;
@@ -203,16 +208,27 @@ public class Class {
         this.user = user;
     }
 
+    public String getOfficeLocation() {
+        return officeLocation;
+    }
+
+    public void setOfficeLocation(String officeLocation) {
+        this.officeLocation = officeLocation;
+    }
+
     @Override
     public String toString() {
         return "Class{" +
                 "classID=" + classID +
                 ", name='" + name + '\'' +
+                ", semester=" + semester +
                 ", meetingLocation='" + meetingLocation + '\'' +
-                ", meetingTimes=" + meetingTimes.toString() +
+                ", meetingTimes=" + meetingTimes +
+                ", user=" + user +
                 ", instructor='" + instructor + '\'' +
                 ", description='" + description + '\'' +
-                ", officeHours=" + officeHours.toString() +
+                ", officeLocation='" + officeLocation + '\'' +
+                ", officeHours=" + officeHours +
                 ", instructorPhone='" + instructorPhone + '\'' +
                 ", instructorEmail='" + instructorEmail + '\'' +
                 ", textbook='" + textbook + '\'' +
