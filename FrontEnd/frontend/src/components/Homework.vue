@@ -5,13 +5,13 @@
     data() {
       return {
         homework: {
-          "0": {"Homework": 0, "Date": "0/0/0", "FileID": 0},
-          "1": {"Homework": 1, "Date": "1/1/1", "FileID": 1},
-          "2": {"Homework": 2, "Date": "2/2/2", "FileID": 2}
+          "0": {"Homework": 0, "Date": "01/01/2001", "FileID": 0},
+          "1": {"Homework": 1, "Date": "01/02/2001", "FileID": 1},
+          "2": {"Homework": 2, "Date": "02/02/2002", "FileID": 2}
         },
         currentPage: "Homework",
-        name: "Homework1",
-        description: "This is homework 1.",
+        name: this.homeworkID,
+        description: "This is homework 1",
         startDate: "1/1/2001",
         endDate: "1/1/2002",
         file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
@@ -19,7 +19,8 @@
     },
     methods: {
       getHome() {
-
+        this.currentPage = "Home"
+        return this.homework
       },
       getHomework(homeworkID) {
         return this.homework[homeworkID]
@@ -37,10 +38,11 @@
 <template>
   <body>
     <div class="homeworkButtons">
-      <button v-if="currentPage === 'Homework'" @click="getClassHomework"><</button>
+      <button v-if="currentPage === 'Homework' && parentClass !== null" @click="getClassHomework"><</button>
       <h2 v-if="currentPage === 'Homework'">{{ parentClass + " Homework" }}</h2>
       <div class="space"></div>
-      <button v-if="currentPage === 'Homework'" @click="callModal">Save</button>
+      <button v-if="currentPage === 'Homework' && homeworkID !== 'New Homework'" @click="callModal">Save</button>
+      <button v-if="currentPage === 'Homework' && homeworkID === 'New Homework'" @click="callModal">Create</button>
     </div>
     <h1 contenteditable>{{ this.name}}</h1>
     <hr>
@@ -63,7 +65,12 @@
           <v-date-input label="End Date" prepend-icon="" variant="solo" :model-value="this.endDate"></v-date-input>
         </v-col>
       </v-row>
-      <h2>File:</h2>
+      <div class="homeworkButtons">
+        <h2>File:</h2>
+        <space></space>
+        <button>New File</button>
+      </div>
+
       <div v-if="file !== null">
         <iframe :src="this.file" width="100%" height="1000px"></iframe>
       </div>

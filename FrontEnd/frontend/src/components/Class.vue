@@ -40,6 +40,13 @@
       },
       goToNotes(notesID) {
         this.$emit('navigateToNotes', notesID)
+      },
+      addItem(type){
+        if (type === "Homework"){
+          this.goToHomework("New Homework")
+        } else if (type === "Notes") {
+          this.goToNotes("New Note")
+        }
       }
     },
     computed: {
@@ -67,7 +74,7 @@
       <div class="space"></div>
       <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
       <div class="add">
-        <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem">Add {{ currentPage }}</button>
+        <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem(this.currentPage)">Add {{ currentPage }}</button>
       </div>
 
     </div>

@@ -5,16 +5,16 @@ export default {
   data() {
     return {
       notes: {
-        "0": {"Notes": 0, "Date": "0/0/0", "FileID": 0},
-        "1": {"Notes": 1, "Date": "1/1/1", "FileID": 1},
-        "2": {"Notes": 2, "Date": "2/2/2", "FileID": 2}
+        "0": {"Notes": 0, "Date": "01/01/2001", "FileID": 0},
+        "1": {"Notes": 1, "Date": "01/02/2001", "FileID": 1},
+        "2": {"Notes": 2, "Date": "02/02/2002", "FileID": 2}
       },
       currentPage: "Notes",
-      id: "Notes1",
-      description: "This is note 1.",
+      id: this.notesID,
+      note: "This is note 1",
       startDate: "1/1/2001",
       endDate: "1/1/2002",
-      file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
+      file: "http://localhost:5173/src/public/text"
     }
   },
   methods: {
@@ -30,6 +30,15 @@ export default {
     getName(val) {
       console.log(val)
     },
+    createFile() {
+        const link = document.createElement("a");
+        const content = document.querySelector("textarea").value;
+        const file = new Blob([content], { type: 'text/plain' });
+        link.href = URL.createObjectURL(file);
+        link.download = "note.txt";
+        link.click();
+        URL.revokeObjectURL(link.href);
+    },
   }
 }
 </script>
@@ -37,25 +46,20 @@ export default {
 <template>
   <body>
   <div class="notesButtons">
-    <button v-if="currentPage === 'Notes'" @click="getClassNotes"><</button>
-    <h2 v-if="currentPage === 'Notes'">{{ parentClass + " Notes" }}</h2>
+    <button v-if="currentPage === 'Notes' && parentClass !== null" @click="getClassNotes"><</button>
+    <h2 v-if="currentPage === 'Notes' && notesID !== 'New Note'">{{ parentClass + " Notes" }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Notes'" @click="callModal">Save</button>
+    <button v-if="currentPage === 'Notes' && notesID !== 'New Note'" @click="createFile">Save</button>
   </div>
-  <h1 contenteditable>{{ this.id }}</h1>
+  <h1>{{ this.id }}</h1>
   <hr>
   <div class="subPages" >
-    <h2>Notes:</h2>
+    <h2>Note:</h2>
     <v-row justify="center">
       <v-col lg="9">
-        <v-textarea variant="solo" :model-value="this.description"></v-textarea>
+        <v-textarea variant="solo" :model-value="this.note"></v-textarea>
       </v-col>
     </v-row>
-    <h2>File:</h2>
-    <div  v-if="file !== null">
-      <iframe :src="this.file" width="100%" height="1000px"></iframe>
-    </div>
-    <v-row justify="center"><v-col lg="9"><v-file-upload></v-file-upload></v-col></v-row>
   </div>
   </body>
 </template>
