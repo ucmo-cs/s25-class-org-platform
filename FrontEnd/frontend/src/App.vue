@@ -24,16 +24,18 @@
         isClass: true,
         semesterID: -1,
         homeworkID: 0,
-        notesID: 0
+        notesID: 0,
+        classPage: "Home"
       }
     },
     methods: {
       navigateToHome() {
         this.currentPage = "Calendar"
       },
-      navigateToClass(className) {
+      navigateToClass(className, classPage) {
         this.clickClass = className
         this.currentPage = "Class"
+        this.classPage = classPage
       },
       navigateToHomework(homeworkID) {
         this.currentPage = "Homework"
@@ -65,17 +67,17 @@
       <h1>{{ semester }}</h1>
       <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
       <hr><hr>
-      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className)">{{ className }}</button>
+      <button class="class_button" v-for="className in Classes" :class="{ button: className }" @click="navigateToClass(className, 'Home')">{{ className }}</button>
       <button class="add_button" @click="openModal(true)">Add Class</button>
       <button class="add_button" @click="openModal(false)">Add Event</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" />
       <div v-for="className in Classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(true)"  @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
+        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" :classPage="this.classPage" @openModal="openModal(true)"  @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
-      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID"/>
-      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID"/>
+      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
+      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
     </div>
     <modal v-if="showModal" :isClass="isClass" @close="showModal = false" />
   </body>

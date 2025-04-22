@@ -1,15 +1,16 @@
 <script>
   export default {
     components: {},
-    props: ['currentClass'],
+    props: ['currentClass', 'classPage'],
     data() {
       return {
-        currentPage: "Home",
+        currentPage: this.$props.classPage,
         items: [
           {name: "itemA", isFav: true, type: "Homework"},
           {name: "itemB", isFav: true, type: "Note"},
           {name: "itemC", isFav: true, type: "Homework"}
         ],
+        file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
       }
     },
     methods: {
@@ -60,50 +61,56 @@
 
 <template>
   <body>
-  <div class="classButtons">
-    <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
-    <h2 v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
-    <div class="space"></div>
-    <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
-  </div>
-  <h1 v-if="currentPage === 'Home'">
-    {{ currentClass }}
-  </h1>
-  <h1 v-if="currentPage !== 'Home'">
-    {{ currentPage }}
-  </h1>
-  <hr>
-  <div class="classHome" v-if="currentPage === 'Home'">
-    <button @click="getFavorites">Favorites</button>
-    <button @click="getNotes">Notes</button>
-    <button @click="getHomework">Homework</button>
-    <button @click="getSyllabus">Syllabus</button>
-  </div>
-  <div class="subPages" v-if="currentPage === 'Favorites'">
-    <li v-for="item in displayFavorites" class="subPages">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages">{{ item.name }}</h2>
-      <h3 class="subPages">{{ item.type }}</h3>
-    </li>
-  </div>
-  <div class="subPages" v-if="currentPage === 'Notes'">
-    <li class="subPages" v-for="item in displayNotes">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages" @click="goToNotes(item.name)">{{ item.name }}</h2>
-    </li>
-  </div>
-  <div class="subPages" v-if="currentPage === 'Homework'">
-    <li class="subPages" v-for="item in displayHomework">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages" @click="goToHomework(item.name)">{{ item.name }}</h2>
-    </li>
-  </div>
-  <div class="subPages" v-if="currentPage === 'Syllabus'">
-    <iframe src="http://localhost:5174/src/public/CS4920SyllabusSpring2025.pdf" width="100%" height="1000px"></iframe>
-  </div>
+    <div class="classButtons">
+      <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
+      <h2 v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
+      <div class="space"></div>
+      <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
+      <div class="add">
+        <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem">Add {{ currentPage }}</button>
+      </div>
+
+    </div>
+    <h1 v-if="currentPage === 'Home'">
+      {{ currentClass }}
+    </h1>
+    <h1 v-if="currentPage !== 'Home'">
+      {{ currentPage }}
+    </h1>
+    <hr>
+    <div class="classHome" v-if="currentPage === 'Home'">
+      <button @click="getFavorites">Favorites</button>
+      <button @click="getNotes">Notes</button>
+      <button @click="getHomework">Homework</button>
+      <button @click="getSyllabus">Syllabus</button>
+    </div>
+    <div class="subPages" v-if="currentPage === 'Favorites'">
+      <li v-for="item in displayFavorites" class="subPages">
+        <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
+        <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
+        <h2 class="subPages">{{ item.name }}</h2>
+        <h3 class="subPages">{{ item.type }}</h3>
+      </li>
+    </div>
+    <div class="subPages" v-if="currentPage === 'Notes'">
+      <li class="subPages" v-for="item in displayNotes">
+        <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
+        <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
+        <h2 class="subPages" @click="goToNotes(item.name)">{{ item.name }}</h2>
+      </li>
+    </div>
+    <div class="subPages" v-if="currentPage === 'Homework'">
+      <li class="subPages" v-for="item in displayHomework">
+        <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
+        <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
+        <h2 class="subPages" @click="goToHomework(item.name)">{{ item.name }}</h2>
+      </li>
+    </div>
+    <div class="subPages" v-if="currentPage === 'Syllabus'">
+      <iframe v-if="file !== null" :src="this.file" width="100%" height="1000px"></iframe>
+      <v-row justify="center"><v-col lg="9"><v-file-upload></v-file-upload></v-col></v-row>
+
+    </div>
   </body>
 </template>
 
@@ -111,6 +118,7 @@
   html, body {
     display: block;
     text-align: center;
+    margin-bottom: 100px;
   }
   h1 {
     font-size: 75px;
@@ -133,6 +141,11 @@
     font-size: 20px;
     background-color: green;
     color: white;
+  }
+  .classButtons .add button {
+    width: max-content;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .classButtons h2 {
     width: 300px;
@@ -206,6 +219,5 @@
   }
   iframe {
     width: 75%;
-    margin-bottom: 100px;
   }
 </style>
