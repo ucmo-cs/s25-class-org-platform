@@ -12,6 +12,10 @@ export class Event {
     isHomework: Boolean;
     file;
 
+    getTitle() {
+        return this.name;
+    }
+
     constructor(eventID, name, description, start, end, classID, user, isHomework, file) {
         this.eventID = eventID;
         this.name = name;

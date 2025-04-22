@@ -121,8 +121,8 @@
                     All Events on {{ info[1] }} {{ info[0] }}, {{ info[2] }}
                 </div>
                 <div class="modal-body">
-                    <div v-for="(event, index) in this.info[3]" :key="event.title + index" class="plans_style">
-                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.title); }">{{ event.title }}</button>
+                    <div v-for="(event, index) in this.info[3]" :key="event.name + index" class="plans_style">
+                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.name); }">{{ event.name }}</button>
                         <br>
                     </div>
                 </div>

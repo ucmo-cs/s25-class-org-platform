@@ -19,6 +19,10 @@ export class Class {
     startDate: Date;
     endDate: Date;
 
+    getTitle() {
+        return this.name;
+    }
+
     constructor(classID: Number, name: String, semester: Semester, meetingLocation: String, meetingTimes: MeetingTimes, user: User, instructor: String, description: String, officeLocation: String, officeHours: MeetingTimes, instructorPhone: String, instructorEmail: String, textbook: String, startDate: Date, endDate: Date) {
         this.classID = classID;
         this.name = name;

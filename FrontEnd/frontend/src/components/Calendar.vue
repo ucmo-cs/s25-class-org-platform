@@ -20,8 +20,8 @@
             
           </div>
           <div class="event-container" v-if="day">
-            <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 2)" :key="event.title + day + index">
-              <button @click="$emit('navigateToClass', event.title)">{{ event.title }}</button>
+            <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 2)" :key="event.name + day + index">
+              <button @click="$emit('navigateToClass', event.name)">{{ event.name }}</button>
             </div>
             <div v-if="eventsForDate(day).length > 2" class="event more">
               <button class="event_more" @click="$emit('openModal', ['events', [day, currentMonth, currentYear, allEventsForDate(day)]])"> +{{ eventsForDate(day).length - 2 }} more</button>
@@ -48,6 +48,10 @@
       events: {
         type: Array,
         required: true,
+      },
+      classes: {
+        type: Array,
+        required: true
       }
     },
     methods: {
@@ -164,22 +168,76 @@
             return "December";
         }
       },
+      //Function to get the events for a day from the events and classes lists
       eventsForDate(day) {
+        //If the day is not set, or the arrays are empty return nothing
+        console.log("start");
         if (!day) return [];
-
+        if (!this.events || !this.classes) return [];
+        
+        //Create needed variables
+        let calendarEventsOut = [];
         const currentDate = new Date(this.currentYear, this.monthNum - 1, day);
+        const nextDate = new Date(this.currentYear, this.monthNum - 1, day + 1);
         const currentWeekday = currentDate.getDay();
 
-        return this.events.filter(event => {
-          const isDateMatch = event.day === day &&
-          event.month === this.monthNum &&
-          event.year === this.currentYear
-
-          const isRepeatMatch = event.repeatWeekly === true && Array.isArray(event.weekdays) && event.weekdays.includes(currentWeekday);
-
-          return isDateMatch || isRepeatMatch;
+        //Loop through the events. If they are on this day, add them to the output array
+        for(let i = 0; i < this.events.length; i++) {
+          let event = this.events[i];
+          let date = new Date(event.start);
+          if(currentDate <= date && date < nextDate) {
+            calendarEventsOut.push(event);
+          }
         }
-        );
+        console.log("After events");
+
+        //Loop through the classes. If they the current day is in their time range, and this is the right day of the week, add them to the output array
+        for(let i = 0; i < this.classes.length; i++) {
+          let c = this.classes[i];
+          if(new Date(c.startDate) <= currentDate && currentDate <= new Date(c.endDate)) {
+            switch (currentWeekday) {
+              case (0):
+                if(c.meetingTimes.sundayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (1):
+                if(c.meetingTimes.mondayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (2):
+                if(c.meetingTimes.tuesdayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (3):
+                if(c.meetingTimes.wednesdayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (4):
+                if(c.meetingTimes.thursdayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (5):
+                if(c.meetingTimes.fridayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+              case (6):
+                if(c.meetingTimes.saturdayStart != null) {
+                  calendarEventsOut.push(c);
+                }
+                break;
+            }
+          };
+        }
+
+        //Return the output array
+        console.log(calendarEventsOut);
+        return calendarEventsOut;
       },
       allEventsForDate(day) {
         return this.eventsForDate(day)

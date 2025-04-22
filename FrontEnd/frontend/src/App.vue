@@ -14,7 +14,7 @@
       return {
         currentPage: "Calendar",
         semester: "Spring 2025",
-        Classes: ["Algorithms", "Operating Systems", "Senior Project", "Call of Duty Zombies"],
+        classes: [],
         clickClass: "None",
         newClassComponent: false,
         showModal: false,
@@ -24,8 +24,20 @@
         eventModalMonth: null,
         eventModalYear: null,
         mode: null,
-        events: this.loadEvents(),
+        events: [],
+        dataGrabbed: false,
       }
+    },
+    async mounted() {
+      await getClassByUserAndSemester(1, 1).then(cs => {
+        this.classes = cs;
+      });
+      await getEventsByUser(1).then(es => {
+        this.events = es;
+      });
+      this.dataGrabbed = true;
+      console.log(this.events);
+      console.log(this.classes);
     },
     methods: {
       navigateToHome() {
@@ -45,51 +57,13 @@
       loadSemester(id) {
         // API call for semester data based on semester id. Set data values to dynamically update screen.
 
-      },
-      loadEvents() {
-        let eventsOut = [];
-        getClassByUserAndSemester(1,1).then(classes => {
-          for(let i = 0; i < classes.length; i++) {
-            let weekDays = [];
-            if(classes[i].meetingTimes.sundayStart) {
-              weekDays.push(0);
-            }
-            if(classes[i].meetingTimes.mondayStart) {
-              weekDays.push(1);
-            }
-            if(classes[i].meetingTimes.tuesdayStart) {
-              weekDays.push(2);
-            }
-            if(classes[i].meetingTimes.wednesdayStart) {
-              weekDays.push(3);
-            }
-            if(classes[i].meetingTimes.thursdayStart) {
-              weekDays.push(4);
-            }
-            if(classes[i].meetingTimes.fridayStart) {
-              weekDays.push(5);
-            }
-            if(classes[i].meetingTimes.saturdayStart) {
-              weekDays.push(6);
-            }
-            eventsOut.push({title: classes[i].name, isEvent: false, repeatWeekly: true, weekdays: weekDays})
-          }
-        })
-        console.log(eventsOut);
-        getEventsByUser(1).then(events => {
-          for (let i = 0; i < events.length; i++) {
-            eventsOut.push({title: events[i].name, isEvent: true, day: events[i].start.day, month: events[i].start.month, year: events[i].start.year});
-          }
-        });
-        console.log(eventsOut);
-        return eventsOut;
       }
     }
   }
 </script>
 
 <template>
-  <body>
+  <body v-if="dataGrabbed==true">
     <div class="topBar">
       <button @click="navigateToHome">Student Helper</button>
     </div>
@@ -98,17 +72,17 @@
       <h1>{{ semester }}</h1>
       <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
       <hr><hr>
-      <div v-for="(event, index) in events">
-        <div v-if="event.isEvent === false">
-          <button class="class_button" :class="{ button: className }" @click="navigateToClass(event.title)">{{ event.title }}</button>
+      <div v-for="(event, index) in classes">
+        <div>
+          <button class="class_button" :class="{ button: className }" @click="navigateToClass(event.name)">{{ event.name }}</button>
         </div>
       </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
       <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button>
     </div>
     <div class="mainScreen">
-      <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events"/>
-      <div v-for="className in Classes">
+      <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
+      <div v-for="className in classes">
         <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(['addClass', null])"/>
       </div>
     </div>
