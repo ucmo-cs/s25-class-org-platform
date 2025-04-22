@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `seniorproject` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `seniorproject`;
 -- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
 -- Host: localhost    Database: seniorproject
@@ -33,13 +31,13 @@ CREATE TABLE `class` (
   `UserID` int NOT NULL,
   `Instructor` varchar(255) DEFAULT NULL,
   `Description` varchar(255) DEFAULT NULL,
-  `OfficeLocation` varchar(255) DEFAULT NULL,
   `OfficeHoursID` int DEFAULT NULL,
   `InstructorPhone` varchar(30) DEFAULT NULL,
   `InstructorEmail` varchar(255) DEFAULT NULL,
   `TextBook` varchar(255) DEFAULT NULL,
   `StartDate` date DEFAULT NULL,
   `EndDate` date DEFAULT NULL,
+  `OfficeLocation` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ClassID`),
   KEY `class_ibfk_3_idx` (`UserID`),
   KEY `class_ibfk_1_idx` (`SemesterID`),
@@ -58,7 +56,7 @@ CREATE TABLE `class` (
 
 LOCK TABLES `class` WRITE;
 /*!40000 ALTER TABLE `class` DISABLE KEYS */;
-INSERT INTO `class` VALUES (1,'Algorithm Desighn',1,1,'WCM 105',1,'Yousef','Learn to deisgn and analyze algorithms','WCM 207',1,'816-555-1234','Yousef@ucmo.edu','Algorithm Stuff','2025-01-12','2025-05-10'),(2,'Operating Systems',1,5,'WCM 231',1,'Park','Learn about threads and stuff','WCM ???',6,'816-555-1234','Park@ucmo.edu','','2025-01-12','2025-05-10'),(3,'Senior Project',1,7,'WCM 131',1,'Grebe and Johnson','Make a big project and go way overboard on the scope','WCM 12?',8,'816-555-1234','Johnson@ucmo.edu','','2025-01-12','2025-05-10'),(5,'Compputer Networking',1,13,'Online',1,'Jin','Learn about computer networking','Zoom',14,'816-555-1234','jin@ucmo.edu','Computer Networking stuff','2025-01-12','2025-05-10');
+INSERT INTO `class` VALUES (1,'Algorithm Desighn',1,1,'WCM 105',1,'Yousef','Learn to deisgn and analyze algorithms',1,'816-555-1234','Yousef@ucmo.edu','Algorithm Stuff','2025-01-12','2025-05-10',NULL),(2,'Operating Systems',1,5,'WCM 231',1,'Park','Learn about threads and stuff',6,'816-555-1234','Park@ucmo.edu','','2025-01-12','2025-05-10',NULL),(3,'Senior Project',1,7,'WCM 131',1,'Grebe and Johnson','Make a big project and go way overboard on the scope',8,'816-555-1234','Johnson@ucmo.edu','','2025-01-12','2025-05-10',NULL),(5,'Compputer Networking',1,13,'Online',1,'Jin','Learn about computer networking',14,'816-555-1234','jin@ucmo.edu','Computer Networking stuff','2025-01-12','2025-05-10',NULL);
 /*!40000 ALTER TABLE `class` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,12 +75,13 @@ CREATE TABLE `event` (
   `End` datetime DEFAULT NULL,
   `ClassID` int DEFAULT NULL,
   `UserID` int NOT NULL,
-  `isHomework` bool default null,
-  `file` int default null,
+  `isHomework` tinyint DEFAULT NULL,
+  `file` int DEFAULT NULL,
+  `isFavorite` tinyint DEFAULT NULL,
   PRIMARY KEY (`EventID`),
   KEY `UserID` (`UserID`),
   KEY `event_ibfk_1_idx` (`ClassID`),
-  KEY `event_ibfk_2_idx` (`file`),
+  KEY `event_ibfk_3_idx` (`file`),
   CONSTRAINT `event_ibfk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`),
   CONSTRAINT `event_ibfk_2` FOREIGN KEY (`UserID`) REFERENCES `user` (`UserID`),
   CONSTRAINT `event_ibfk_3` FOREIGN KEY (`file`) REFERENCES `files` (`FileID`)
@@ -95,17 +94,33 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,'HW1','HW1 is due.','2025-01-21 00:00:00','2025-01-21 00:00:00',1,1, TRUE, null),(2,'Host Smash tournament','Host a big smash tournement in the untion building','2025-03-29 08:00:00','2025-03-29 22:00:00',NULL,2, FALSE, NULL),(3,'HW2','HW2 is due.','2025-02-21 00:00:00','2025-02-21 00:00:00',5,1, TRUE, NULL),(4,'HW3','HW3 is due.','2025-03-21 00:00:00','2025-03-21 00:00:00',5,1,TRUE, NULL),(6,'Random','Random','2025-03-21 00:00:00','2025-03-21 00:00:00',NULL,1, FALSE, NULL);
+INSERT INTO `event` VALUES (1,'HW1','HW1 is due.','2025-01-21 00:00:00','2025-01-21 00:00:00',1,1,NULL,NULL,NULL),(2,'Host Smash tournament','Host a big smash tournement in the untion building','2025-03-29 08:00:00','2025-03-29 22:00:00',NULL,2,NULL,NULL,NULL),(3,'HW2','HW2 is due.','2025-02-21 00:00:00','2025-02-21 00:00:00',5,1,NULL,NULL,NULL),(4,'HW3','HW3 is due.','2025-03-21 00:00:00','2025-03-21 00:00:00',5,1,NULL,NULL,NULL),(6,'Random','Random','2025-03-21 00:00:00','2025-03-21 00:00:00',NULL,1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
-DROP TABLE IF exists `files`;
+--
+-- Table structure for table `files`
+--
 
+DROP TABLE IF EXISTS `files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `files` (
-	`FileID` INT NOT NULL auto_increment,
-    `Data` mediumblob DEFAULT NULL,
-    primary key (`FileID`)
+  `FileID` int NOT NULL AUTO_INCREMENT,
+  `Data` mediumblob,
+  PRIMARY KEY (`FileID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `files`
+--
+
+LOCK TABLES `files` WRITE;
+/*!40000 ALTER TABLE `files` DISABLE KEYS */;
+INSERT INTO `files` VALUES (1,NULL),(2,NULL),(3,_binary '48656C6C6F2C204920616D20612066696C65');
+/*!40000 ALTER TABLE `files` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `meetingtimes`
@@ -156,11 +171,12 @@ CREATE TABLE `notes` (
   `ClassID` int NOT NULL,
   `Date` date DEFAULT NULL,
   `Notes` int DEFAULT NULL,
+  `isFavorite` tinyint DEFAULT NULL,
   PRIMARY KEY (`NotesID`),
   KEY `notes_ifbk_1_idx` (`ClassID`),
-  KEY `notes_ifbk_2_idx` (`Notes`),
-  CONSTRAINT `notes_ifbk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`),
-  CONSTRAINT `notes_ifbk_2` FOREIGN KEY (`Notes`) REFERENCES `files` (`FileID`)
+  KEY `notes_ibfk_2_idx` (`Notes`),
+  CONSTRAINT `notes_ibfk_2` FOREIGN KEY (`Notes`) REFERENCES `files` (`FileID`),
+  CONSTRAINT `notes_ifbk_1` FOREIGN KEY (`ClassID`) REFERENCES `class` (`ClassID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -170,7 +186,6 @@ CREATE TABLE `notes` (
 
 LOCK TABLES `notes` WRITE;
 /*!40000 ALTER TABLE `notes` DISABLE KEYS */;
-INSERT INTO `notes` VALUES (1,1,'2025-01-01',NULL),(2,1,'2025-01-01',NULL),(3,2,'2025-01-01',NULL),(4,2,'2025-01-01',NULL);
 /*!40000 ALTER TABLE `notes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,7 +226,7 @@ CREATE TABLE `user` (
   `PasswordHash` varchar(255) NOT NULL,
   PRIMARY KEY (`UserID`),
   UNIQUE KEY `UserName` (`UserName`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -220,7 +235,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'MilesL35','VeryStrongPassword'),(2,'IsaiahH','VeryStrongPassword2'),(4,'Justus','VeryStrongPassword3');
+INSERT INTO `user` VALUES (1,'MilesL35','VeryStrongPassword'),(2,'IsaiahH','VeryStrongPassword2'),(4,'Justus','VeryStrongPassword3'),(5,'JohnD','Doesn\'t matter anymore. We\'re not getting to authentication.');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -233,4 +248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-03 15:24:37
+-- Dump completed on 2025-04-22 16:57:58
