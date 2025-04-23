@@ -38,7 +38,9 @@ export async function deleteUser(userID: Number) {
 }
 
 export async function updateUsername(userID: Number, newName: String) {
-    const res = await axios.put(`${baseURL}user/${userID}`, newName);
+    console.log(userID);
+    console.log(`${baseURL}user/update?userId=${userID}&newName=${newName}`)
+    const res = await axios.put(`${baseURL}user/update?userID=${userID}&newName=${newName}`);
 
     return res.data;
 }

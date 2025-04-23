@@ -14,7 +14,15 @@
         VDateInput,
         MeetingTimesInput
         },
-        props: ['mode', 'info'],
+        props: {
+            mode: {
+                type: String,
+            },
+            info: {
+            },
+            user: {
+            }
+        },
     data() {
         return {
             startDate: null,
@@ -41,7 +49,7 @@
     },
     methods: {
         addClass() {
-            let classOut = new Class(null, this.courseName, null, this.location, this.meetingTimesForClass, new User(1,"MilesL35"), this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
+            let classOut = new Class(null, this.courseName, null, this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
             addClass(classOut);
             console.log(classOut);
         },
@@ -176,12 +184,10 @@
 
     .modal-footer {
         position: relative;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
+        padding: 10px;
         text-align: right;
     }
-
+    
     .modal-header {
         margin-top: 0;
         color: black;

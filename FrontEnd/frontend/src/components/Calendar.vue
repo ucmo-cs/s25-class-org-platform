@@ -192,6 +192,9 @@
         //Loop through the classes. If they the current day is in their time range, and this is the right day of the week, add them to the output array
         for(let i = 0; i < this.classes.length; i++) {
           let c = this.classes[i];
+          if(c.meetingTimes == null) {
+            continue;
+          }
           if(new Date(c.startDate) <= currentDate && currentDate <= new Date(c.endDate)) {
             switch (currentWeekday) {
               case (0):
