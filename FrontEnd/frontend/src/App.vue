@@ -3,12 +3,14 @@
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
   import { getAllUsers, getClassByUserAndSemester, getEventsByUser } from './data/api';
+  import UsersModal from "./components/UsersModal.vue";
 
   export default {
     components: {
       Calendar,
       Class,
       Modal,
+      UsersModal,
     },
     data() {
       return {
@@ -28,17 +30,18 @@
         dataGrabbed: false,
         allUsers: [],
         userIndex: 0,
+        showUserModal: false,
       }
     },
     async mounted() {
-      await getClassByUserAndSemester(1, 1).then(cs => {
-        this.classes = cs;
-      });
-      await getEventsByUser(1).then(es => {
-        this.events = es;
-      });
       await getAllUsers().then(us => {
         this.allUsers = us;
+      });
+      await getClassByUserAndSemester(this.allUsers[this.userIndex].userID, 1).then(cs => {
+        this.classes = cs;
+      });
+      await getEventsByUser(this.allUsers[this.userIndex].userID).then(es => {
+        this.events = es;
       });
       this.dataGrabbed = true;
     },
@@ -57,6 +60,27 @@
         this.showModal = true
         this.info = data[1]
       },
+      openUserModal() {
+        this.showUserModal = true;
+      },
+      async closeUserModal(dataOut) {
+        console.log(dataOut);
+        this.userIndex = dataOut.userIndex;
+        if(dataOut.updateUsers) {
+          this.dataGrabbed = false;
+          await getAllUsers().then(us => {
+            this.allUsers = us;
+          });
+          await getClassByUserAndSemester(this.allUsers[this.userIndex].userID, 1).then(cs => {
+            this.classes = cs;
+          });
+          await getEventsByUser(this.allUsers[this.userIndex].userID).then(es => {
+            this.events = es;
+          });
+          this.dataGrabbed = true;
+        }
+        this.showUserModal = false;
+      },
       loadSemester(id) {
         // API call for semester data based on semester id. Set data values to dynamically update screen.
 
@@ -69,7 +93,7 @@
   <body v-if="dataGrabbed==true">
     <div class="topBar">
       <button class="homeButton" @click="navigateToHome">Student Helper</button>
-      <button class="userButton">{{ "User: " + this.allUsers[userIndex].userName }}</button><br>
+      <button class="userButton" @click="openUserModal">{{ "User: " + this.allUsers[userIndex].userName }}</button><br>
     </div>
     <div class="sideBar"> 
       <div class="semester_buttons" @click="loadSemester(semesterID-1)"><</div>
@@ -91,6 +115,7 @@
       </div>
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" @close="showModal = false" @navigateToClass="navigateToClass" />
+    <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
   </body>
 </template>
 
@@ -134,8 +159,8 @@
     position: relative;
     background-color: white;
     color: black;
-    height: 70%;
-    top: 10%;
+    height: 60%;
+    top: 20%;
     right: 1%;
     border-radius: 5px;
     padding-left: 10px;
