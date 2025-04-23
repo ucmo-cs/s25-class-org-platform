@@ -56,6 +56,12 @@ export async function getSemesterByID(semesterID: Number) {
     return res.data as Semester;
 }
 
+export async function getSemestersByUser(userID: Number) {
+    const res = await axios.get(`${baseURL}semester/byUser${userID}`);
+
+    return res.data as Semester[];
+}
+
 export async function addNewSemester(semester: Semester) {
     const res = await axios.post(`${baseURL}semester/`, semester);
 

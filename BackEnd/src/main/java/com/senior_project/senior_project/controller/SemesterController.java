@@ -33,6 +33,11 @@ public class SemesterController {
         return semesterService.findByName(semesterName);
     }
 
+    @GetMapping("/byUser{id}")
+    public List<Semester> getSemestersByUser(@PathVariable("id")int userID) {
+        return semesterService.findByUser(userID);
+    }
+
     @PostMapping("/")
     public void addNewSemester(@RequestBody Semester semester) {
         semesterService.addNewSemester(semester);

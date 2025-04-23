@@ -29,8 +29,8 @@ public class MeetingTimesController {
     }
 
     @PostMapping("/")
-    public void addMeetingTimes(@RequestBody MeetingTimes meetingTimes) {
-        meetingTimesService.addNewMeetingTimes(meetingTimes);
+    public int addMeetingTimes(@RequestBody MeetingTimes meetingTimes) {
+        return meetingTimesService.addNewMeetingTimes(meetingTimes);
     }
 
     @DeleteMapping("{id}")

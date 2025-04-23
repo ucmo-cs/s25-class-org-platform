@@ -74,7 +74,7 @@
       <hr><hr>
       <div v-for="(event, index) in classes">
         <div>
-          <button class="class_button" :class="{ button: className }" @click="navigateToClass(event.name)">{{ event.name }}</button>
+          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.name)">{{ event.name }}</button>
         </div>
       </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>

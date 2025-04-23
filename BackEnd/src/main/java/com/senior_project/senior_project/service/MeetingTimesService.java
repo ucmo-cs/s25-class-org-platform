@@ -72,9 +72,10 @@ public class MeetingTimesService {
         return meetingTimes.get();
     }
 
-    public void addNewMeetingTimes(MeetingTimes meetingTimes) {
+    public int addNewMeetingTimes(MeetingTimes meetingTimes) {
         validateTimes(meetingTimes); //Throws exception if the validation fails, so no if statement needed
         meetingTimesRepository.save(meetingTimes);
+        return meetingTimes.getMeetingTimesId();
     }
 
     public void deleteMeetingTimes(int meetingTimesId) {

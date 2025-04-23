@@ -171,7 +171,6 @@
       //Function to get the events for a day from the events and classes lists
       eventsForDate(day) {
         //If the day is not set, or the arrays are empty return nothing
-        console.log("start");
         if (!day) return [];
         if (!this.events || !this.classes) return [];
         
@@ -189,7 +188,6 @@
             calendarEventsOut.push(event);
           }
         }
-        console.log("After events");
 
         //Loop through the classes. If they the current day is in their time range, and this is the right day of the week, add them to the output array
         for(let i = 0; i < this.classes.length; i++) {
@@ -236,7 +234,6 @@
         }
 
         //Return the output array
-        console.log(calendarEventsOut);
         return calendarEventsOut;
       },
       allEventsForDate(day) {

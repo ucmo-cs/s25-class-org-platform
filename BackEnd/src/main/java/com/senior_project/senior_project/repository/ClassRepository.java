@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ClassRepository extends JpaRepository<Class, Integer> {
     List<Class> findAllByUserAndSemester(User user, Semester semester);
+    List<Class> findAllByUser(User user);
 }

@@ -7,10 +7,12 @@
     import { Semester } from '@/data/Model/Semester';
     import { addEvent } from '@/data/api';
     import { Event } from '@/data/Model/Event';
+    import MeetingTimesInput from './MeetingTimesInput.vue';
 
     export default {
         components: {
         VDateInput,
+        MeetingTimesInput
         },
         props: ['mode', 'info'],
     data() {
@@ -32,16 +34,29 @@
             eventDescription: null,
             eventStartDate: null,
             eventEndDate: null,
+            meetingTimesForClass: null,
+            officeHours: null,
+            officeLocation: null,
         }
     },
     methods: {
         addClass() {
-            addClass(new Class(null, this.courseName, null, this.location, null, new User(1,"MilesL35"), this.instructor, this.description, null, null, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
+            let classOut = new Class(null, this.courseName, null, this.location, this.meetingTimesForClass, new User(1,"MilesL35"), this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
+            addClass(classOut);
+            console.log(classOut);
         },
         addEvent() {
             addEvent(new Event(null, this.eventName, this.eventDescription, this.eventStartDate, this.eventEndDate, new Class(1, null, null, null, null, null, null, null, null, null, null, null, null, null, null), new User(1, "MilesL35"), null, null))
+        },
+        updateMeetingTimes(meetingTimesIn) {
+            this.meetingTimesForClass = meetingTimesIn;
+            console.log(this.meetingTimesForClass);
+        },
+        updateOfficeHours(officeHoursIn) {
+            this.officeHours = officeHoursIn;
+            console.log(this.officeHours);
         }
-    }
+    },
 }
 </script>
 
@@ -58,16 +73,13 @@
                     <v-text-field label="ex. College Algebra" v-model="courseName"></v-text-field>
                     <br>
                     <p>Meeting Times:</p>
-                    <v-text-field label="ex. 10am"></v-text-field>
+                    <MeetingTimesInput @MeetingTimes="this.updateMeetingTimes" :eventName="'MeetingTimes'"></MeetingTimesInput>
                     <br>
                     <p>Teacher's Name:</p>
                     <v-text-field label="ex. Professor Smith" v-model="instructor"></v-text-field>
                     <br>
                     <p>Class Description:</p>
                     <v-textarea label="Things to remember about the class" v-model="description"></v-textarea>
-                    <br>
-                    <p>Office Hours:</p>
-                    <v-text-field label="ex. 10am-11am"></v-text-field>
                     <br>
                     <p>Room Number/Zoom Link:</p>
                     <v-text-field label="ex. Room 202" v-model="location"></v-text-field>
@@ -77,6 +89,12 @@
                     <br>
                     <p>Instructors Email:</p>
                     <v-text-field label="smith@email.com" v-model="email"></v-text-field>
+                    <br>
+                    <p>Office:</p>
+                    <v-text-field label="ex. Room 102" v-model="this.officeLocation"></v-text-field>
+                    <br>
+                    <p>Office Hours:</p>
+                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :eventName="'OfficeHours'"></MeetingTimesInput>
                     <br>
                     <p>Textbook:</p>
                     <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
