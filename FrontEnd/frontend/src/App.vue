@@ -2,7 +2,7 @@
   import Calendar from './components/Calendar.vue'
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
-  import { getClassByUserAndSemester, getEventsByUser } from './data/api';
+  import { getAllUsers, getClassByUserAndSemester, getEventsByUser } from './data/api';
 
   export default {
     components: {
@@ -26,6 +26,8 @@
         mode: null,
         events: [],
         dataGrabbed: false,
+        allUsers: [],
+        userIndex: 0,
       }
     },
     async mounted() {
@@ -35,9 +37,10 @@
       await getEventsByUser(1).then(es => {
         this.events = es;
       });
+      await getAllUsers().then(us => {
+        this.allUsers = us;
+      });
       this.dataGrabbed = true;
-      console.log(this.events);
-      console.log(this.classes);
     },
     methods: {
       navigateToHome() {
@@ -65,7 +68,8 @@
 <template>
   <body v-if="dataGrabbed==true">
     <div class="topBar">
-      <button @click="navigateToHome">Student Helper</button>
+      <button class="homeButton" @click="navigateToHome">Student Helper</button>
+      <button class="userButton">{{ "User: " + this.allUsers[userIndex].userName }}</button><br>
     </div>
     <div class="sideBar"> 
       <div class="semester_buttons" @click="loadSemester(semesterID-1)"><</div>
@@ -112,15 +116,30 @@
     background: #222222;
     position: fixed;
     margin-top: 0;
+    display: inline-block;
   }
   .topBar button {
-    background-color: #222222;
-    width: 300px;
-    height: 100%;
-    color: white;
     font-size: 30px;
     cursor: pointer;
     border: none;
+  }
+  .homeButton {
+    background-color: #222222;
+    color: white;
+    height: 100%;
+    width: 300px;
+  }
+  .userButton {
+    float: right;
+    position: relative;
+    background-color: white;
+    color: black;
+    height: 70%;
+    top: 10%;
+    right: 1%;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .sideBar {
     margin-top: 100px;
