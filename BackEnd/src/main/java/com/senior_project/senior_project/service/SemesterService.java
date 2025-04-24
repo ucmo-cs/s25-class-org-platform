@@ -56,7 +56,7 @@ public class SemesterService {
     }
 
     public void addNewSemester(Semester semester) {
-        if(semesterRepository.findBySemesterName(semester.getSemesterName()).isPresent()) {
+        if(semesterRepository.findById(semester.getSemesterId()).isPresent()) {
             throw new IllegalArgumentException("Semester already exists.");
         }
         semesterRepository.save(semester);
