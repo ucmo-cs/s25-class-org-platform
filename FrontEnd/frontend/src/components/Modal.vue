@@ -44,8 +44,6 @@
             phoneNum: null,
             email: null,
             textbook: null,
-            startDate: null,
-            endDate: null,
             instructor: null,
             eventName: null,
             eventDescription: null,
@@ -114,7 +112,7 @@
                     <br>
                     <p>Semester:</p>
                     <select id="semesters" v-model="this.semesterIndex">
-                        <option v-for="(semester, index) in this.semesters" :MeetingTimesIn="null" :value="index" :selected="this.semesterIndex == index">{{ semester.semesterName }}</option>
+                        <option v-for="(semester, index) in this.semesters" :MeetingTimesIn="null" :value="index" :selected="this.semesterIndex === index">{{ semester.semesterName }}</option>
                     </select>
                     <br>
                     <p>Meeting Times:</p>
@@ -152,7 +150,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button" @click="addClass">Submit</button>
+                    <button class="submit_button" @click="addClass">Save</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
@@ -175,7 +173,7 @@
                     <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button" @click="addEvent">Submit</button>
+                    <button class="submit_button" @click="addEvent">Save</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
@@ -185,7 +183,7 @@
                 </div>
                 <div class="modal-body">
                     <div v-for="(event, index) in this.info[3]" :key="event.name + index" class="plans_style">
-                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.name); }">{{ event.name }}</button>
+                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.name, 'Home'); }">{{ event.name }}</button>
                         <br>
                     </div>
                 </div>

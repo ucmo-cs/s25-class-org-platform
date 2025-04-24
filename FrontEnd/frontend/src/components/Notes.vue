@@ -1,6 +1,8 @@
 <script>
+import {addNewNotesWithFile, updateNotes} from "@/data/api.js";
+
 export default {
-  props: ['notesID', 'parentClass'],
+  props: ['notesID', "parentClassID", 'parentClassName'],
   components: {},
   data() {
     return {
@@ -14,27 +16,48 @@ export default {
       note: "This is note 1",
       startDate: "1/1/2001",
       endDate: "1/1/2002",
-      file: "http://localhost:5173/src/public/text"
+      blob: null
     }
   },
   methods: {
     getHome() {
-
+      this.currentPage = "Home"
+      return this.notes
     },
     getNotes(notesID) {
       return this.notes[notesID]
     },
     getClassNotes() {
-      this.$emit('navigateToClass', this.parentClass, "Notes")
+      this.$emit('navigateToClass', this.parentClassID, this.parentClassName, "Notes")
     },
-    createFile() {
-      const link = document.createElement("a");
-      const content = document.querySelector("textarea").value;
-      const file = new Blob([content], { type: 'text/plain' });
-      link.href = URL.createObjectURL(file);
-      link.download = "note.txt";
-      link.click();
-      URL.revokeObjectURL(link.href);
+    createFile(download) {
+      const content = btoa(document.querySelector("textarea").value)
+      const file = new Blob([content], { type: 'multipart' })
+      if (download) {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(file);
+        link.download = "note.txt";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
+      this.blob = file
+      console.log(this.blob)
+
+    },
+    async createNote() {
+      this.createFile(false)
+      await addNewNotesWithFile(this.file).then(an => {
+        return an
+      })
+      console.log(an)
+
+    },
+    async updateNote() {
+      this.createFile(false)
+      await updateNotes(this.file).then(an => {
+        console.log(an)
+        return an
+      })
     },
   }
 }
@@ -43,10 +66,12 @@ export default {
 <template>
   <body>
   <div class="notesButtons">
-    <button v-if="currentPage === 'Notes' && parentClass !== null" @click="getClassNotes"><</button>
-    <h2 v-if="currentPage === 'Notes' && notesID !== 'New Note'">{{ parentClass + " Notes" }}</h2>
+    <button v-if="currentPage === 'Notes'" @click="getClassNotes"><</button>
+    <h2 v-if="currentPage === 'Notes'">{{ parentClassName + " Notes" }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Notes' && notesID !== 'New Note'" @click="createFile">Save</button>
+    <button v-if="currentPage === 'Notes' && notesID !== 'New Note'" @click="updateNote">Save</button>
+    <button v-if="currentPage === 'Notes' && notesID === 'New Note'" @click="createNote">Create</button>
+
   </div>
   <h1>{{ this.id }}</h1>
   <hr>

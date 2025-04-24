@@ -1,8 +1,10 @@
 <script>
+import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIsFavorite, getEventsByClass} from "@/data/api.js";
+
   export default {
     components: {
     },
-    props: ['currentClass', 'classPage'],
+    props: ['classID', 'currentClass', 'classPage'],
     data() {
       return {
         currentPage: this.$props.classPage,
@@ -11,6 +13,9 @@
           {name: "itemB", isFav: true, type: "Note"},
           {name: "itemC", isFav: true, type: "Homework"}
         ],
+        favorites: [],
+        notes: [],
+        homework: [],
         file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
       }
     },
@@ -19,12 +24,15 @@
         this.currentPage = "Home"
       },
       getFavorites() {
+        this.displayFavorites()
         this.currentPage = "Favorites"
       },
       getNotes() {
+        this.displayNotes()
         this.currentPage = "Notes"
       },
       getHomework() {
+        this.displayHomework()
         this.currentPage = "Homework"
       },
       getSyllabus() {
@@ -48,21 +56,37 @@
         } else if (type === "Notes") {
           this.goToNotes("New Note")
         }
-      }
-    },
-    computed: {
-      displayFavorites() {
-          // do api call for favorites of all types here.
-          return this.items
       },
-      displayNotes() {
-        // do api call for notes here.
-        return this.items
+      async displayFavorites() {
+        await getEventsByClassAndIsFavorite(this.$props.classID, true).then(fe => {
+          this.favoriteEvents = fe;
+          console.log(this.favoriteEvents)
+        })
+        await getNotesByClassIDAndIsFavorite(this.$props.classID, true).then(fn => {
+          this.favoriteNotes = fn;
+          console.log(this.favoriteNotes)
+        })
+        this.favorites = this.favoriteEvents + this.favoriteNotes
+        console.log(this.favorites)
+        return this.favorites
       },
-      displayHomework() {
-        // do api call for notes here.
-        return this.items
-      }
+      async displayNotes() {
+        await getNotesByClassID(this.$props.classID).then(gn => {
+          this.notes = gn;
+        })
+        console.log(this.notes)
+        return this.notes
+      },
+      async displayHomework() {
+        await getEventsByClass(this.$props.classID).then(gh => {
+          gh.forEach(i=>{
+            if (i['isFavorite'])
+              this.homework.append(gh[i])
+          })
+        })
+        console.log(this.homework)
+        return this.homework
+      },
     }
   }
 </script>
@@ -73,7 +97,7 @@
     <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
     <h2 class="classButtons" v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
+    <button v-if="currentPage === 'Home'" @click="callModal">Class Details</button>
     <div class="add">
       <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem(this.currentPage)">Add {{ currentPage }}</button>
     </div>
@@ -82,7 +106,7 @@
     {{ currentClass }}
   </h1>
   <h1 v-if="currentPage !== 'Home'">
-    {{ currentPage }}
+    {{ currentClass }}
   </h1>
   <hr>
   <div class="classHome" v-if="currentPage === 'Home'">
@@ -92,7 +116,7 @@
     <button @click="getSyllabus">Syllabus</button>
   </div>
   <div class="subPages" v-if="currentPage === 'Favorites'">
-    <li v-for="item in displayFavorites" class="subPages">
+    <li v-for="item in this.favorites" class="subPages">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
       <h2 class="subPages">{{ item.name }}</h2>
@@ -100,7 +124,7 @@
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Notes'">
-    <li class="subPages" v-for="item in displayNotes">
+    <li class="subPages" v-for="item in this.notes">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
       <h2 class="subPages" @click="goToNotes(item.name)">{{ item.name }}</h2>
