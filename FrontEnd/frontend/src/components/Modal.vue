@@ -88,6 +88,7 @@
         async deleteClass() {
             await deleteClass(this.Class.classID);
             this.$emit('close');
+            this.$emit('navigateToHome');
         },
         async updateClass() {
             await updateClass(new Class(this.Class.classID, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
@@ -155,7 +156,7 @@
             </div>
             <div v-if="mode === 'addEvent'">
                 <div class="modal-header">
-                    Creat Event
+                    Create Event
                 </div>
                 <div class="modal-body">
                     <p>Event Name:</p>
@@ -194,7 +195,6 @@
             <div v-if="mode === 'editClass'">
                 <div class="modal-header">
                     Edit Class
-                    <button class="close_button" @click="deleteClass">Delete Class</button>
                 </div>
                 <div class="modal-body">
                     <p>Class Name:</p>
@@ -243,6 +243,9 @@
                     <button class="submit_button" @click="updateClass">Submit</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
+                <div>
+                    <button class="delete_button" @click="deleteClass">Delete Class</button>
+                </div>
             </div>
         </div>
     </div>
@@ -280,7 +283,6 @@
     }
 
     .modal-footer {
-        position: relative;
         padding: 10px;
         text-align: right;
     }
@@ -339,5 +341,15 @@
         background-color: #53708d;
         margin: 5px;
         text-align: center;
+    }
+    .delete_button {
+        background-color: red;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px;
+        text-align: left;
     }
 </style>
