@@ -100,10 +100,10 @@
                     <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
                     <br>
                     <p>Start Date:</p>
-                    <v-date-input label="Date input" class="date_input" v-model="startDate"></v-date-input>
+                    <v-date-input label="Date input" prepend-icon="" class="date_input" v-model="startDate"></v-date-input>
                     <br>
                     <p>End Date:</p>
-                    <v-date-input label="Date input" v-model="endDate"></v-date-input>
+                    <v-date-input label="Date input" prepend-icon="" v-model="endDate"></v-date-input>
                     <br>
                 </div>
                 <div class="modal-footer">
@@ -123,10 +123,10 @@
                     <v-textarea label="Things to remember about the event" v-model="eventDescription"></v-textarea>
                     <br>
                     <p>Start Date:</p>
-                    <v-date-input label="Date input" class="date_input" v-model="eventStartDate"></v-date-input>
+                    <v-date-input label="Date input" prepend-icon="" class="date_input" v-model="eventStartDate"></v-date-input>
                     <br>
                     <p>End Date:</p>
-                    <v-date-input label="Date input" v-model="eventEndDate"></v-date-input>
+                    <v-date-input label="Date input" prepend-icon="" v-model="eventEndDate"></v-date-input>
                     <br>
                 </div>
                 <div class="modal-footer">

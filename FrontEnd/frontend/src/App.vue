@@ -3,12 +3,16 @@
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
   import { getAllUsers, getClassByUserAndSemester, getEventsByUser } from './data/api';
+  import Homework from '@/components/Homework.vue'
+  import Notes from '@/components/Notes.vue'
 
   export default {
     components: {
       Calendar,
       Class,
       Modal,
+      Homework,
+      Notes
     },
     data() {
       return {
@@ -28,6 +32,9 @@
         dataGrabbed: false,
         allUsers: [],
         userIndex: 0,
+        homeworkID: 0,
+        notesID: 0,
+        classPage: "Home"
       }
     },
     async mounted() {
@@ -46,10 +53,19 @@
       navigateToHome() {
         this.currentPage = "Calendar"
       },
-      navigateToClass(className) {
+      navigateToClass(className, classPage) {
         console.log(className)
         this.clickClass = className
         this.currentPage = "Class"
+        this.classPage = classPage
+      },
+      navigateToHomework(homeworkID) {
+        this.currentPage = "Homework"
+        this.homeworkID = homeworkID
+      },
+      navigateToNotes(notesID) {
+        this.currentPage = "Notes"
+        this.notesID = notesID
       },
       openModal(data) {
         console.log(data[0])
@@ -78,7 +94,7 @@
       <hr><hr>
       <div v-for="(event, index) in classes">
         <div>
-          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.name)">{{ event.name }}</button>
+          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.name, 'Home')">{{ event.name }}</button>
         </div>
       </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
@@ -86,9 +102,11 @@
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
-      <div v-for="className in classes">
-        <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(['addClass', null])"/>
+      <div v-for="(event, index) in classes">
+        <Class v-if="currentPage === 'Class' && event.name === clickClass" :currentClass="this.clickClass" :classPage="this.classPage" @openModal="openModal(['addClass', null])" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
+      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
+      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" @close="showModal = false" @navigateToClass="navigateToClass" />
   </body>
