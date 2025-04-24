@@ -37,8 +37,57 @@ import { MeetingTimes } from '../data/Model/MeetingTimes';
             eventName: {
                 type: String,
                 required: true
+            },
+            MeetingTimesIn: {
             }
         },
+        mounted() {
+            if(this.MeetingTimesIn != null) {
+                if(this.MeetingTimesIn.sundayStart != null) {
+                    this.sundayOn = true;
+                    this.updateEnabled(0);
+                    this.sundayStart = this.MeetingTimesIn.sundayStart.slice(0,5);
+                    this.sundayEnd = this.MeetingTimesIn.sundayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.mondayStart != null) {
+                    this.mondayOn = true;
+                    this.updateEnabled(1);
+                    this.mondayStart = this.MeetingTimesIn.mondayStart.slice(0,5);
+                    this.mondayEnd = this.MeetingTimesIn.mondayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.tuesdayStart != null) {
+                    this.tuesdayOn = true;
+                    this.updateEnabled(2);
+                    this.tuesdayStart = this.MeetingTimesIn.tuesdayStart.slice(0,5);
+                    this.tuesdayEnd = this.MeetingTimesIn.tuesdayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.wednesdayStart != null) {
+                    this.wednesdayOn = true;
+                    this.updateEnabled(3);
+                    this.wednesdayStart = this.MeetingTimesIn.wednesdayStart.slice(0,5);
+                    this.wednesdayEnd = this.MeetingTimesIn.wednesdayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.thursdayStart != null) {
+                    this.thursdayOn = true;
+                    this.updateEnabled(4);
+                    this.thursdayStart = this.MeetingTimesIn.thursdayStart.slice(0,5);
+                    this.thursdayEnd = this.MeetingTimesIn.thursdayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.fridayStart != null) {
+                    this.fridayOn = true;
+                    this.updateEnabled(5);
+                    this.fridayStart = this.MeetingTimesIn.fridayStart.slice(0,5);
+                    this.fridayEnd = this.MeetingTimesIn.fridayEnd.slice(0,5);
+                }
+                if(this.MeetingTimesIn.saturdayStart != null) {
+                    this.saturdayOn = true;
+                    this.updateEnabled(6);
+                    this.saturdayStart = this.MeetingTimesIn.saturdayStart.slice(0,5);
+                    this.saturdayEnd = this.MeetingTimesIn.saturdayEnd.slice(0,5);
+                }
+                this.emitData();
+            }
+        }, 
         methods: {
             updateEnabled(weekDay) {
                 switch(weekDay) {
@@ -110,7 +159,7 @@ import { MeetingTimes } from '../data/Model/MeetingTimes';
             },
             emitData() {
                 let meetingTimesOut = new MeetingTimes(
-                    null,
+                    this.MeetingTimesIn.meetingTimesId != null ? this.MeetingTimesIn.meetingTimesId : null,
                     this.mondayOn? this.mondayStart + ":00" : null,
                     this.mondayOn? this.mondayEnd + ":00": null,
                     this.tuesdayOn? this.tuesdayStart + ":00": null,
@@ -126,6 +175,7 @@ import { MeetingTimes } from '../data/Model/MeetingTimes';
                     this.sundayOn? this.sundayStart + ":00": null,
                     this.sundayOn? this.sundayEnd + ":00": null
                 );
+                console.log(meetingTimesOut);
                 this.$emit(this.eventName,meetingTimesOut);
             }
         }
