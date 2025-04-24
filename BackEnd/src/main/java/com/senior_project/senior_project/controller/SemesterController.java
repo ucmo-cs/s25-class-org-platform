@@ -48,7 +48,7 @@ public class SemesterController {
         semesterService.deleteSemester(semesterID);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/")
     public void updateSemester(@RequestBody Semester semester) {
         semesterService.updateSemester(semester);
     }

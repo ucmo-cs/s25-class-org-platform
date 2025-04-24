@@ -240,6 +240,9 @@
         cursor: pointer;
         padding: 10px;
     }
+    .close_button, .submit_button {
+        margin-left: 10px;
+    }
     .date_input {
         width: 100%;
         margin: 0;

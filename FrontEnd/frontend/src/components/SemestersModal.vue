@@ -1,92 +1,90 @@
 <script>
-    import { addUser, deleteUser, updateUsername } from '@/data/api';
-import { User } from '../data/Model/User';
+import { addNewSemester, deleteSemester, updateSemesterName } from '../data/api';
+import { Semester } from '../data/Model/Semester';
+
     export default {
         data() {
             return {
-                userID: null,
-                userName: null,
-                showEditPage: false,
+                semesterName: null,
+                semesterID: null,
+                showEditingPage: false,
                 editing: false,
             }
         },
         props: {
-            Users: {
+            Semesters: {
                 type: Array,
                 required: true
             },
-            UserIndex: {
-                type: Number,
+            User: {
                 required: true
             }
         },
         methods: {
-            closeModal(updateUser, newIndex) {
-                this.$emit("closeUserModal", {updateUsers: updateUser, userIndex: newIndex});
+            async addSemester() {
+                await addNewSemester(new Semester(this.semesterID, this.semesterName, this.User));
+                this.$emit('closeSemesterModal', true);
             },
-            showEditUser(index) {
-                this.userName = this.Users[index].userName;
-                this.userID = this.Users[index].userID;
-                this.showEditPage = true;
-                this.editing = true;
+            async editSemester() {
+                let semesterOut = new Semester(this.semesterID, this.semesterName, this.User)
+                await updateSemesterName(semesterOut);
+                this.$emit('closeSemesterModal', true);
+            },
+            async deleteSemesterModal(index) {
+                await deleteSemester(this.Semesters[index].semesterId);
+                this.$emit('closeSemesterModal', true);
             },
             goBack() {
-                this.userName = null;
-                this.userID = null;
-                this.showEditPage = false;
+                this.semesterName = null;
+                this.semesterID = null,
+                this.showEditingPage = false;
                 this.editing = false;
             },
-            showAddUser() {
-                this.showEditPage = true;
+            showEditSemester(index) {
+                this.semesterName = this.Semesters[index].semesterName;
+                this.semesterID = this.Semesters[index].semesterId;
+                this.showEditingPage = true;
+                this.editing = true;
+            },
+            showAddSemester() {
+                this.showEditingPage = true;
                 this.editing = false;
             },
-            async addNewUser() {
-                await addUser(new User(null, this.userName));
-                this.closeModal(true, this.UserIndex);
-            },
-            async updateUser() {m
-                await updateUsername(this.userID, this.userName);
-                this.closeModal(true, this.UserIndex);
-            },
-            async deleteUserModal(index) {
-                await deleteUser(this.Users[index].userID);
-                this.closeModal(true, this.UserIndex);
-            }
         }
     }
 </script>
 <template>
     <div class="backdrop">
         <div class="modal">
-            <div v-if="!this.showEditPage" class="userSelection">
-                <h2>Users</h2>
+            <div v-if="!this.showEditingPage">
+                <h2>Semesters</h2>
                 <table>
                     <thead>
                         <tr>
-                            <td>Select a User</td>
-                            <td>Edit User</td>
-                            <td>Delete User</td>
+                            <td>Semester</td>
+                            <td>Edit Semester</td>
+                            <td>Delete Semester</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(user, index) in this.Users">
-                            <td><button class="selectButton" @click="this.closeModal(true, index)">{{ user.userName, index }}</button></td>
-                            <td><button class="editButton" @click="this.showEditUser(index)">Edit</button></td>
-                            <td><button class="deleteButton" @click="this.deleteUserModal(index)">Delete</button></td>
+                        <tr v-for="(semester, index) in this.Semesters">
+                            <td>{{ semester.semesterName }}</td>
+                            <td><button class="editButton" @click="showEditSemester(index)">Edit</button></td>
+                            <td><button class="deleteButton" @click="deleteSemesterModal(index)">Delete</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div v-if="this.showEditPage">
-                <h2>{{ this.editing ? "Edit User" : "Add new User" }}</h2>
-                <p>User Name:</p>
-                <v-text-field v-model="this.userName"></v-text-field>
+            <div v-if="this.showEditingPage">
+                <h2>{{  this.editing ? "Edit Semester" : "Add new Semester" }}</h2>
+                <p>Semester Name: </p>
+                <v-text-field v-model="this.semesterName"></v-text-field>
             </div>
             <div class="modal-footer">
-                <button v-if="this.showEditPage" class = "blueButton" @click="this.goBack()">Back</button>
-                <button v-if="!this.showEditPage" class="greenButton" @click="this.showAddUser()">Add User</button>
-                <button v-if="this.showEditPage" class="greenButton" @click="this.editing ? this.updateUser() : this.addNewUser() ">{{ this.editing ? "Save User" : "Add User" }}</button>
-                <button class = "redButton" @click="this.closeModal(false, this.UserIndex)">Cancel</button>
+                <button v-if="this.showEditingPage" class = "blueButton" @click="this.goBack()">Back</button>
+                <button v-if="!this.showEditingPage" class="greenButton" @click="showAddSemester">Add Semester</button>
+                <button v-if="this.showEditingPage" class="greenButton" @click="this.editing ? this.editSemester() : this.addSemester() ">{{ this.editing ? "Save Semester" : "Add Semester" }}</button>
+                <button class = "redButton" @click="this.$emit('closeSemesterModal', false);">Cancel</button>
             </div>
         </div>
     </div>

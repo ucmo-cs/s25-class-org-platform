@@ -76,8 +76,8 @@ export async function deleteSemester(semesterID: Number) {
     return res.data;
 }
 
-export async function updateSemesterName(semesterSemester) {
-    const res = await axios.put(`${baseURL}semester/`,);
+export async function updateSemesterName(semester: Semester) {
+    const res = await axios.put(`${baseURL}semester/`,semester);
 
     return res.data;
 }

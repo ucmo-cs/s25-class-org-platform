@@ -108,7 +108,6 @@
       },
       getStartingDay(month, year) {
         let date = new Date(year, month - 1, 1);
-        console.log(year + " " + month + " " + date.getDay());
         return date.getDay();
       },
       updateCalendar(month, year) {
