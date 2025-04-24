@@ -139,11 +139,11 @@ public class ClassService {
         editingClass.get().setName(in.getName());
         editingClass.get().setSemester(in.getSemester());
         editingClass.get().setMeetingLocation(in.getMeetingLocation());
-        editingClass.get().setMeetingTimes(in.getMeetingTimes());
+        this.meetingTimesService.updateMeetingTimes(in.getMeetingTimes());
         editingClass.get().setInstructor(in.getInstructor());
         editingClass.get().setDescription(in.getDescription());
         editingClass.get().setOfficeLocation(in.getOfficeLocation());
-        editingClass.get().setOfficeHours(in.getOfficeHours());
+        this.meetingTimesService.updateMeetingTimes(in.getOfficeHours());
         editingClass.get().setInstructorPhone(in.getInstructorPhone());
         editingClass.get().setInstructorEmail(in.getInstructorEmail());
         editingClass.get().setTextbook(in.getTextbook());

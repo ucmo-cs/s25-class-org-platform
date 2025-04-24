@@ -56,7 +56,6 @@
     },
     mounted() {
         if (this.mode === 'editClass') {
-            console.log(this.Class)
             this.courseName = this.Class.name;
             this.semester = this.Class.semester;
             this.instructor = this.Class.instructor;
@@ -82,11 +81,9 @@
         },
         updateMeetingTimes(meetingTimesIn) {
             this.meetingTimesForClass = meetingTimesIn;
-            console.log(this.meetingTimesForClass);
         },
         updateOfficeHours(officeHoursIn) {
             this.officeHours = officeHoursIn;
-            console.log(this.officeHours);
         },
         async deleteClass() {
             await deleteClass(this.Class.classID);
@@ -114,7 +111,7 @@
                     <br>
                     <p>Semester:</p>
                     <select id="semesters" v-model="this.semesterIndex">
-                        <option v-for="(semester, index) in this.semesters" :value="index" :selected="this.semesterIndex === index">{{ semester.semesterName }}</option>
+                        <option v-for="(semester, index) in this.semesters" :MeetingTimesIn="null" :value="index" :selected="this.semesterIndex === index">{{ semester.semesterName }}</option>
                     </select>
                     <br>
                     <p>Meeting Times:</p>
@@ -139,7 +136,7 @@
                     <v-text-field label="ex. Room 102" v-model="this.officeLocation"></v-text-field>
                     <br>
                     <p>Office Hours:</p>
-                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :eventName="'OfficeHours'"></MeetingTimesInput>
+                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :MeetingTimesIn="null" :eventName="'OfficeHours'"></MeetingTimesInput>
                     <br>
                     <p>Textbook:</p>
                     <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
@@ -209,7 +206,7 @@
                     </select>
                     <br>
                     <p>Meeting Times:</p>
-                    <MeetingTimesInput @MeetingTimes="this.updateMeetingTimes" :eventName="'MeetingTimes'"></MeetingTimesInput>
+                    <MeetingTimesInput @MeetingTimes="this.updateMeetingTimes" :MeetingTimesIn="this.Class.meetingTimes" :eventName="'MeetingTimes'"></MeetingTimesInput>
                     <br>
                     <p>Teacher's Name:</p>
                     <v-text-field label="ex. Professor Smith" v-model="instructor"></v-text-field>
@@ -230,7 +227,7 @@
                     <v-text-field label="ex. Room 102" v-model="this.officeLocation"></v-text-field>
                     <br>
                     <p>Office Hours:</p>
-                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :eventName="'OfficeHours'"></MeetingTimesInput>
+                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :MeetingTimesIn="this.Class.officeHours" :eventName="'OfficeHours'"></MeetingTimesInput>
                     <br>
                     <p>Textbook:</p>
                     <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
