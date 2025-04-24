@@ -8,6 +8,7 @@
     import { addEvent } from '@/data/api';
     import { Event } from '@/data/Model/Event';
     import MeetingTimesInput from './MeetingTimesInput.vue';
+    import { deleteClass, updateClass } from '../data/api';
 
     export default {
         components: {
@@ -27,6 +28,8 @@
             },
             semesterIndex: {
                 type: Number
+            },
+            Class:{
             }
         },
     data() {
@@ -53,13 +56,31 @@
             officeLocation: null,
         }
     },
+    mounted() {
+        if (this.mode === 'editClass') {
+            console.log(this.Class)
+            this.courseName = this.Class.name;
+            this.semester = this.Class.semester;
+            this.instructor = this.Class.instructor;
+            this.description = this.Class.description;
+            this.location = this.Class.meetingLocation;
+            this.phoneNum = this.Class.instructorPhone;
+            this.email = this.Class.instructorEmail;
+            this.officeLocation = this.Class.officeLocation;
+            this.textbook = this.Class.textbook;
+            this.startDate = this.Class.startDate;
+            this.endDate = this.Class.endDate;
+        }
+    },
     methods: {
         addClass() {
             let classOut = new Class(null, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
             addClass(classOut);
+            this.$emit('close');
         },
         addEvent() {
             addEvent(new Event(null, this.eventName, this.eventDescription, this.eventStartDate, this.eventEndDate, new Class(1, null, null, null, null, null, null, null, null, null, null, null, null, null, null), new User(1, "MilesL35"), null, null))
+            this.$emit('close');
         },
         updateMeetingTimes(meetingTimesIn) {
             this.meetingTimesForClass = meetingTimesIn;
@@ -68,6 +89,14 @@
         updateOfficeHours(officeHoursIn) {
             this.officeHours = officeHoursIn;
             console.log(this.officeHours);
+        },
+        async deleteClass() {
+            await deleteClass(this.Class.classID);
+            this.$emit('close');
+        },
+        async updateClass() {
+            await updateClass(new Class(this.Class.classID, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
+            this.$emit('close');
         }
     },
 }
@@ -164,6 +193,59 @@
                 </div>
                 <br>
                 <div class="modal-footer">
+                    <button class="close_button" @click="$emit('close')">Close</button>
+                </div>
+            </div>
+            <div v-if="mode === 'editClass'">
+                <div class="modal-header">
+                    Edit Class
+                    <button class="close_button" @click="deleteClass">Delete Class</button>
+                </div>
+                <div class="modal-body">
+                    <p>Class Name:</p>
+                    <v-text-field label="ex. College Algebra" v-model="courseName"></v-text-field>
+                    <br>
+                    <p>Semester:</p>
+                    <select id="semesters" v-model="this.semesterIndex">
+                        <option v-for="(semester, index) in this.semesters" :value="index" :selected="this.semesterIndex == index">{{ semester.semesterName }}</option>
+                    </select>
+                    <br>
+                    <p>Meeting Times:</p>
+                    <MeetingTimesInput @MeetingTimes="this.updateMeetingTimes" :eventName="'MeetingTimes'"></MeetingTimesInput>
+                    <br>
+                    <p>Teacher's Name:</p>
+                    <v-text-field label="ex. Professor Smith" v-model="instructor"></v-text-field>
+                    <br>
+                    <p>Class Description:</p>
+                    <v-textarea label="Things to remember about the class" v-model="description"></v-textarea>
+                    <br>
+                    <p>Room Number/Zoom Link:</p>
+                    <v-text-field label="ex. Room 202" v-model="location"></v-text-field>
+                    <br>
+                    <p>Instructors Phone Number:</p>
+                    <v-text-field label="ex. 816-999-9999" v-model="phoneNum"></v-text-field>
+                    <br>
+                    <p>Instructors Email:</p>
+                    <v-text-field label="smith@email.com" v-model="email"></v-text-field>
+                    <br>
+                    <p>Office:</p>
+                    <v-text-field label="ex. Room 102" v-model="this.officeLocation"></v-text-field>
+                    <br>
+                    <p>Office Hours:</p>
+                    <MeetingTimesInput @OfficeHours="this.updateOfficeHours" :eventName="'OfficeHours'"></MeetingTimesInput>
+                    <br>
+                    <p>Textbook:</p>
+                    <v-text-field label="Link to textbook here" v-model="textbook"></v-text-field>
+                    <br>
+                    <p>Start Date:</p>
+                    <v-date-input label="Date input" prepend-icon="" class="date_input" v-model="startDate"></v-date-input>
+                    <br>
+                    <p>End Date:</p>
+                    <v-date-input label="Date input" prepend-icon="" v-model="endDate"></v-date-input>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button class="submit_button" @click="updateClass">Submit</button>
                     <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>

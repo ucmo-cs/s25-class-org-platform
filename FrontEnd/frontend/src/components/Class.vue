@@ -34,7 +34,7 @@
         item.isFav = !item.isFav
       },
       callModal() {
-        this.$emit('openModal', ['addClass', null]);
+        this.$emit('openModal', ['editClass', null]);
       },
       goToHomework(homeworkID) {
         this.$emit('navigateToHomework', homeworkID)
@@ -73,7 +73,7 @@
     <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
     <h2 class="classButtons" v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Home'" @click="$emit('openModal')">Edit Class</button>
+    <button v-if="currentPage === 'Home'" @click="callModal">Edit Class</button>
     <div class="add">
       <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem(this.currentPage)">Add {{ currentPage }}</button>
     </div>
