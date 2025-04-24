@@ -46,7 +46,7 @@
       }
     },
     async mounted() {
-      await this.reloadData();
+      await this.loadData();
     },
     methods: {
       navigateToHome() {
@@ -90,8 +90,12 @@
         this.semesterIndex = 0;
         this.showSemesterModal = false;
       },
-      async reloadData() {
+      async loadData() {
         this.dataGrabbed = false;
+        await this.reloadData();
+        this.dataGrabbed = true;
+      },
+      async reloadData() {
         await getAllUsers().then(us => {
           this.allUsers = us;
         });
@@ -113,7 +117,6 @@
         await getEventsByUser(this.allUsers[this.userIndex].userID).then(es => {
           this.events = es;
         });
-        this.dataGrabbed = true;
       },
       changeSemesterIndex(newIndex) {
         console.log(this.semesters.length);
