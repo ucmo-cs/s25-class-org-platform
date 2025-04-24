@@ -146,9 +146,9 @@
       <button class="userButton" @click="openUserModal">{{ this.allUsers[userIndex].userName }}</button><br>
     </div>
     <div class="sideBar"> 
-      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex - 1)"><</div>
+      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex + 1)"><</div>
       <h1>{{ semestersLoaded ? semesters[semesterIndex].semesterName : "" }}</h1>
-      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex + 1)">></div>
+      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex - 1)">></div>
       <hr><hr>
       <div v-for="(event, index) in classesForSideBar">
         <div>
@@ -168,7 +168,7 @@
       <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
       <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
     </div>
-    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.classesForSideBar[this.classIndex]" @close="endModal" @navigateToClass="navigateToClass" />
+    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.classesForSideBar[this.classIndex]" @close="endModal" @navigateToClass="navigateToClass" @navigateToHome="navigateToHome"/>
     <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
     <SemestersModal v-if="showSemesterModal" :Semesters="this.semesters" :User="this.allUsers[this.userIndex]" @closeSemesterModal="this.closeSemesterModal"></SemestersModal>
   </body>
