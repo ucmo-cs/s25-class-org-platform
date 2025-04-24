@@ -76,8 +76,8 @@ export async function deleteSemester(semesterID: Number) {
     return res.data;
 }
 
-export async function updateSemesterName(semesterID: Number, semesterName: Semester) {
-    const res = await axios.put(`${baseURL}semester/${semesterID}`,semesterName);
+export async function updateSemesterName(semesterSemester) {
+    const res = await axios.put(`${baseURL}semester/`,);
 
     return res.data;
 }
@@ -124,6 +124,12 @@ export async function getClassByID(classID: Number) {
     const res = await axios.get(`${baseURL}class/${classID}`);
 
     return res.data as Class;
+}
+
+export async function getClassesByUser(userID: Number) {
+    const res = await axios.get(`${baseURL}class/byUser${userID}`);
+
+    return res.data as Class[];
 }
 
 export async function getClassByUserAndSemester(userID: Number, semester: Number) {

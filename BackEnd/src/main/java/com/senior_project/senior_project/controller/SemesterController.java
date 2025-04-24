@@ -49,7 +49,7 @@ public class SemesterController {
     }
 
     @PutMapping("/{id}")
-    public void updateSemester(@PathVariable("id") int semesterID, @RequestParam(required = false) String semesterName) {
-        semesterService.updateSemester(semesterID, semesterName);
+    public void updateSemester(@RequestBody Semester semester) {
+        semesterService.updateSemester(semester);
     }
 }

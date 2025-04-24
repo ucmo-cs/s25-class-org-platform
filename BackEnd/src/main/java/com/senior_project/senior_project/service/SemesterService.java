@@ -50,19 +50,9 @@ public class SemesterService {
     public List<Semester> findByUser(int userID) {
         Optional<User> user = userRepository.findById(userID);
         if(user.isEmpty()) {
-            throw new IllegalArgumentException("User does note exist.");
+            throw new IllegalArgumentException("User does not exist.");
         }
-        List<Class> classes = classRepository.findAllByUser(user.get());
-        List<Semester> semesters = new ArrayList<>();
-
-        for(int i = 0; i < classes.size(); i++) {
-            Semester semester = classes.get(i).getSemester();
-            if(semester != null && !semesters.contains(semester)) {
-                semesters.add(semester);
-            }
-        }
-
-        return semesters;
+        return semesterRepository.findAllSemestersByUser(user.get());
     }
 
     public void addNewSemester(Semester semester) {
@@ -80,15 +70,14 @@ public class SemesterService {
     }
 
     @Transactional
-    public void updateSemester(int semesterID, String semesterName) {
-        Optional<Semester> semester = semesterRepository.findById(semesterID);
-        if(semester.isEmpty()) {
+    public void updateSemester(Semester semester) {
+        Optional<Semester> semesterToUpdate = semesterRepository.findById(semester.getSemesterId());
+        if(semesterToUpdate.isEmpty()) {
             throw new IllegalArgumentException("Semester doesn't exist");
         }
 
-        if(semesterName != null && !semesterName.equals(semester.get().getSemesterName())) {
-            semester.get().setSemesterName(semesterName);
-        }
+        semesterToUpdate.get().setSemesterName(semester.getSemesterName());
+        semesterToUpdate.get().setUser(semester.getUser());
     }
 
 

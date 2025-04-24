@@ -2,7 +2,7 @@
   import Calendar from './components/Calendar.vue'
   import Class from "./components/Class.vue";
   import Modal from "./components/Modal.vue"
-  import { getAllUsers, getClassByUserAndSemester, getEventsByUser } from './data/api';
+  import { getAllUsers, getClassByID, getClassByUserAndSemester, getEventsByUser, getSemestersByUser, getClassesByUser } from './data/api';
   import UsersModal from "./components/UsersModal.vue";
 
   export default {
@@ -15,13 +15,12 @@
     data() {
       return {
         currentPage: "Calendar",
-        semester: "Spring 2025",
         classes: [],
+        classesForSideBar: [],
         clickClass: "None",
         newClassComponent: false,
         showModal: false,
         isClass: true,
-        semesterID: -1,
         selectedDay: null,
         eventModalMonth: null,
         eventModalYear: null,
@@ -31,6 +30,9 @@
         allUsers: [],
         userIndex: 0,
         showUserModal: false,
+        semesters: [],
+        semesterIndex: 0,
+        semestersLoaded: false
       }
     },
     async mounted() {
@@ -67,17 +69,36 @@
         await getAllUsers().then(us => {
           this.allUsers = us;
         });
-        await getClassByUserAndSemester(this.allUsers[this.userIndex].userID, 1).then(cs => {
+        await getSemestersByUser(this.allUsers[this.userIndex].userID).then(se => {
+          this.semesters = se;
+        });
+        await getClassesByUser(this.allUsers[this.userIndex].userID).then(cs => {
           this.classes = cs;
         });
+        if(this.semesters.length > 0) {
+          await getClassByUserAndSemester(this.allUsers[this.userIndex].userID, this.semesters[this.semesterIndex].semesterId).then(cs => {
+            this.classesForSideBar = cs;
+          });
+          this.semestersLoaded = true;
+        } else {
+          this.classesForSideBar = [];
+          this.semestersLoaded = false;
+        }
         await getEventsByUser(this.allUsers[this.userIndex].userID).then(es => {
           this.events = es;
         });
         this.dataGrabbed = true;
       },
-      loadSemester(id) {
-        // API call for semester data based on semester id. Set data values to dynamically update screen.
-
+      changeSemesterIndex(newIndex) {
+        console.log(this.semesters.length);
+        if(newIndex < 0) {
+          this.semesterIndex = this.semesters.length - 1;
+        } else if(newIndex > this.semesters.length - 1) {
+          this.semesterIndex = 0;
+        } else {
+          this.semesterIndex = newIndex;
+        }
+        this.reloadData();
       }
     }
   }
@@ -90,11 +111,11 @@
       <button class="userButton" @click="openUserModal">{{ "User: " + this.allUsers[userIndex].userName }}</button><br>
     </div>
     <div class="sideBar"> 
-      <div class="semester_buttons" @click="loadSemester(semesterID-1)"><</div>
-      <h1>{{ semester }}</h1>
-      <div class="semester_buttons" @click="loadSemester(semesterID+1)">></div>
+      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex - 1)"><</div>
+      <h1>{{ semestersLoaded ? semesters[semesterIndex].semesterName : "" }}</h1>
+      <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex + 1)">></div>
       <hr><hr>
-      <div v-for="(event, index) in classes">
+      <div v-for="(event, index) in classesForSideBar">
         <div>
           <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.name)">{{ event.name }}</button>
         </div>
@@ -108,7 +129,7 @@
         <Class v-if="currentPage === 'Class' && className === clickClass" :currentClass="this.clickClass" @openModal="openModal(['addClass', null])"/>
       </div>
     </div>
-    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" @close="showModal = false" @navigateToClass="navigateToClass" />
+    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" @close="showModal = false" @navigateToClass="navigateToClass" />
     <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
   </body>
 </template>
