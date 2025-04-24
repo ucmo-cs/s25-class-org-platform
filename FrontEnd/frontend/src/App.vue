@@ -4,6 +4,7 @@
   import Modal from "./components/Modal.vue"
   import { getAllUsers, getClassByID, getClassByUserAndSemester, getEventsByUser, getSemestersByUser, getClassesByUser } from './data/api';
   import UsersModal from "./components/UsersModal.vue";
+  import SemestersModal from './components/SemestersModal.vue';
   import Homework from '@/components/Homework.vue'
   import Notes from '@/components/Notes.vue'
 
@@ -13,6 +14,7 @@
       Class,
       Modal,
       UsersModal,
+      SemestersModal,
       Homework,
       Notes
     },
@@ -39,7 +41,8 @@
         showUserModal: false,
         semesters: [],
         semesterIndex: 0,
-        semestersLoaded: false
+        semestersLoaded: false,
+        showSemesterModal: false
       }
     },
     async mounted() {
@@ -79,6 +82,13 @@
           await this.reloadData();
         }
         this.showUserModal = false;
+      },
+      async closeSemesterModal(needsUpdate) {
+        if(needsUpdate) {
+          await this.reloadData();
+        }
+        this.semesterIndex = 0;
+        this.showSemesterModal = false;
       },
       async reloadData() {
         this.dataGrabbed = false;
@@ -137,7 +147,8 @@
         </div>
       </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
-      <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button>
+      <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button><br>
+      <button class="add_button" @click="this.showSemesterModal = true">Manage Semesters</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
@@ -149,6 +160,7 @@
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" @close="showModal = false" @navigateToClass="navigateToClass" />
     <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
+    <SemestersModal v-if="showSemesterModal" :Semesters="this.semesters" :User="this.allUsers[this.userIndex]" @closeSemesterModal="this.closeSemesterModal"></SemestersModal>
   </body>
 </template>
 
@@ -205,6 +217,7 @@
     height: 100%;
     background: #2c3e50;
     position: fixed;
+    overflow-y: scroll;
   }
   .sideBar .semester_buttons {
     color: white;
