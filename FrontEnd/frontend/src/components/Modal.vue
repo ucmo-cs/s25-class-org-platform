@@ -14,7 +14,21 @@
         VDateInput,
         MeetingTimesInput
         },
-        props: ['mode', 'info'],
+        props: {
+            mode: {
+                type: String,
+            },
+            info: {
+            },
+            user: {
+            },
+            semesters:{
+                type: Array
+            },
+            semesterIndex: {
+                type: Number
+            }
+        },
     data() {
         return {
             startDate: null,
@@ -41,9 +55,8 @@
     },
     methods: {
         addClass() {
-            let classOut = new Class(null, this.courseName, null, this.location, this.meetingTimesForClass, new User(1,"MilesL35"), this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
+            let classOut = new Class(null, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate);
             addClass(classOut);
-            console.log(classOut);
         },
         addEvent() {
             addEvent(new Event(null, this.eventName, this.eventDescription, this.eventStartDate, this.eventEndDate, new Class(1, null, null, null, null, null, null, null, null, null, null, null, null, null, null), new User(1, "MilesL35"), null, null))
@@ -71,6 +84,11 @@
                 <div class="modal-body">
                     <p>Class Name:</p>
                     <v-text-field label="ex. College Algebra" v-model="courseName"></v-text-field>
+                    <br>
+                    <p>Semester:</p>
+                    <select id="semesters" v-model="this.semesterIndex">
+                        <option v-for="(semester, index) in this.semesters" :value="index" :selected="this.semesterIndex == index">{{ semester.semesterName }}</option>
+                    </select>
                     <br>
                     <p>Meeting Times:</p>
                     <MeetingTimesInput @MeetingTimes="this.updateMeetingTimes" :eventName="'MeetingTimes'"></MeetingTimesInput>
@@ -155,6 +173,16 @@
 
 
 <style scoped>
+    select {
+        border: 1px solid #2c3e50;
+        border-radius: 5px;
+        font-size: 12pt;
+        margin-bottom: 20px;
+        padding: 2px;
+        -webkit-appearance: menulist;
+        -moz-appearance: menulist;
+        appearance: menulist;
+    }
     .modal {
         position: relative;
         width: 1000px;
@@ -176,12 +204,10 @@
 
     .modal-footer {
         position: relative;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
+        padding: 10px;
         text-align: right;
     }
-
+    
     .modal-header {
         margin-top: 0;
         color: black;

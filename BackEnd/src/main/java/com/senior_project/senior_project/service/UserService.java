@@ -38,7 +38,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUsername(int userId, String newUsername){
+    public void updateUsername(Integer userId, String newUsername){
         Optional<User> user = userRepository.findById(userId);
 
         if(user.isEmpty()) {

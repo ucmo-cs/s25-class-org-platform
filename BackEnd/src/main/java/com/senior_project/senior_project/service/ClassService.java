@@ -37,7 +37,15 @@ public class ClassService {
     public List<Class> getAllClasses() {
         return this.classRepository.findAll();
     }
-  
+
+    public List<Class> getAllByUser(int userID) {
+        Optional<User> user = userRepository.findById(userID);
+
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        return classRepository.findAllByUser(user.get());
+    }
     public Class getClass(int id) {
         Optional<Class> out = classRepository.findById(id);
 

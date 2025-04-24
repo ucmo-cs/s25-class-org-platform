@@ -3,6 +3,7 @@ package com.senior_project.senior_project.controller;
 import com.senior_project.senior_project.model.User;
 import com.senior_project.senior_project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +32,13 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{userId}")
-    public void deleteUser(@PathVariable("userId") int userID) {
-        userService.deleteUser(userID);
+    public void deleteUser(@PathVariable("userId") int userId) {
+        userService.deleteUser(userId);
     }
 
-    @PutMapping(path = "/{userId}")
-    public void updateUsername(@PathVariable("userId") int userID, @RequestParam(required = false)String newUserName) {
-        userService.updateUsername(userID, newUserName);
+    @PutMapping(path = "/update")
+    public void updateUsername(@Param("userID") Integer userID, @Param("newName") String newName) {
+        System.out.println(userID);
+        userService.updateUsername(userID, newName);
     }
 }

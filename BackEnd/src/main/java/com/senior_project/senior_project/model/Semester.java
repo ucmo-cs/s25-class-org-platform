@@ -13,17 +13,23 @@ public class Semester {
     @Column(name = "Semestername")
     private String semesterName;
 
+    @ManyToOne
+    @JoinColumn(name = "UserID", nullable = false)
+    private User user;
+
     public Semester() {
 
     }
 
-    public Semester(String semesterName) {
+    public Semester(String semesterName, User user) {
         this.semesterName = semesterName;
+        this.user = user;
     }
 
-    public Semester(int semesterId, String semesterName) {
+    public Semester(int semesterId, String semesterName, User user) {
         this.semesterId = semesterId;
         this.semesterName = semesterName;
+        this.user = user;
     }
 
     public int getSemesterId() {
@@ -42,11 +48,20 @@ public class Semester {
         this.semesterName = semesterName;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Semester{" +
                 "semesterId=" + semesterId +
                 ", semesterName='" + semesterName + '\'' +
+                ", user=" + user +
                 '}';
     }
 }

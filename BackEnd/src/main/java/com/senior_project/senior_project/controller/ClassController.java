@@ -30,6 +30,11 @@ public class ClassController {
         return classService.getClass(id);
     }
 
+    @GetMapping("/byUser{id}")
+    public List<Class> getClassesByUser(@PathVariable("id") int id) {
+        return classService.getAllByUser(id);
+    }
+
     @GetMapping("/getByClassandSemester")
     public List<Class> getAllClassesByUserAndSemester(@Param("userID")int userID, @Param("semesterID")int semesterID) {
         return classService.getClassByUserAndSemester(userID, semesterID);
