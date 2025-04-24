@@ -28,9 +28,6 @@ export default {
     getClassHomework() {
       this.$emit('navigateToClass', this.parentClass, "Homework")
     },
-    getName(val) {
-      console.log(val)
-    },
   }
 }
 </script>
@@ -70,7 +67,6 @@ export default {
       <space></space>
       <button>New File</button>
     </div>
-
     <div v-if="file !== null">
       <iframe :src="this.file" width="100%" height="1000px"></iframe>
     </div>
@@ -117,7 +113,7 @@ h1 {
   color: white;
 }
 .homeworkButtons h2 {
-  width: 350px;
+  width: 100%;
   font-size: 25px;
   text-align: left;
   height: 50px;
