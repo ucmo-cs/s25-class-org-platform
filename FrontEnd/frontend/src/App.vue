@@ -43,6 +43,8 @@
         semesterIndex: 0,
         semestersLoaded: false,
         showSemesterModal: false,
+        classID: 0,
+        showSemesterModal: false,
         classIndex: null,
       }
     },
@@ -53,7 +55,8 @@
       navigateToHome() {
         this.currentPage = "Calendar"
       },
-      navigateToClass(className, classPage, index) {
+      navigateToClass(classID, className, classPage, index) {
+        this.classID = classID
         console.log(className)
         this.clickClass = className
         this.classPage = classPage
@@ -69,7 +72,6 @@
         this.notesID = notesID
       },
       openModal(data) {
-        console.log(data[0])
         this.mode = data[0]
         this.showModal = true
         this.info = data[1]
@@ -78,7 +80,6 @@
         this.showUserModal = true;
       },
       async closeUserModal(dataOut) {
-        console.log(dataOut);
         this.userIndex = dataOut.userIndex;
         if(dataOut.updateUsers) {
           await this.reloadData();
@@ -121,7 +122,6 @@
         });
       },
       changeSemesterIndex(newIndex) {
-        console.log(this.semesters.length);
         if(newIndex < 0) {
           this.semesterIndex = this.semesters.length - 1;
         } else if(newIndex > this.semesters.length - 1) {
@@ -152,20 +152,21 @@
       <hr><hr>
       <div v-for="(event, index) in classesForSideBar">
         <div>
-          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.name, 'Home', index)">{{ event.name }}</button>
+          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.classID, event.name, 'Home', index)">{{ event.name }}</button>
         </div>
       </div>
-      <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
-      <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button><br>
+      <button v-if="this.semesters.length !== 0" class="add_button" @click="openModal(['addClass', null])">Add Class</button>
+      <button v-if="this.semesters.length !== 0" class="add_button" @click="openModal(['addEvent', null])">Add Event</button>
+      <button v-if="this.semesters.length === 0" class="add_event" @click="openModal(['addEvent', null])">Add Event</button>
       <button class="semester_button" @click="this.showSemesterModal = true">Manage Semesters</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
       <div v-for="(event, index) in classes">
-        <Class v-if="currentPage === 'Class' && event.name === clickClass" :currentClass="this.clickClass" :classPage="this.classPage" @openModal="openModal(['editClass', null])" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
+        <Class v-if="currentPage === 'Class' && event.name === clickClass" :classID="event.classID" :currentClass="event.name" :classPage="this.classPage" @openModal="openModal(['editClass', null])" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
-      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
-      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
+      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
+      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.classesForSideBar[this.classIndex]" @close="endModal" @navigateToClass="navigateToClass" />
     <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
@@ -261,6 +262,19 @@
     cursor: pointer;
     margin: 6%;
     border-radius: 5px;
+  }
+  .sideBar .add_event {
+    background-color: green;
+    color: white;
+    padding: 15px 20px;
+    height: 50px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 6%;
+    border-radius: 5px;
+    width: 88%;
   }
   .sideBar .semester_button {
     background-color: green;

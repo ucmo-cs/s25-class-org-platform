@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ['homeworkID', 'parentClass'],
+  props: ['homeworkID', "parentClassID", 'parentClassName'],
   components: {},
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
       return this.homework[homeworkID]
     },
     getClassHomework() {
-      this.$emit('navigateToClass', this.parentClass, "Homework")
+      this.$emit('navigateToClass', this.parentClassID, this.parentClassName, "Homework")
     },
   }
 }
@@ -35,8 +35,8 @@ export default {
 <template>
   <body>
   <div class="homeworkButtons">
-    <button v-if="currentPage === 'Homework' && parentClass !== null" @click="getClassHomework"><</button>
-    <h2 v-if="currentPage === 'Homework'">{{ parentClass + " Homework" }}</h2>
+    <button v-if="currentPage === 'Homework'" @click="getClassHomework"><</button>
+    <h2 v-if="currentPage === 'Homework'">{{ parentClassName + " Homework" }}</h2>
     <div class="space"></div>
     <button v-if="currentPage === 'Homework' && homeworkID !== 'New Homework'" @click="callModal">Save</button>
     <button v-if="currentPage === 'Homework' && homeworkID === 'New Homework'" @click="callModal">Create</button>
