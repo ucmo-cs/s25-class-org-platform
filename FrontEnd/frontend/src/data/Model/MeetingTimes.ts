@@ -8,8 +8,8 @@ export class MeetingTimes {
     wednesdayEnd: Date;
     thursdayStart: Date;
     thursdayEnd: Date;
-    firdayStart: Date;
-    firdayEnd: Date;
+    fridayStart: Date;
+    fridayEnd: Date;
     saturdayStart: Date;
     saturdayEnd: Date;
     sundayStart: Date;
@@ -25,8 +25,8 @@ export class MeetingTimes {
         this.wednesdayEnd = wednesdayEnd;
         this.thursdayStart = thursdayStart;
         this.thursdayEnd = thursdayEnd;
-        this.firdayStart = firdayStart;
-        this.firdayEnd = firdayEnd;
+        this.fridayStart = firdayStart;
+        this.fridayEnd = firdayEnd;
         this.saturdayStart = saturdayStart;
         this.saturdayEnd = saturdayEnd;
         this.sundayStart = sundayStart;

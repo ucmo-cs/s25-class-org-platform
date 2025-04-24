@@ -24,7 +24,7 @@ public class Class {
     @Column(name = "Meetinglocation")
     private String meetingLocation;
 
-    @OneToOne (cascade = CascadeType.ALL)
+    @OneToOne  (cascade = CascadeType.ALL)
     @JoinColumn(name = "meetingtimesid", referencedColumnName = "meetingTimesId")
     private MeetingTimes meetingTimes;
 

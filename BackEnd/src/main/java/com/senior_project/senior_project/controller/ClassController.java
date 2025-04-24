@@ -52,6 +52,7 @@ public class ClassController {
 
     @PutMapping("/")
     public void modifyClass(@RequestBody Class in) {
+        System.out.println(in);
         classService.modifyClass(in);
     }
 
