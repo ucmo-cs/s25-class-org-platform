@@ -1,6 +1,7 @@
 package com.senior_project.senior_project.service;
 
 import com.senior_project.senior_project.model.User;
+import com.senior_project.senior_project.repository.SemesterRepository;
 import com.senior_project.senior_project.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,16 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SemesterService semesterService;
+    private final ClassService classService;
+    private final EventService eventService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, SemesterService semesterService, ClassService classService, EventService eventService) {
         this.userRepository = userRepository;
+        this.semesterService = semesterService;
+        this.classService = classService;
+        this.eventService = eventService;
     }
 
     public List<User> getUserList() {
@@ -34,6 +41,9 @@ public class UserService {
         if(!userRepository.existsById(userID)) {
             throw new IllegalArgumentException("User does not exist.");
         }
+        this.eventService.deleteEventsByUser(userID);
+        this.classService.deleteClassesByUser(userID);
+        this.semesterService.deleteAllByUser(userID);
         userRepository.deleteById(userID);
     }
 

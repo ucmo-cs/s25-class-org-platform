@@ -60,11 +60,14 @@ public class Class {
     @Column(name="Enddate")
     private LocalDate endDate;
 
+    @Column(name="Syllabus")
+    private Integer syllabus;
+
     public Class() {
     }
 
 
-    public Class(String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+    public Class(String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate, Integer syllabus) {
         this.name = name;
         this.semester = semester;
         this.meetingLocation = meetingLocation;
@@ -79,9 +82,10 @@ public class Class {
         this.textbook = textbook;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.syllabus = syllabus;
     }
 
-    public Class(int classID, String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate) {
+    public Class(int classID, String name, Semester semester, String meetingLocation, MeetingTimes meetingTimes, User user, String instructor, String description, MeetingTimes officeHours, String officeLocation, String instructorPhone, String instructorEmail, String textbook, LocalDate startDate, LocalDate endDate, Integer syllabus) {
         this.classID = classID;
         this.name = name;
         this.semester = semester;
@@ -97,6 +101,7 @@ public class Class {
         this.textbook = textbook;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.syllabus = syllabus;
     }
 
     public int getClassID() {
@@ -216,6 +221,14 @@ public class Class {
         this.officeLocation = officeLocation;
     }
 
+    public Integer getSyllabus() {
+        return syllabus;
+    }
+
+    public void setSyllabus(Integer syllabus) {
+        this.syllabus = syllabus;
+    }
+
     @Override
     public String toString() {
         return "Class{" +
@@ -234,6 +247,7 @@ public class Class {
                 ", textbook='" + textbook + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", syllabus=" + syllabus +
                 '}';
     }
 }

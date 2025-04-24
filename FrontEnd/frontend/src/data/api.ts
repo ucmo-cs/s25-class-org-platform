@@ -38,8 +38,6 @@ export async function deleteUser(userID: Number) {
 }
 
 export async function updateUsername(userID: Number, newName: String) {
-    console.log(userID);
-    console.log(`${baseURL}user/update?userId=${userID}&newName=${newName}`)
     const res = await axios.put(`${baseURL}user/update?userID=${userID}&newName=${newName}`);
 
     return res.data;
@@ -139,6 +137,15 @@ export async function getClassByUserAndSemester(userID: Number, semester: Number
 }
 
 export async function addClass(classToAdd: Class) {
+    const res = await axios.post(`${baseURL}class/`, classToAdd);
+
+    return res.data;
+}
+
+export async function addClassWithFile(classToAdd: Class, file) {
+    const fileID = await axios.post(`${baseURL}file/`, file);
+
+    classToAdd.syllabus = fileID.data;
     const res = await axios.post(`${baseURL}class/`, classToAdd);
 
     return res.data;

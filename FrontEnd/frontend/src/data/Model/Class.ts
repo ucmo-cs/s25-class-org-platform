@@ -18,12 +18,13 @@ export class Class {
     textbook: String;
     startDate: Date;
     endDate: Date;
+    syllabus: Number
 
     getTitle() {
         return this.name;
     }
 
-    constructor(classID: Number, name: String, semester: Semester, meetingLocation: String, meetingTimes: MeetingTimes, user: User, instructor: String, description: String, officeLocation: String, officeHours: MeetingTimes, instructorPhone: String, instructorEmail: String, textbook: String, startDate: Date, endDate: Date) {
+    constructor(classID: Number, name: String, semester: Semester, meetingLocation: String, meetingTimes: MeetingTimes, user: User, instructor: String, description: String, officeLocation: String, officeHours: MeetingTimes, instructorPhone: String, instructorEmail: String, textbook: String, startDate: Date, endDate: Date, syllabus: Number) {
         this.classID = classID;
         this.name = name;
         this.semester = semester;
@@ -39,5 +40,6 @@ export class Class {
         this.textbook = textbook;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.syllabus = syllabus;
     }
 }

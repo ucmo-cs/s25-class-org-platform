@@ -5,6 +5,7 @@ import com.senior_project.senior_project.model.Event;
 import com.senior_project.senior_project.model.User;
 import com.senior_project.senior_project.repository.ClassRepository;
 import com.senior_project.senior_project.repository.EventRepository;
+import com.senior_project.senior_project.repository.FileRepository;
 import com.senior_project.senior_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +19,14 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
+    private final FileRepository fileRepository;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserRepository userRepository, ClassRepository classRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, ClassRepository classRepository, FileRepository fileRepository) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.classRepository = classRepository;
+        this.fileRepository = fileRepository;
     }
 
     public Event getEventByID(int eventID) {
@@ -82,10 +85,42 @@ public class EventService {
     }
 
     public void deleteEvent(int eventID) {
-        if(this.eventRepository.findById(eventID).isEmpty()) {
+        Optional<Event> event = this.eventRepository.findById(eventID);
+        if(event.isEmpty()) {
             throw new IllegalArgumentException("Event does not exist.");
         }
-        this.eventRepository.deleteById(eventID);
+        if(event.get().getFile() != null) {
+            fileRepository.deleteById(event.get().getFile());
+        }
+        this.eventRepository.deleteById(event.get().getEventID());
+    }
+
+    public void deleteEventsByUser(int userID) {
+        Optional<User> user = this.userRepository.findById(userID);
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("The specified user does not exist.");
+        }
+        List<Event> events = this.eventRepository.findAllByUser(user.get());
+        for(Event event: events) {
+            if(event.getFile() != null) {
+                this.fileRepository.deleteById(event.getFile());
+            }
+            this.eventRepository.deleteById(event.getEventID());
+        }
+    }
+
+    public void deleteEventsByClass(int classID) {
+        Optional<Class> class_ = this.classRepository.findById(classID);
+        if(class_.isEmpty()) {
+            throw new IllegalArgumentException("The specified class does not exist.");
+        }
+        List<Event> events = this.eventRepository.findAllByClassID(class_.get());
+        for(Event event: events) {
+            if(event.getFile() != null) {
+                this.fileRepository.deleteById(event.getFile());
+            }
+            this.eventRepository.deleteById(event.getEventID());
+        }
     }
 
     @Transactional

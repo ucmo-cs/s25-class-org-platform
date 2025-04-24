@@ -1,14 +1,9 @@
 package com.senior_project.senior_project.service;
 
+import com.senior_project.senior_project.model.*;
 import com.senior_project.senior_project.model.Class;
-import com.senior_project.senior_project.model.MeetingTimes;
-import com.senior_project.senior_project.model.Semester;
-import com.senior_project.senior_project.model.User;
-import com.senior_project.senior_project.repository.ClassRepository;
+import com.senior_project.senior_project.repository.*;
 
-import com.senior_project.senior_project.repository.MeetingTimesRepository;
-import com.senior_project.senior_project.repository.SemesterRepository;
-import com.senior_project.senior_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,16 +17,21 @@ public class ClassService {
     final private UserRepository userRepository;
     final private SemesterRepository semesterRepository;
     final private MeetingTimesService meetingTimesService;
-
+    final private NotesService notesService;
+    final private EventService eventService;
     final private MeetingTimesRepository meetingTimesRepository;
+    final private FileRepository fileRepository;
 
     @Autowired
-    public ClassService(ClassRepository classRepository, UserRepository userRepository, SemesterRepository semesterRepository, MeetingTimesService meetingTimesService, MeetingTimesRepository meetingTimesRepository) {
+    public ClassService(ClassRepository classRepository, UserRepository userRepository, SemesterRepository semesterRepository, MeetingTimesService meetingTimesService, NotesService notesService, MeetingTimesRepository meetingTimesRepository, EventService eventService, FileRepository fileRepository) {
         this.classRepository = classRepository;
         this.userRepository = userRepository;
         this.semesterRepository = semesterRepository;
         this.meetingTimesService = meetingTimesService;
+        this.notesService = notesService;
         this.meetingTimesRepository = meetingTimesRepository;
+        this.eventService = eventService;
+        this.fileRepository = fileRepository;
     }
 
     public List<Class> getAllClasses() {
@@ -93,11 +93,34 @@ public class ClassService {
     }
 
     public void deleteClass(int id) {
-        if(classRepository.findById(id).isEmpty()) {
+        if(this.classRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Class does not exist.");
         }
+        this.notesService.deleteNotesByClass(id);
+        this.eventService.deleteEventsByClass(id);
+        this.classRepository.deleteById(id);
+    }
 
-        classRepository.deleteById(id);
+    public void deleteClassesByUser(int userID) {
+        Optional<User> user = this.userRepository.findById(userID);
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        List<Class> classes = this.classRepository.findAllByUser(user.get());
+        for(Class class_ : classes) {
+            if(class_.getMeetingTimes() != null) {
+                this.meetingTimesRepository.deleteById(class_.getMeetingTimes().getMeetingTimesId());
+            }
+            if(class_.getOfficeHours() != null) {
+                this.meetingTimesRepository.deleteById(class_.getOfficeHours().getMeetingTimesId());
+            }
+            if(class_.getSyllabus() != null) {
+                this.fileRepository.deleteById(class_.getSyllabus());
+            }
+            this.notesService.deleteNotesByClass(class_.getClassID());
+            this.eventService.deleteEventsByClass(class_.getClassID());
+            this.classRepository.deleteById(class_.getClassID());
+        }
     }
 
     @Transactional
@@ -126,5 +149,6 @@ public class ClassService {
         editingClass.get().setTextbook(in.getTextbook());
         editingClass.get().setStartDate(in.getStartDate());
         editingClass.get().setEndDate(in.getEndDate());
+        editingClass.get().setSyllabus(in.getSyllabus());
     }
 }

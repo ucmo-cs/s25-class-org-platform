@@ -3,6 +3,7 @@ package com.senior_project.senior_project.service;
 import com.senior_project.senior_project.model.Class;
 import com.senior_project.senior_project.model.Notes;
 import com.senior_project.senior_project.repository.ClassRepository;
+import com.senior_project.senior_project.repository.FileRepository;
 import com.senior_project.senior_project.repository.NotesRepository;
 import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ import java.util.Optional;
 public class NotesService {
     private final NotesRepository notesRepository;
     private final ClassRepository classRepository;
+    private final FileRepository fileRepository;
 
     @Autowired
-    public NotesService(NotesRepository notesRepository, ClassRepository classRepository) {
+    public NotesService(NotesRepository notesRepository, ClassRepository classRepository, FileRepository fileRepository) {
         this.notesRepository = notesRepository;
         this.classRepository = classRepository;
+        this.fileRepository = fileRepository;
     }
 
     public Notes getNotesByID(int notesID) {
@@ -59,10 +62,29 @@ public class NotesService {
     }
 
     public void deleteNotes(int notesID) {
-        if(notesRepository.findById(notesID).isEmpty()) {
+        Optional<Notes> notesToDelete = notesRepository.findById(notesID);
+        if(notesToDelete.isEmpty()) {
             throw new IllegalArgumentException("Notes does not exist.");
         }
+        if(notesToDelete.get().getNotes() != null) {
+            this.fileRepository.deleteById(notesToDelete.get().getNotes());
+        }
         notesRepository.deleteById(notesID);
+    }
+
+    public void deleteNotesByClass(int classID) {
+        Optional<Class> class_ = classRepository.findById(classID);
+        if(class_.isEmpty()) {
+            throw new IllegalArgumentException("Class does not exist.");
+        }
+        List<Notes> notesToDelete = notesRepository.findAllBy_class(class_.get());
+
+        for (Notes notes : notesToDelete) {
+            if (notes.getNotes() != null) {
+                this.fileRepository.deleteById(notes.getNotes());
+            }
+            notesRepository.deleteById(notes.getNotesID());
+        }
     }
 
     @Transactional

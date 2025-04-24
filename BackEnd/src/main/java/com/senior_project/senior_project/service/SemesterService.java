@@ -70,6 +70,15 @@ public class SemesterService {
     }
 
     @Transactional
+    public void deleteAllByUser(int userID) {
+        Optional<User> user = userRepository.findById(userID);
+        if(user.isEmpty()) {
+            throw new IllegalArgumentException("User does not exist.");
+        }
+        semesterRepository.deleteAllByUser(user.get());
+    }
+
+    @Transactional
     public void updateSemester(Semester semester) {
         Optional<Semester> semesterToUpdate = semesterRepository.findById(semester.getSemesterId());
         if(semesterToUpdate.isEmpty()) {

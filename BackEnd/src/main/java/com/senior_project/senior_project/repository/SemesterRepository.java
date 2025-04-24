@@ -13,4 +13,5 @@ public interface SemesterRepository extends JpaRepository<Semester,Integer> {
     Optional<Semester> findBySemesterName(String semesterName);
     List<Semester> findAllSemestersByUser(User user);
 
+    void deleteAllByUser(User user);
 }
