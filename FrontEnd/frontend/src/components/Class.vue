@@ -71,7 +71,7 @@
   <body>
   <div class="classButtons">
     <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
-    <h2 v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
+    <h2 class="classButtons" v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
     <div class="space"></div>
     <button v-if="currentPage === 'Home'" @click="$emit('openModal')">Edit Class</button>
     <div class="add">
@@ -154,7 +154,7 @@
     padding-right: 20px;
   }
   .classButtons h2 {
-    width: 300px;
+    width: 100%;
     font-size: 25px;
     text-align: left;
     height: 50px;

@@ -131,10 +131,10 @@
 </script>
 
 <template>
-  <body v-if="dataGrabbed==true">
+  <body v-if="dataGrabbed === true">
     <div class="topBar">
       <button class="homeButton" @click="navigateToHome">Student Helper</button>
-      <button class="userButton" @click="openUserModal">{{ "User: " + this.allUsers[userIndex].userName }}</button><br>
+      <button class="userButton" @click="openUserModal">{{ this.allUsers[userIndex].userName }}</button><br>
     </div>
     <div class="sideBar"> 
       <div class="semester_buttons" @click="changeSemesterIndex(this.semesterIndex - 1)"><</div>
@@ -148,7 +148,7 @@
       </div>
       <button class="add_button" @click="openModal(['addClass', null])">Add Class</button>
       <button class="add_button" @click="openModal(['addEvent', null])">Add Event</button><br>
-      <button class="add_button" @click="this.showSemesterModal = true">Manage Semesters</button>
+      <button class="semester_button" @click="this.showSemesterModal = true">Manage Semesters</button>
     </div>
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
@@ -202,8 +202,7 @@
   .userButton {
     float: right;
     position: relative;
-    background-color: white;
-    color: black;
+    color: white;
     height: 60%;
     top: 20%;
     right: 1%;
@@ -222,15 +221,18 @@
   .sideBar .semester_buttons {
     color: white;
     font-size: 30px;
-    width: auto;
     display: inline-flex;
     margin: 20px;
+    width: 5%;
     cursor: pointer;
+    justify-content: center;
   }
   .sideBar h1 {
     text-align: center;
     color: white;
     display: inline-flex;
+    width: 63%;
+    justify-content: center;
   }
   .sideBar .class_button {
     width: 300px;
@@ -252,14 +254,23 @@
     margin: 6%;
     border-radius: 5px;
   }
+  .sideBar .semester_button {
+    background-color: green;
+    color: white;
+    padding: 15px 20px;
+    height: 50px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 6%;
+    border-radius: 5px;
+    width: 88%;
+  }
   .sideBar li {
     list-style-type: none;
   }
   ::-webkit-scrollbar {
     display: none;
   }
-  .example {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
 </style>

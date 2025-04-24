@@ -27,9 +27,6 @@ export default {
     getClassNotes() {
       this.$emit('navigateToClass', this.parentClass, "Notes")
     },
-    getName(val) {
-      console.log(val)
-    },
     createFile() {
       const link = document.createElement("a");
       const content = document.querySelector("textarea").value;
@@ -102,7 +99,7 @@ h1 {
   color: white;
 }
 .notesButtons h2 {
-  width: 350px;
+  width: 100%;
   font-size: 25px;
   text-align: left;
   height: 50px;
