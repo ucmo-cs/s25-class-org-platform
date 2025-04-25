@@ -11,12 +11,13 @@ export class Event {
     user: User;
     isHomework: Boolean;
     file;
+    isFavorite;
 
     getTitle() {
         return this.name;
     }
 
-    constructor(eventID, name, description, start, end, classID, user, isHomework, file) {
+    constructor(eventID, name, description, start, end, classID, user, isHomework, file, isFavorite) {
         this.eventID = eventID;
         this.name = name;
         this.description = description;
@@ -26,5 +27,6 @@ export class Event {
         this.user = user;
         this.isHomework = isHomework;
         this.file = file;
+        this.isFavorite = isFavorite;
     }
 }
