@@ -280,6 +280,12 @@ export async function updateFile(fileID: Number, file) {
     return res.data;
 }
 
+export async function addFile(file) {
+    const fileID = await axios.post(`${baseURL}file/`, file);
+
+    return fileID.data;
+}
+
 //Before calling this function, update the object that owns the file to have thier file id as null
 //Or delete the item, or you'll get an error
 export async function deleteFile(fileID: Number) {

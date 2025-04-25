@@ -45,6 +45,7 @@ public class FileService {
     }
 
     public void deleteFile(int fileID) {
+        System.out.println(fileID);
         if(fileRepository.findById(fileID).isEmpty()) {
             throw new IllegalArgumentException("File does not exist.");
         }

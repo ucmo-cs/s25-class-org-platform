@@ -18,13 +18,13 @@ import java.util.Optional;
 public class NotesService {
     private final NotesRepository notesRepository;
     private final ClassRepository classRepository;
-    private final FileRepository fileRepository;
+    private final FileService fileService;
 
     @Autowired
-    public NotesService(NotesRepository notesRepository, ClassRepository classRepository, FileRepository fileRepository) {
+    public NotesService(NotesRepository notesRepository, ClassRepository classRepository, FileService fileService) {
         this.notesRepository = notesRepository;
         this.classRepository = classRepository;
-        this.fileRepository = fileRepository;
+        this.fileService = fileService;
     }
 
     public Notes getNotesByID(int notesID) {
@@ -66,8 +66,10 @@ public class NotesService {
         if(notesToDelete.isEmpty()) {
             throw new IllegalArgumentException("Notes does not exist.");
         }
+        System.out.println(notesToDelete);
+        System.out.println(notesToDelete.get().getNotes());
         if(notesToDelete.get().getNotes() != null) {
-            this.fileRepository.deleteById(notesToDelete.get().getNotes());
+            this.fileService.deleteFile(notesToDelete.get().getNotes());
         }
         notesRepository.deleteById(notesID);
     }
@@ -81,7 +83,7 @@ public class NotesService {
 
         for (Notes notes : notesToDelete) {
             if (notes.getNotes() != null) {
-                this.fileRepository.deleteById(notes.getNotes());
+                this.fileService.deleteFile(notes.getNotes());
             }
             notesRepository.deleteById(notes.getNotesID());
         }
