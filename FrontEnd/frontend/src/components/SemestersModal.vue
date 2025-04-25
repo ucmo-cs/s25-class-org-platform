@@ -1,5 +1,5 @@
 <script>
-import { addNewSemester, deleteSemester, updateSemesterName } from '../data/api';
+import { addNewSemester, deleteSemester, getClassByUserAndSemester, updateSemesterName } from '../data/api';
 import { Semester } from '../data/Model/Semester';
 
     export default {
@@ -31,6 +31,11 @@ import { Semester } from '../data/Model/Semester';
                 this.$emit('closeSemesterModal', true);
             },
             async deleteSemesterModal(index) {
+                if(await getClassByUserAndSemester(this.User.userID, this.Semesters[index].semesterId).then(cs => {return cs.length > 0})) {
+                    if(!window.confirm("This semester has classes. Are you sure you want to delete it?")) {
+                        return;
+                    }
+                }
                 await deleteSemester(this.Semesters[index].semesterId);
                 this.$emit('closeSemesterModal', true);
             },

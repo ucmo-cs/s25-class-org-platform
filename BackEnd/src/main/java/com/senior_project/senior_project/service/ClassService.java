@@ -123,6 +123,28 @@ public class ClassService {
         }
     }
 
+    public void deleteClassesBySemester(int semsterID) {
+        Optional<Semester> semester = this.semesterRepository.findById(semsterID);
+        if(semester.isEmpty()) {
+            throw new IllegalArgumentException("Semester does not exist.");
+        }
+        List<Class> classes = this.classRepository.findAllByUserAndSemester(semester.get().getUser(), semester.get());
+        for(Class class_ : classes) {
+            if(class_.getMeetingTimes() != null) {
+                this.meetingTimesRepository.deleteById(class_.getMeetingTimes().getMeetingTimesId());
+            }
+            if(class_.getOfficeHours() != null) {
+                this.meetingTimesRepository.deleteById(class_.getOfficeHours().getMeetingTimesId());
+            }
+            if(class_.getSyllabus() != null) {
+                this.fileRepository.deleteById(class_.getSyllabus());
+            }
+            this.notesService.deleteNotesByClass(class_.getClassID());
+            this.eventService.deleteEventsByClass(class_.getClassID());
+            this.classRepository.deleteById(class_.getClassID());
+        }
+    }
+
     @Transactional
     public void modifyClass(Class in) {
         Optional<Class> editingClass = classRepository.findById(in.getClassID());

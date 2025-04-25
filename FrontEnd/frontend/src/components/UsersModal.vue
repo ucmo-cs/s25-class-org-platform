@@ -1,6 +1,7 @@
 <script>
     import { addUser, deleteUser, updateUsername } from '@/data/api';
 import { User } from '../data/Model/User';
+import { getClassesByUser } from '../data/api';
     export default {
         data() {
             return {
@@ -49,6 +50,11 @@ import { User } from '../data/Model/User';
                 this.closeModal(true, this.UserIndex);
             },
             async deleteUserModal(index) {
+                if(await getClassesByUser(this.Users[index].userID).then(us => {return us.length > 0})) {
+                    if(!window.confirm("This user has classes. Are you sure you want to delete it?")) {
+                        return;
+                    }
+                }
                 await deleteUser(this.Users[index].userID);
                 this.closeModal(true, this.UserIndex);
             }

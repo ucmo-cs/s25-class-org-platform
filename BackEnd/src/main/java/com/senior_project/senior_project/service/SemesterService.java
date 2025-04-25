@@ -17,13 +17,13 @@ import java.util.Optional;
 @Service
 public class SemesterService {
     final private SemesterRepository semesterRepository;
-    final private ClassRepository classRepository;
+    final private ClassService classService;
     final private UserRepository userRepository;
 
     @Autowired
-    public SemesterService(SemesterRepository semesterRepository, ClassRepository classRepository, UserRepository userRepository) {
+    public SemesterService(SemesterRepository semesterRepository, ClassService classService, UserRepository userRepository) {
         this.semesterRepository = semesterRepository;
-        this.classRepository = classRepository;
+        this.classService = classService;
         this.userRepository = userRepository;
     }
 
@@ -66,6 +66,7 @@ public class SemesterService {
         if(semesterRepository.findById(semesterID).isEmpty()) {
             throw new IllegalArgumentException("Semester doesn't exist.");
         }
+        classService.deleteClassesBySemester(semesterID);
         semesterRepository.deleteById(semesterID);
     }
 
