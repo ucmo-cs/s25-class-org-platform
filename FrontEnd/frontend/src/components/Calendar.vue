@@ -21,7 +21,7 @@
           </div>
           <div class="event-container" v-if="day">
             <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 2)" :key="event.name + day + index">
-              <button @click="$emit('navigateToClass', event, 'Home', index)">{{ event.name }}</button>
+              <button @click="openEventOrClass(event, index)">{{ event.name }}</button>
             </div>
             <div v-if="eventsForDate(day).length > 2" class="event more">
               <button class="event_more" @click="$emit('openModal', ['events', [day, currentMonth, currentYear, allEventsForDate(day)]])"> +{{ eventsForDate(day).length - 2 }} more</button>
@@ -34,6 +34,12 @@
   </div>
 </template>
 <script>
+
+
+  import { Class } from '@/data/Model/Class';
+import { toRaw } from 'vue';
+
+
   export default {
     data() {
       return {
@@ -240,6 +246,20 @@
       },
       allEventsForDate(day) {
         return this.eventsForDate(day)
+      },
+      openEventOrClass(event, index) {
+        let isClass;
+        try {
+          let x = event.meetingTimes.meetingTimesId;
+          isClass = true;
+        } catch (e) {
+          isClass = false;
+        }
+        if (isClass) {
+          this.$emit('navigateToClass', event, 'Home', index)
+        } else {
+          this.$emit('openModal', ['editEvent', event])
+        }
       }
     }
   }

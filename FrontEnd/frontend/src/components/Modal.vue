@@ -6,7 +6,7 @@
     import { addEvent } from '@/data/api';
     import { Event } from '@/data/Model/Event';
     import MeetingTimesInput from './MeetingTimesInput.vue';
-    import { deleteClass, updateClass } from '../data/api';
+    import { deleteClass, deleteEvent, updateClass, updateEvent } from '../data/api';
 
     export default {
         components: {
@@ -28,6 +28,8 @@
                 type: Number
             },
             Class:{
+            },
+            Event:{
             }
         },
     data() {
@@ -53,6 +55,7 @@
         }
     },
     mounted() {
+        console.log(this.Event);
         if (this.mode === 'editClass') {
             this.courseName = this.Class.name;
             this.semester = this.Class.semester;
@@ -65,6 +68,12 @@
             this.textbook = this.Class.textbook;
             this.startDate = this.Class.startDate;
             this.endDate = this.Class.endDate;
+        }
+        if (this.mode === 'editEvent') {
+            this.eventName = this.Event.name;
+            this.eventDescription = this.Event.description;
+            this.eventStartDate = this.Event.start;
+            this.eventEndDate = this.Event.end;
         }
     },
     methods: {
@@ -92,6 +101,15 @@
             console.log(new Class(this.Class.classID, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
             await updateClass(new Class(this.Class.classID, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
             this.$emit('close');
+        },
+        async updateEvent() {
+            await updateEvent(new Event(this.Event.eventID, this.eventName, this.eventDescription, this.eventStartDate, this.eventEndDate, new Class(1, null, null, null, null, null, null, null, null, null, null, null, null, null, null), new User(1, "MilesL35"), null, null));
+            this.$emit('close');
+        },
+        async deleteEvent() {
+            await deleteEvent(this.Event.eventID);
+            this.$emit('close');
+            this.$emit('navigateToHome');
         }
     },
 }
@@ -231,6 +249,26 @@
               <button style="justify-self: left" class="delete_button" @click="deleteClass">Delete Class</button>
               <div class="modal-footer">
                   <button class="submit_button" @click="updateClass">Submit</button>
+                </div>
+            </div>
+            <div v-if="mode === 'editEvent'">
+                <div class="modal-header">Edit Event</div>
+                <div class="modal-body">
+                    <p>Event Name:</p>
+                    <v-text-field label="ex. Hang out with friends" v-model="eventName"></v-text-field>
+                    <br>
+                    <p>Event Description:</p>
+                    <v-textarea label="Things to remember about the event" v-model="eventDescription"></v-textarea>
+                    <br>
+                    <p>Start Date:</p>
+                    <v-date-input label="Date input" prepend-icon="" class="date_input" v-model="eventStartDate"></v-date-input>
+                    <br>
+                    <p>End Date:</p>
+                    <v-date-input label="Date input" prepend-icon="" v-model="eventEndDate"></v-date-input>
+                </div>
+                <div class="modal-footer">
+                    <button class="submit_button" @click="updateEvent">Update Event</button>
+                    <button style="justify-self: left" class="delete_button" @click="deleteEvent">Delete Event</button>
                 </div>
             </div>
         </div>
