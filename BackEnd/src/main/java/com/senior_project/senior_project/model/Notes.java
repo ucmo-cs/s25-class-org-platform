@@ -71,11 +71,11 @@ public class Notes {
         this.notes = notes;
     }
 
-    public Boolean getFavorite() {
+    public Boolean getIsFavorite() {
         return isFavorite;
     }
 
-    public void setFavorite(Boolean favorite) {
+    public void setIsFavorite(Boolean favorite) {
         isFavorite = favorite;
     }
 

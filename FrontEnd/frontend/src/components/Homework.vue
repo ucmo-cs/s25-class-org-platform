@@ -31,10 +31,10 @@ export default {
     },
     async createHomework() {
       if (this.fileURL){
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, false)
         await addEventWithFile(newHomework, this.fileURL)
       } else {
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, false)
         console.log(newHomework)
         await addEvent(newHomework)
       }

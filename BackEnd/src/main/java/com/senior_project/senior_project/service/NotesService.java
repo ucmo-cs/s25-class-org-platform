@@ -99,6 +99,6 @@ public class NotesService {
         notesToUpdate.get().set_class(notes.get_class());
         notesToUpdate.get().setDate(notes.getDate());
         notesToUpdate.get().setNotes(notes.getNotes());
-        notesToUpdate.get().setFavorite(notes.getFavorite());
+        notesToUpdate.get().setIsFavorite(notes.getIsFavorite());
     }
 }

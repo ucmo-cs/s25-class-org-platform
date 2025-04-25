@@ -113,11 +113,11 @@ public class Event {
         this.classID = classID;
     }
 
-    public Boolean isHomework() {
+    public Boolean getIsHomework() {
         return isHomework;
     }
 
-    public void setHomework(Boolean homework) {
+    public void setIsHomework(Boolean homework) {
         isHomework = homework;
     }
 
@@ -137,11 +137,11 @@ public class Event {
         this.user = user;
     }
 
-    public Boolean getFavorite() {
+    public Boolean getIsFavorite() {
         return isFavorite;
     }
 
-    public void setFavorite(Boolean favorite) {
+    public void setIsFavorite(Boolean favorite) {
         isFavorite = favorite;
     }
 

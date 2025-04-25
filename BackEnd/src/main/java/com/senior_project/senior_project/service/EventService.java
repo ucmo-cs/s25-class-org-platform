@@ -70,6 +70,7 @@ public class EventService {
     }
 
     public void addNewEvent(Event event) {
+        System.out.println(event);
         if(this.eventRepository.findById(event.getEventID()).isPresent()) {
             throw new IllegalArgumentException("Event already exists");
         }
@@ -81,6 +82,7 @@ public class EventService {
         if(event.getClassID().getClassID() != 0 && this.classRepository.findById(event.getClassID().getClassID()).isEmpty()) {
             throw new IllegalArgumentException("An existing class, or no class must be specified.");
         }
+        System.out.println(event);
         this.eventRepository.save(event);
     }
 
@@ -139,9 +141,9 @@ public class EventService {
         updatingEvent.get().setStart(event.getStart());
         updatingEvent.get().setEnd(event.getEnd());
         updatingEvent.get().setClassID(event.getClassID());
-        updatingEvent.get().setHomework(event.isHomework());
+        updatingEvent.get().setIsHomework(event.getIsHomework());
         updatingEvent.get().setFile(event.getFile());
-        updatingEvent.get().setFavorite(event.getFavorite());
+        updatingEvent.get().setIsFavorite(event.getIsFavorite());
     }
 
 }
