@@ -31,8 +31,8 @@ public class NotesController {
     }
 
     @GetMapping("/isFavorite{id}")
-    public List<Notes> getNotesByClassIDAndIsFavorite(@PathVariable("id")int classID, @Param("IsFavorite")Boolean isFavorite) {
-        return this.notesService.getNotesByClassAndFavorites(classID, isFavorite);
+    public List<Notes> getNotesByClassIDAndIsFavorite(@PathVariable("id")int classID, @Param("IsFavorite")Boolean IsFavorite) {
+        return this.notesService.getNotesByClassAndFavorites(classID, IsFavorite);
     }
 
     @PostMapping("/")
