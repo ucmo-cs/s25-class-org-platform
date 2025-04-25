@@ -99,11 +99,10 @@
 
 <template>
     <div class="backdrop">
-        <div class="modal">
-            <div v-if="mode === 'addClass'">
-                <div class="modal-header">
-                    Add Class
-                </div>
+      <div class="modal">
+        <div style="position: fixed; cursor: pointer; font-size: 20px; text-align: right; padding-left: 935px;" @click="$emit('close')">X</div>
+        <div v-if="mode === 'addClass'">
+                <div class="modal-header">Add Class</div>
                 <div class="modal-body">
                     <p>Class Name:</p>
                     <v-text-field label="ex. College Algebra" v-model="courseName"></v-text-field>
@@ -145,17 +144,13 @@
                     <br>
                     <p>End Date:</p>
                     <v-date-input label="Date input" prepend-icon="" v-model="endDate"></v-date-input>
-                    <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button" @click="addClass">Save</button>
-                    <button class="close_button" @click="$emit('close')">Close</button>
+                    <button class="submit_button" @click="addClass">Add Class</button>
                 </div>
             </div>
             <div v-if="mode === 'addEvent'">
-                <div class="modal-header">
-                    Create Event
-                </div>
+                <div class="modal-header">Add Event</div>
                 <div class="modal-body">
                     <p>Event Name:</p>
                     <v-text-field label="ex. Hang out with friends" v-model="eventName"></v-text-field>
@@ -168,11 +163,9 @@
                     <br>
                     <p>End Date:</p>
                     <v-date-input label="Date input" prepend-icon="" v-model="eventEndDate"></v-date-input>
-                    <br>
                 </div>
                 <div class="modal-footer">
-                    <button class="submit_button" @click="addEvent">Save</button>
-                    <button class="close_button" @click="$emit('close')">Close</button>
+                    <button class="submit_button" @click="addEvent">Add Event</button>
                 </div>
             </div>
             <div v-if="mode === 'events'">
@@ -181,13 +174,12 @@
                 </div>
                 <div class="modal-body">
                     <div v-for="(event, index) in this.info[3]" :key="event.name + index" class="plans_style">
-                        <button @click="() => { $emit('close'); $emit('navigateToClass', event.name, 'Home'); }">{{ event.name }}</button>
+                        <button @click="() => { $emit('close'); $emit('navigateToClass', event, 'Home'); }">{{ event.name }}</button>
                         <br>
                     </div>
                 </div>
                 <br>
                 <div class="modal-footer">
-                    <button class="close_button" @click="$emit('close')">Close</button>
                 </div>
             </div>
             <div v-if="mode === 'editClass'">
@@ -235,14 +227,10 @@
                     <br>
                     <p>End Date:</p>
                     <v-date-input label="Date input" prepend-icon="" v-model="endDate"></v-date-input>
-                    <br>
                 </div>
-                <div class="modal-footer">
-                    <button class="submit_button" @click="updateClass">Submit</button>
-                    <button class="close_button" @click="$emit('close')">Close</button>
-                </div>
-                <div>
-                    <button class="delete_button" @click="deleteClass">Delete Class</button>
+              <button style="justify-self: left" class="delete_button" @click="deleteClass">Delete Class</button>
+              <div class="modal-footer">
+                  <button class="submit_button" @click="updateClass">Submit</button>
                 </div>
             </div>
         </div>

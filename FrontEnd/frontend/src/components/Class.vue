@@ -4,7 +4,7 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
   export default {
     components: {
     },
-    props: ['classID', 'currentClass', 'classPage'],
+    props: ['currentClass', 'classPage'],
     data() {
       return {
         currentPage: this.$props.classPage,
@@ -37,16 +37,17 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
         this.currentPage = "Syllabus"
       },
       toggleFav(item) {
-        item.isFav = !item.isFav
+        item.favorite = !item.favorite
       },
       callModal() {
-        this.$emit('openModal', ['editClass', null]);
+        this.$emit('openModal', ['editClass', this.currentClass]);
       },
-      goToHomework(homeworkID, homeworkName) {
-        this.$emit('navigateToHomework', homeworkID, homeworkName)
+      goToHomework(homework) {
+        this.$emit('navigateToHomework', homework, this.currentClass)
       },
-      goToNotes(notesID) {
-        this.$emit('navigateToNotes', notesID)
+      goToNotes(item) {
+        console.log(item)
+        this.$emit('navigateToNotes', item, this.currentClass)
       },
       addItem(type) {
         if (type === "Homework") {
@@ -59,23 +60,23 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
         console.log("ADD API CALL TO UPLOAD SYLLABUS HERE")
       },
       async fetchFavorites() {
-        await getEventsByClassAndIsFavorite(this.$props.classID, true).then(fe => {
+        await getEventsByClassAndIsFavorite(this.currentClass.classID, true).then(fe => {
           this.favoriteEvents = fe;
-          console.log(this.favoriteEvents)
         })
-        await getNotesByClassIDAndIsFavorite(this.$props.classID, true).then(fn => {
+        await getNotesByClassIDAndIsFavorite(this.currentClass.classID, true).then(fn => {
           this.favoriteNotes = fn;
-          console.log(this.favoriteNotes)
         })
-        this.favorites = this.favoriteEvents + this.favoriteNotes
-        console.log(this.favorites)
+        this.favorites = this.favorites.concat(this.favoriteEvents)
+        this.favorites = this.favorites.concat(this.favoriteNotes)
         return this.favorites
       },
       async fetchNotes() {
-        this.notes = await getNotesByClassID(this.$props.classID);
+        this.notes = await getNotesByClassID(this.currentClass.classID);
+        console.log(this.notes)
       },
       async fetchHomework() {
-        this.homework = await getEventsByClass(this.$props.classID);
+        this.homework = (await getEventsByClass(this.currentClass.classID));
+        this.homework = this.homework.filter((homework) => homework.homework)
       }
     },
   }
@@ -85,7 +86,7 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
   <body>
   <div class="classButtons">
     <button v-if="currentPage !== 'Home'" @click="getHome"><</button>
-    <h2 class="classButtons" v-if="currentPage !== 'Home'">{{ currentClass }}</h2>
+    <h2 class="classButtons" v-if="currentPage !== 'Home'">{{ currentClass.name }}</h2>
     <div class="space"></div>
     <button v-if="currentPage === 'Home'" @click="callModal">Class Details</button>
     <div class="add">
@@ -94,7 +95,7 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
     </div>
   </div>
   <h1 v-if="currentPage === 'Home'">
-    {{ currentClass }}
+    {{ currentClass.name }}
   </h1>
   <h1 v-if="currentPage !== 'Home'">
     {{ currentPage }}
@@ -108,24 +109,25 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
   </div>
   <div class="subPages" v-if="currentPage === 'Favorites'">
     <li v-for="item in this.favorites" class="subPages">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
+      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
       <h2 class="subPages">{{ item.name }}</h2>
       <h3 class="subPages">{{ item.type }}</h3>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Notes'">
     <li class="subPages" v-for="item in this.notes">
-      <button class="subPages" v-if="item.isFavorite" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFavorite" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages" @click="goToNotes(item.notesID)">{{ item.notesID }}</h2>
+      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
+      <h2 class="subPages" @click="goToNotes(item, currentClass)">{{ item.notesID }}</h2>
+      <h2 class="subPages" style="color: #2c3e50">{{ item.date }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
     <li class="subPages" v-for="item in this.homework">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages" @click="goToHomework(item.name)">{{ item.name }}</h2>
+      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
+      <h2 class="subPages" @click="goToHomework(item, currentClass)">{{ item.name }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Syllabus'">

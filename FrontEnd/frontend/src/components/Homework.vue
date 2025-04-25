@@ -3,14 +3,14 @@ import {addEvent, addEventWithFile, getEventsByClass} from "@/data/api.js";
 import {Event} from "@/data/Model/Event.js";
 
 export default {
-  props: ['homeworkID', 'homeworkName', 'parentClass', 'userID'],
+  props: ['homework', 'parentClass', 'userID'],
   components: {},
   data() {
     return {
-      dueDate: new Date(),
+      dueDate: this.homework.start,
       currentPage: "Homework",
-      name: this.homeworkName,
-      description: null,
+      name: this.homework.name,
+      description: this.homework.description,
       file: false,
       newFile: true,
       fileURL: null,
@@ -37,8 +37,19 @@ export default {
         console.log(newHomework)
         await addEvent(newHomework)
       }
-
+      this.getClassHomework()
     },
+    async updateHomework() {
+      if (this.fileURL) {
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
+        await addEventWithFile(newHomework, this.fileURL)
+      } else {
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
+        console.log(newHomework)
+        await addEvent(newHomework)
+      }
+      this.getClassHomework()
+    }
   }
 }
 </script>
@@ -49,8 +60,8 @@ export default {
     <button v-if="currentPage === 'Homework'" @click="getClassHomework"><</button>
     <h2 v-if="currentPage === 'Homework'">{{ parentClass.name + " Homework" }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Homework' && homeworkID !== null" @click="">Save</button>
-    <button v-if="currentPage === 'Homework' && homeworkID === null" @click="createHomework">Create</button>
+    <button v-if="currentPage === 'Homework' && homework.eventID !== null" @click="updateHomework">Save</button>
+    <button v-if="currentPage === 'Homework' && homework.eventID === null" @click="createHomework">Create</button>
   </div>
   <input v-model="name">
   <hr>

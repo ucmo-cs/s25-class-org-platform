@@ -44,8 +44,11 @@
         semesterIndex: 0,
         semestersLoaded: false,
         showSemesterModal: false,
-        classID: null,
+        classID: 1,
         classIndex: null,
+        homework: null,
+        note: null,
+        info: null,
       }
     },
     async mounted() {
@@ -61,21 +64,22 @@
         this.classPage = classPage
         this.currentPage = "Class"
       },
-      navigateToHomework(homeworkID, homeworkName) {
+      navigateToHomework(homework, parentClass) {
         this.currentPage = "Homework"
-        this.homeworkID = homeworkID
-        this.homeworkName = homeworkName
+        this.homework = homework
+        this.clickClass = parentClass
       },
-      navigateToNotes(notesID, parentClassID, parentClassName) {
+      navigateToNotes(note, parentClass) {
+        console.log(note)
         this.currentPage = "Notes"
-        this.notesID = notesID
-        this.classID = parentClassID
-        this.clickClass = parentClassName
+        this.note= note
+        this.clickClass = parentClass
       },
       openModal(data) {
         this.mode = data[0]
         this.showModal = true
         this.info = data[1]
+        console.log(data)
       },
       openUserModal() {
         this.showUserModal = true;
@@ -164,12 +168,12 @@
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
       <div v-for="(event, index) in classes">
-        <Class v-if="currentPage === 'Class' && event.name === clickClass" :classID="event.classID" :currentClass="event.name" :classPage="this.classPage" @openModal="openModal(['editClass', null])" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
+        <Class v-if="currentPage === 'Class' && event.name === clickClass" :currentClass="event" :classPage="this.classPage" @openModal="openModal" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
-      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :homeworkName="this.homeworkName" :parentClass="classID" :userID="this.allUsers[this.userIndex]" @navigateToClass="navigateToClass"/>
-      <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
+      <Homework v-if="currentPage === 'Homework'" :homework="this.homework" :parentClass="clickClass" :userID="this.allUsers[this.userIndex]" @navigateToClass="navigateToClass"/>
+      <Notes v-if="currentPage === 'Notes'" :note="this.note" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
     </div>
-    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.classesForSideBar[this.classIndex]" @close="endModal" @navigateToClass="navigateToClass" @navigateToHome="navigateToHome"/>
+    <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.info" @close="endModal" @navigateToClass="navigateToClass" @navigateToHome="navigateToHome"/>
     <UsersModal v-if="showUserModal" :Users="this.allUsers" :UserIndex="this.userIndex" @closeUserModal="this.closeUserModal"></UsersModal>
     <SemestersModal v-if="showSemesterModal" :Semesters="this.semesters" :User="this.allUsers[this.userIndex]" @closeSemesterModal="this.closeSemesterModal"></SemestersModal>
   </body>
@@ -223,10 +227,10 @@
   }
   .sideBar {
     margin-top: 100px;
+    position: fixed;
     width: 300px;
     height: 100%;
     background: #2c3e50;
-    overflow-y: scroll;
   }
   .sideBar .semester_buttons {
     color: white;

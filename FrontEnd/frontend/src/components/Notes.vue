@@ -1,22 +1,17 @@
 <script>
-import {addNewNotesWithFile, updateNotes} from "@/data/api.js";
+import {addNewNotesWithFile, updateNotes, updateFile, getNotesByID} from "@/data/api.js";
 
 export default {
-  props: ['notesID', "parentClassID", 'parentClassName'],
+  props: ['note', 'parentClass'],
   components: {},
   data() {
     return {
-      notes: {
-        "0": {"Notes": 0, "Date": "01/01/2001", "FileID": 0},
-        "1": {"Notes": 1, "Date": "01/02/2001", "FileID": 1},
-        "2": {"Notes": 2, "Date": "02/02/2002", "FileID": 2}
-      },
+      notes: {},
       currentPage: "Notes",
-      id: this.notesID,
-      note: "This is note 1",
+      message: null,
       startDate: "1/1/2001",
       endDate: "1/1/2002",
-      blob: null
+      blob: null,
     }
   },
   methods: {
@@ -28,7 +23,7 @@ export default {
       return this.notes[notesID]
     },
     getClassNotes() {
-      this.$emit('navigateToClass', this.parentClassID, this.parentClassName, "Notes")
+      this.$emit('navigateToClass', this.parentClass.classID, this.parentClass.name, "Notes")
     },
     createFile(download) {
       const content = document.querySelector("textarea").value
@@ -54,15 +49,18 @@ export default {
       } catch (err) {
         console.error("Create failed:", err);
       }
+      this.getClassNotes()
     },
     async updateNote() {
       this.createFile(false);
       try {
-        const res = await updateNotes(this.blob);
+        const response = await updateFile(this.blob)
+        const res = await updateNotes(response.data);
         console.log(res);
       } catch (err) {
         console.error("Update failed:", err);
       }
+      this.getClassNotes()
     },
   }
 }
@@ -72,19 +70,19 @@ export default {
   <body>
   <div class="notesButtons">
     <button v-if="currentPage === 'Notes'" @click="getClassNotes"><</button>
-    <h2 v-if="currentPage === 'Notes'">{{ parentClassName + " Notes" }}</h2>
+    <h2 v-if="currentPage === 'Notes'">{{ parentClass.name + " Notes" }}</h2>
     <div class="space"></div>
-    <button v-if="currentPage === 'Notes' && notesID !== 'New Note'" @click="updateNote">Save</button>
-    <button v-if="currentPage === 'Notes' && notesID === 'New Note'" @click="createNote">Create</button>
+    <button v-if="currentPage === 'Notes' && note.notesID !== 'New Note'" @click="updateNote">Save</button>
+    <button v-if="currentPage === 'Notes' && note.notesID === 'New Note'" @click="createNote">Create</button>
 
   </div>
-  <h1>{{ this.id }}</h1>
+  <h1>{{ this.note.notesID }}</h1>
   <hr>
   <div class="subPages" >
     <h2>Note:</h2>
     <v-row justify="center">
       <v-col lg="9">
-        <v-textarea variant="solo" v-model="note"></v-textarea>
+        <v-textarea variant="solo" v-model="message" placeholder="Begin Note Here"></v-textarea>
       </v-col>
     </v-row>
   </div>
