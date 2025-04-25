@@ -255,7 +255,7 @@ export async function addNewNotesWithFile(notes: Notes, file) {
     return res.data;
 }
 
-export async function deleteNotes(notesID: Notes) {
+export async function deleteNotes(notesID: Number) {
     const res = await axios.delete(`${baseURL}notes/${notesID}`);
 
     return res.data;

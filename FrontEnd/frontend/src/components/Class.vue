@@ -48,7 +48,6 @@ import {Notes} from "@/data/Model/Notes.js";
         this.$emit('navigateToHomework', homework, this.currentClass)
       },
       goToNotes(item) {
-        console.log(item)
         this.$emit('navigateToNotes', item, this.currentClass)
       },
       addItem(type) {
@@ -77,7 +76,6 @@ import {Notes} from "@/data/Model/Notes.js";
       },
       async fetchNotes() {
         this.notes = await getNotesByClassID(this.currentClass.classID);
-        console.log(this.notes)
       },
       async fetchHomework() {
         this.homework = (await getEventsByClass(this.currentClass.classID));

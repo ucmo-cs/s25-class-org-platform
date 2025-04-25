@@ -1,5 +1,13 @@
 <script>
-import {addNewNotesWithFile, updateNotes, updateFile, getNotesByID} from "@/data/api.js";
+import {
+  addNewNotesWithFile,
+  updateNotes,
+  updateFile,
+  getNotesByID,
+  getFile,
+  deleteNotes,
+  deleteFile
+} from "@/data/api.js";
 
 export default {
   props: ['note', 'parentClass'],
@@ -13,6 +21,9 @@ export default {
       endDate: "1/1/2002",
       blob: null,
     }
+  },
+  mounted() {
+    this.getFile()
   },
   methods: {
     getHome() {
@@ -60,12 +71,27 @@ export default {
         this.note.notes = response.data
         this.note.date = new Date()
         const res = await updateNotes(this.note);
-        console.log(res);
       } catch (err) {
         console.error("Update failed:", err);
       }
       this.getClassNotes()
     },
+    async getFile() {
+      try{
+        const res = await getFile(this.$props.note.notes)
+        this.message = atob(atob(res.data))
+      } catch (err) {
+        console.error("No File Exists:", err);
+      }
+    },
+    async deleteNote() {
+      try{
+        await deleteNotes(this.note.notesID)
+      } catch (err) {
+        console.error("Failed to Delete Note:", err)
+      }
+      this.getClassNotes()
+    }
   }
 }
 </script>
@@ -76,6 +102,7 @@ export default {
     <button v-if="currentPage === 'Notes'" @click="getClassNotes"><</button>
     <h2 v-if="currentPage === 'Notes'">{{ parentClass.name + " Notes" }}</h2>
     <div class="space"></div>
+    <button @click="createFile(true)">Download</button>
     <button v-if="currentPage === 'Notes' && note.notesID !== 'New Note'" @click="updateNote">Save</button>
     <button v-if="currentPage === 'Notes' && note.notesID === 'New Note'" @click="createNote">Create</button>
 
@@ -89,6 +116,7 @@ export default {
         <v-textarea variant="solo" v-model="message" placeholder="Begin Note Here"></v-textarea>
       </v-col>
     </v-row>
+    <button @click="deleteNote">Delete</button>
   </div>
   </body>
 </template>
@@ -129,6 +157,8 @@ h1 {
   font-size: 20px;
   background-color: green;
   color: white;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .notesButtons h2 {
   width: 100%;
@@ -173,12 +203,24 @@ h1 {
 .subPages button {
   object-position: left;
   align-items: start;
-  display: inline;
-  font-size: 50px;
   border: none;
   cursor: pointer;
   color: white;
-  background: none;
+  background-color: indianred;
+  height: 50px;
+  width: 150px;
+  outline: none;
+  margin-right: 200px;
+  margin-left: 10px;
+  margin-top: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  border-radius: 5px;
+  font-size: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  justify-self: right;
 }
 hr {
   border-width: 2px;

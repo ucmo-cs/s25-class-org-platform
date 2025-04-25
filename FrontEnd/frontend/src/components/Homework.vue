@@ -1,5 +1,5 @@
 <script>
-import {addEvent, addEventWithFile, getEventsByClass, updateEvent, updateFile} from "@/data/api.js";
+import {addEvent, addEventWithFile, deleteEvent, getEventsByClass, getFile, updateEvent, updateFile} from "@/data/api.js";
 import {Event} from "@/data/Model/Event.js";
 
 export default {
@@ -14,9 +14,11 @@ export default {
       file: false,
       newFile: true,
       fileURL: null,
-      homeworks: null,
-      fileID: null,
+      currentFile: null,
     }
+  },
+  mounted() {
+    this.getFile()
   },
   methods: {
     getHome() {
@@ -26,15 +28,20 @@ export default {
     getClassHomework() {
       this.$emit('navigateToClass', this.parentClass, "Homework")
     },
+    toggleNewFile() {
+      this.newFile = !this.newFile
+      this.file = !this.file
+    },
     async getHomework() {
       await getEventsByClass(this.$props.parentClass)
     },
     async createHomework() {
       if (this.fileURL){
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, false)
+        console.log(fileURL)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
         await addEventWithFile(newHomework, this.fileURL)
       } else {
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, false)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
         console.log(newHomework)
         await addEvent(newHomework)
       }
@@ -46,11 +53,26 @@ export default {
         const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, fileID, this.homework.isFavorite)
         await updateEvent(newHomework)
       } else {
-        const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, this.homework.isFavorite)
+        const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, this.homework.isFavorite)
         console.log(newHomework)
         await updateEvent(newHomework)
       }
       this.getClassHomework()
+    },
+    async getFile() {
+      try{
+        const res = await getFile(this.$props.homework.file)
+        console.log(res)
+      } catch (err) {
+        console.error("No File Exists:", err);
+      }
+    },
+    async deleteHomework() {
+      try{
+          await deleteEvent(this.homework.eventID)
+      } catch (err) {
+        console.log("Failed to Delete Homework:", err)
+      }
     }
   }
 }
@@ -82,10 +104,11 @@ export default {
     </v-row>
     <h2>File:</h2>
     <div v-if="file !== false">
-      <iframe :src="this.fileURL" width="100%" height="1000px"></iframe>
+      <iframe :src="this.currentFile" width="100%" height="1000px"></iframe>
     </div>
-    <button v-if="file !== false" @click="this.newFile = !this.newFile">New File</button>
-    <v-row justify="center" v-if="this.newFile === true"><v-col lg="9"><v-file-upload v-model="this.fileURL"></v-file-upload></v-col></v-row>
+    <button v-if="file !== false" @click="toggleNewFile">New File</button>
+    <v-row justify="center" v-if="file !== true"><v-col lg="9"><v-file-upload v-model="this.fileURL"></v-file-upload></v-col></v-row>
+    <button class="subPages" @click="deleteHomework">Delete</button>
   </div>
   </body>
 </template>
@@ -176,18 +199,24 @@ export default {
   .subPages button {
     object-position: left;
     align-items: start;
-    display: flex;
-    font-size: 30px;
     border: none;
     cursor: pointer;
     color: white;
-    background: green;
+    background-color: indianred;
+    height: 50px;
+    width: 150px;
+    outline: none;
+    margin-right: 200px;
+    margin-left: 10px;
+    margin-top: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
     border-radius: 5px;
+    font-size: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    justify-self: left;
-    margin-left: 12%;
-    margin-bottom: 10px;
+    justify-self: right;
   }
   hr {
     border-width: 2px;
