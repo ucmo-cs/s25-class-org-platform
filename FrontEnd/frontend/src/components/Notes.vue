@@ -66,14 +66,23 @@ export default {
     },
     async updateNote() {
       this.createFile(false);
-      try {
-        const response = await updateFile(this.blob)
-        this.note.notes = response.data
-        this.note.date = new Date()
-        const res = await updateNotes(this.note);
-      } catch (err) {
-        console.error("Update failed:", err);
+      if (this.note.notes === null){
+        try{
+          const res = await addFile()
+        }catch (err) {
+          console.error("Update failed:", err)
+        }
+      } else {
+        try {
+          const response = await updateFile(this.blob)
+          this.note.notes = response.data
+          this.note.date = new Date()
+          const res = await updateNotes(this.note);
+        } catch (err) {
+          console.error("Update failed:", err);
+        }
       }
+
       this.getClassNotes()
     },
     async getFile() {
@@ -88,7 +97,6 @@ export default {
       try{
         await deleteNotes(this.note.notesID)
       } catch (err) {
-        console.error("Failed to Delete Note:", err)
       }
       this.getClassNotes()
     }
@@ -116,7 +124,7 @@ export default {
         <v-textarea variant="solo" v-model="message" placeholder="Begin Note Here"></v-textarea>
       </v-col>
     </v-row>
-    <button @click="deleteNote">Delete</button>
+    <button v-if="note.notesID !== 'New Note'" @click="deleteNote">Delete</button>
   </div>
   </body>
 </template>

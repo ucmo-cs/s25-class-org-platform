@@ -73,6 +73,7 @@ export default {
       } catch (err) {
         console.log("Failed to Delete Homework:", err)
       }
+      this.getClassHomework()
     }
   }
 }
@@ -108,7 +109,7 @@ export default {
     </div>
     <button v-if="file !== false" @click="toggleNewFile">New File</button>
     <v-row justify="center" v-if="file !== true"><v-col lg="9"><v-file-upload v-model="this.fileURL"></v-file-upload></v-col></v-row>
-    <button class="subPages" @click="deleteHomework">Delete</button>
+    <button class="subPages" v-if="homework.eventID !== null" @click="deleteHomework">Delete</button>
   </div>
   </body>
 </template>

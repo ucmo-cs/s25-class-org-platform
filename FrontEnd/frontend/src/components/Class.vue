@@ -79,7 +79,7 @@ import {Notes} from "@/data/Model/Notes.js";
       },
       async fetchHomework() {
         this.homework = (await getEventsByClass(this.currentClass.classID));
-        this.homework = this.homework.filter((homework) => homework.homework)
+        this.homework = this.homework.filter((homework) => homework.isHomework)
       }
     },
   }
@@ -123,7 +123,7 @@ import {Notes} from "@/data/Model/Notes.js";
       <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
       <h2 class="subPages" @click="goToNotes(item, currentClass)">{{ item.notesID }}</h2>
-      <h2 class="subPages" style="color: #2c3e50">{{ item.date }}</h2>
+      <h2 class="subPages" style="color: #2c3e50; cursor: default">{{ item.date }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
