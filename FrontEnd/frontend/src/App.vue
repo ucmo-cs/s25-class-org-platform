@@ -23,7 +23,7 @@
         currentPage: "Calendar",
         classes: [],
         classesForSideBar: [],
-        clickClass: "None",
+        clickClass: null,
         newClassComponent: false,
         showModal: false,
         isClass: true,
@@ -35,16 +35,16 @@
         dataGrabbed: false,
         allUsers: [],
         userIndex: 0,
-        homeworkID: 0,
-        notesID: 0,
+        homeworkID: null,
+        homeworkName: null,
+        notesID: null,
         classPage: "Home",
         showUserModal: false,
         semesters: [],
         semesterIndex: 0,
         semestersLoaded: false,
         showSemesterModal: false,
-        classID: 0,
-        showSemesterModal: false,
+        classID: null,
         classIndex: null,
       }
     },
@@ -55,21 +55,22 @@
       navigateToHome() {
         this.currentPage = "Calendar"
       },
-      navigateToClass(classID, className, classPage, index) {
+      navigateToClass(classID, className, classPage) {
         this.classID = classID
-        console.log(className)
         this.clickClass = className
         this.classPage = classPage
-        this.classIndex = index
         this.currentPage = "Class"
       },
-      navigateToHomework(homeworkID) {
+      navigateToHomework(homeworkID, homeworkName) {
         this.currentPage = "Homework"
         this.homeworkID = homeworkID
+        this.homeworkName = homeworkName
       },
-      navigateToNotes(notesID) {
+      navigateToNotes(notesID, parentClassID, parentClassName) {
         this.currentPage = "Notes"
         this.notesID = notesID
+        this.classID = parentClassID
+        this.clickClass = parentClassName
       },
       openModal(data) {
         this.mode = data[0]
@@ -152,7 +153,7 @@
       <hr><hr>
       <div v-for="(event, index) in classesForSideBar">
         <div>
-          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.classID, event.name, 'Home', index)">{{ event.name }}</button>
+          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.classID, event.name, 'Home')">{{ event.name }}</button>
         </div>
       </div>
       <button v-if="this.semesters.length !== 0" class="add_button" @click="openModal(['addClass', null])">Add Class</button>
@@ -165,7 +166,7 @@
       <div v-for="(event, index) in classes">
         <Class v-if="currentPage === 'Class' && event.name === clickClass" :classID="event.classID" :currentClass="event.name" :classPage="this.classPage" @openModal="openModal(['editClass', null])" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
-      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
+      <Homework v-if="currentPage === 'Homework'" :homeworkID="this.homeworkID" :homeworkName="this.homeworkName" :parentClass="classID" :userID="this.allUsers[this.userIndex]" @navigateToClass="navigateToClass"/>
       <Notes v-if="currentPage === 'Notes'" :notesID="this.notesID" :parentClassID="classID" :parentClassName="clickClass" @navigateToClass="navigateToClass"/>
     </div>
     <modal v-if="showModal" :mode="this.mode" :info="this.info" :user="this.allUsers[this.userIndex]" :semesters="this.semesters" :semesterIndex="this.semesterIndex" :Class="this.classesForSideBar[this.classIndex]" @close="endModal" @navigateToClass="navigateToClass" @navigateToHome="navigateToHome"/>

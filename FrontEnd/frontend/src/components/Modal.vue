@@ -3,8 +3,6 @@
     import { addClass } from '@/data/api';
     import { Class } from '@/data/Model/Class';
     import { User } from '@/data/Model/User';
-    import { MeetingTimes } from '@/data/Model/MeetingTimes';
-    import { Semester } from '@/data/Model/Semester';
     import { addEvent } from '@/data/api';
     import { Event } from '@/data/Model/Event';
     import MeetingTimesInput from './MeetingTimesInput.vue';
@@ -98,7 +96,6 @@
     },
 }
 </script>
-
 
 <template>
     <div class="backdrop">
@@ -203,7 +200,7 @@
                     <br>
                     <p>Semester:</p>
                     <select id="semesters" v-model="this.semesterIndex">
-                        <option v-for="(semester, index) in this.semesters" :value="index" :selected="this.semesterIndex == index">{{ semester.semesterName }}</option>
+                        <option v-for="(semester, index) in this.semesters" :value="index" :selected="this.semesterIndex === index">{{ semester.semesterName }}</option>
                     </select>
                     <br>
                     <p>Meeting Times:</p>
@@ -252,7 +249,6 @@
     </div>
 </template>
 
-
 <style scoped>
     select {
         border: 1px solid #2c3e50;
@@ -262,7 +258,7 @@
         padding: 2px;
         -webkit-appearance: menulist;
         -moz-appearance: menulist;
-        appearance: menulist;
+        appearance: menulist-button;
     }
     .modal {
         position: relative;
@@ -331,10 +327,6 @@
     }
     ::-webkit-scrollbar {
         display: none;
-    }
-    .example {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
     }
     .plans_style {
         width: 100%;

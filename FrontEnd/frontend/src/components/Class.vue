@@ -8,31 +8,29 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
     data() {
       return {
         currentPage: this.$props.classPage,
-        items: [
-          {name: "itemA", isFav: true, type: "Homework"},
-          {name: "itemB", isFav: true, type: "Note"},
-          {name: "itemC", isFav: true, type: "Homework"}
-        ],
         favorites: [],
         notes: [],
         homework: [],
+        newSyllabus: false,
         file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
       }
+    },
+    mounted() {
+      this.fetchFavorites();
+      this.fetchNotes();
+      this.fetchHomework();
     },
     methods: {
       getHome() {
         this.currentPage = "Home"
       },
       getFavorites() {
-        this.displayFavorites()
         this.currentPage = "Favorites"
       },
       getNotes() {
-        this.displayNotes()
         this.currentPage = "Notes"
       },
       getHomework() {
-        this.displayHomework()
         this.currentPage = "Homework"
       },
       getSyllabus() {
@@ -44,20 +42,23 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
       callModal() {
         this.$emit('openModal', ['editClass', null]);
       },
-      goToHomework(homeworkID) {
-        this.$emit('navigateToHomework', homeworkID)
+      goToHomework(homeworkID, homeworkName) {
+        this.$emit('navigateToHomework', homeworkID, homeworkName)
       },
       goToNotes(notesID) {
         this.$emit('navigateToNotes', notesID)
       },
       addItem(type) {
         if (type === "Homework") {
-          this.goToHomework("New Homework")
+          this.goToHomework(null, "New Homework")
         } else if (type === "Notes") {
           this.goToNotes("New Note")
-        }
+        } else if (type === "Syllabus") this.newSyllabus = !this.newSyllabus
       },
-      async displayFavorites() {
+      uploadSyllabus() {
+        console.log("ADD API CALL TO UPLOAD SYLLABUS HERE")
+      },
+      async fetchFavorites() {
         await getEventsByClassAndIsFavorite(this.$props.classID, true).then(fe => {
           this.favoriteEvents = fe;
           console.log(this.favoriteEvents)
@@ -70,24 +71,13 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
         console.log(this.favorites)
         return this.favorites
       },
-      async displayNotes() {
-        await getNotesByClassID(this.$props.classID).then(gn => {
-          this.notes = gn;
-        })
-        console.log(this.notes)
-        return this.notes
+      async fetchNotes() {
+        this.notes = await getNotesByClassID(this.$props.classID);
       },
-      async displayHomework() {
-        await getEventsByClass(this.$props.classID).then(gh => {
-          gh.forEach(i=>{
-            if (i['isFavorite'])
-              this.homework.append(gh[i])
-          })
-        })
-        console.log(this.homework)
-        return this.homework
-      },
-    }
+      async fetchHomework() {
+        this.homework = await getEventsByClass(this.$props.classID);
+      }
+    },
   }
 </script>
 
@@ -99,14 +89,15 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
     <div class="space"></div>
     <button v-if="currentPage === 'Home'" @click="callModal">Class Details</button>
     <div class="add">
-      <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework'" @click="addItem(this.currentPage)">Add {{ currentPage }}</button>
+      <button class="add" v-if="currentPage === 'Notes' || currentPage === 'Homework' || currentPage === 'Syllabus' && !newSyllabus" @click="addItem(this.currentPage)">Add {{ currentPage }}</button>
+      <button class="add" v-if="newSyllabus && currentPage === 'Syllabus'" @click="uploadSyllabus">Save Syllabus</button>
     </div>
   </div>
   <h1 v-if="currentPage === 'Home'">
     {{ currentClass }}
   </h1>
   <h1 v-if="currentPage !== 'Home'">
-    {{ currentClass }}
+    {{ currentPage }}
   </h1>
   <hr>
   <div class="classHome" v-if="currentPage === 'Home'">
@@ -125,21 +116,21 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
   </div>
   <div class="subPages" v-if="currentPage === 'Notes'">
     <li class="subPages" v-for="item in this.notes">
-      <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages" @click="goToNotes(item.name)">{{ item.name }}</h2>
+      <button class="subPages" v-if="item.isFavorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.isFavorite" @click="toggleFav(item)">☆</button>
+      <h2 class="subPages" @click="goToNotes(item.notesID)">{{ item.notesID }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
-    <li class="subPages" v-for="item in displayHomework">
+    <li class="subPages" v-for="item in this.homework">
       <button class="subPages" v-if="item.isFav" @click="toggleFav(item)">★</button>
       <button class="subPages" v-if="!item.isFav" @click="toggleFav(item)">☆</button>
       <h2 class="subPages" @click="goToHomework(item.name)">{{ item.name }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Syllabus'">
-    <iframe v-if="file !== null" :src="this.file" width="100%" height="1000px"></iframe>
-    <v-row justify="center"><v-col lg="9"><v-file-upload></v-file-upload></v-col></v-row>
+    <iframe v-if="file !== null && !newSyllabus" :src="this.file" width="100%" height="1000px"></iframe>
+    <v-row justify="center" v-if="newSyllabus"><v-col lg="9"><v-file-upload></v-file-upload></v-col></v-row>
   </div>
   </body>
 </template>
@@ -148,7 +139,7 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
   html, body {
     display: block;
     text-align: center;
-    margin-bottom: 100px;
+    margin-bottom: 150px;
   }
   h1 {
     font-size: 75px;

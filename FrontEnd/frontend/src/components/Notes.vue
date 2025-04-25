@@ -31,33 +31,38 @@ export default {
       this.$emit('navigateToClass', this.parentClassID, this.parentClassName, "Notes")
     },
     createFile(download) {
-      const content = btoa(document.querySelector("textarea").value)
-      const file = new Blob([content], { type: 'multipart' })
+      const content = document.querySelector("textarea").value
+      const blob = new Blob([content], { type: 'text/plain' });
+      const form = new FormData();
+      form.append('file', blob, "note.txt");
+
       if (download) {
         const link = document.createElement("a");
-        link.href = URL.createObjectURL(file);
+        link.href = URL.createObjectURL(blob);
         link.download = "note.txt";
         link.click();
         URL.revokeObjectURL(link.href);
       }
-      this.blob = file
+      this.blob = form
       console.log(this.blob)
-
     },
     async createNote() {
-      this.createFile(false)
-      await addNewNotesWithFile(this.file).then(an => {
-        return an
-      })
-      console.log(an)
-
+      this.createFile(false);
+      try {
+        const res = await addNewNotesWithFile(this.blob);
+        console.log(res);
+      } catch (err) {
+        console.error("Create failed:", err);
+      }
     },
     async updateNote() {
-      this.createFile(false)
-      await updateNotes(this.file).then(an => {
-        console.log(an)
-        return an
-      })
+      this.createFile(false);
+      try {
+        const res = await updateNotes(this.blob);
+        console.log(res);
+      } catch (err) {
+        console.error("Update failed:", err);
+      }
     },
   }
 }
@@ -79,7 +84,7 @@ export default {
     <h2>Note:</h2>
     <v-row justify="center">
       <v-col lg="9">
-        <v-textarea variant="solo" :model-value="this.note"></v-textarea>
+        <v-textarea variant="solo" v-model="note"></v-textarea>
       </v-col>
     </v-row>
   </div>
