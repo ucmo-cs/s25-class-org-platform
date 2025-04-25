@@ -125,7 +125,6 @@ public class ClassService {
 
     @Transactional
     public void modifyClass(Class in) {
-        System.out.println(in);
         Optional<Class> editingClass = classRepository.findById(in.getClassID());
         if(editingClass.isEmpty()) {
             throw new IllegalArgumentException("Class does not exist");

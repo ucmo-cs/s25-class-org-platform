@@ -141,6 +141,7 @@ public class EventService {
         updatingEvent.get().setClassID(event.getClassID());
         updatingEvent.get().setHomework(event.isHomework());
         updatingEvent.get().setFile(event.getFile());
+        updatingEvent.get().setFavorite(event.getFavorite());
     }
 
 }
