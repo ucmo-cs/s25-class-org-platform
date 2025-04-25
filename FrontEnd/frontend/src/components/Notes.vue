@@ -23,7 +23,7 @@ export default {
       return this.notes[notesID]
     },
     getClassNotes() {
-      this.$emit('navigateToClass', this.parentClass.classID, this.parentClass.name, "Notes")
+      this.$emit('navigateToClass', this.parentClass, "Notes")
     },
     createFile(download) {
       const content = document.querySelector("textarea").value
@@ -44,7 +44,9 @@ export default {
     async createNote() {
       this.createFile(false);
       try {
-        const res = await addNewNotesWithFile(this.blob);
+        this.note.notesID = null
+        this.note.date = new Date()
+        const res = await addNewNotesWithFile(this.note, this.blob);
         console.log(res);
       } catch (err) {
         console.error("Create failed:", err);
@@ -55,7 +57,9 @@ export default {
       this.createFile(false);
       try {
         const response = await updateFile(this.blob)
-        const res = await updateNotes(response.data);
+        this.note.notes = response.data
+        this.note.date = new Date()
+        const res = await updateNotes(this.note);
         console.log(res);
       } catch (err) {
         console.error("Update failed:", err);

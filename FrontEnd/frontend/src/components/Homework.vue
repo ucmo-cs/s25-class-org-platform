@@ -1,5 +1,5 @@
 <script>
-import {addEvent, addEventWithFile, getEventsByClass} from "@/data/api.js";
+import {addEvent, addEventWithFile, getEventsByClass, updateEvent, updateFile} from "@/data/api.js";
 import {Event} from "@/data/Model/Event.js";
 
 export default {
@@ -15,6 +15,7 @@ export default {
       newFile: true,
       fileURL: null,
       homeworks: null,
+      fileID: null,
     }
   },
   methods: {
@@ -23,17 +24,17 @@ export default {
       return null
     },
     getClassHomework() {
-      this.$emit('navigateToClass', this.parentClass.classID, this.parentClass.name, "Homework")
+      this.$emit('navigateToClass', this.parentClass, "Homework")
     },
     async getHomework() {
       await getEventsByClass(this.$props.parentClass)
     },
     async createHomework() {
       if (this.fileURL){
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
         await addEventWithFile(newHomework, this.fileURL)
       } else {
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
         console.log(newHomework)
         await addEvent(newHomework)
       }
@@ -41,12 +42,13 @@ export default {
     },
     async updateHomework() {
       if (this.fileURL) {
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
-        await addEventWithFile(newHomework, this.fileURL)
+        const fileID = await updateFile(this.homework.fileID, this.fileURL)
+        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, fileID, this.homework.isFavorite)
+        await updateEvent(newHomework)
       } else {
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, 0)
+        const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, 1, null, this.homework.isFavorite)
         console.log(newHomework)
-        await addEvent(newHomework)
+        await updateEvent(newHomework)
       }
       this.getClassHomework()
     }

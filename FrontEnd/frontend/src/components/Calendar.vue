@@ -21,7 +21,7 @@
           </div>
           <div class="event-container" v-if="day">
             <div class="event" v-for="(event, index) in eventsForDate(day).slice(0, 2)" :key="event.name + day + index">
-              <button @click="$emit('navigateToClass', event.classID, event.name, 'Home', index)">{{ event.name }}</button>
+              <button @click="$emit('navigateToClass', event, 'Home', index)">{{ event.name }}</button>
             </div>
             <div v-if="eventsForDate(day).length > 2" class="event more">
               <button class="event_more" @click="$emit('openModal', ['events', [day, currentMonth, currentYear, allEventsForDate(day)]])"> +{{ eventsForDate(day).length - 2 }} more</button>

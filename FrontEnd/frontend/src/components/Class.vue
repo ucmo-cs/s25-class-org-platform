@@ -1,5 +1,7 @@
 <script>
 import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIsFavorite, getEventsByClass} from "@/data/api.js";
+import {Event} from "@/data/Model/Event.js";
+import {Notes} from "@/data/Model/Notes.js";
 
   export default {
     components: {
@@ -51,9 +53,12 @@ import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIs
       },
       addItem(type) {
         if (type === "Homework") {
-          this.goToHomework(null, "New Homework")
+          this.homework = new Event(null, "New Homework", null, null, null, this.currentClass, null, true, null, false)
+          this.goToHomework(this.homework)
         } else if (type === "Notes") {
-          this.goToNotes("New Note")
+          this.notes = new Notes("New Note", this.currentClass, null, null, false)
+          this.goToNotes(this.notes)
+
         } else if (type === "Syllabus") this.newSyllabus = !this.newSyllabus
       },
       uploadSyllabus() {

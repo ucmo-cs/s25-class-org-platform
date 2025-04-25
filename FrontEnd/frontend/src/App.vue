@@ -58,9 +58,8 @@
       navigateToHome() {
         this.currentPage = "Calendar"
       },
-      navigateToClass(classID, className, classPage) {
-        this.classID = classID
-        this.clickClass = className
+      navigateToClass(currentClass, classPage) {
+        this.clickClass = currentClass
         this.classPage = classPage
         this.currentPage = "Class"
       },
@@ -157,7 +156,7 @@
       <hr><hr>
       <div v-for="(event, index) in classesForSideBar">
         <div>
-          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event.classID, event.name, 'Home')">{{ event.name }}</button>
+          <button class="class_button" :class="{ button: event.name }" @click="navigateToClass(event, 'Home')">{{ event.name }}</button>
         </div>
       </div>
       <button v-if="this.semesters.length !== 0" class="add_button" @click="openModal(['addClass', null])">Add Class</button>
@@ -168,7 +167,7 @@
     <div class="mainScreen">
       <Calendar v-if="currentPage === 'Calendar'" @openModal="openModal" @navigateToClass="navigateToClass" :events="events" :classes="classes"/>
       <div v-for="(event, index) in classes">
-        <Class v-if="currentPage === 'Class' && event.name === clickClass" :currentClass="event" :classPage="this.classPage" @openModal="openModal" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
+        <Class v-if="currentPage === 'Class' && event.classID === clickClass.classID" :currentClass="clickClass" :classPage="this.classPage" @openModal="openModal" @navigateToHomework="navigateToHomework" @navigateToNotes="navigateToNotes"/>
       </div>
       <Homework v-if="currentPage === 'Homework'" :homework="this.homework" :parentClass="clickClass" :userID="this.allUsers[this.userIndex]" @navigateToClass="navigateToClass"/>
       <Notes v-if="currentPage === 'Notes'" :note="this.note" :parentClass="clickClass" @navigateToClass="navigateToClass"/>
