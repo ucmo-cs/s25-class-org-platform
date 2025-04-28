@@ -52,11 +52,11 @@
             meetingTimesForClass: null,
             officeHours: null,
             officeLocation: null,
+            modes: this.$props.mode,
         }
     },
     mounted() {
-        console.log(this.Event);
-        if (this.mode === 'editClass') {
+        if (this.modes === 'editClass') {
             this.courseName = this.Class.name;
             this.semester = this.Class.semester;
             this.instructor = this.Class.instructor;
@@ -69,7 +69,7 @@
             this.startDate = this.Class.startDate;
             this.endDate = this.Class.endDate;
         }
-        if (this.mode === 'editEvent') {
+        if (this.modes === 'editEvent') {
             this.eventName = this.Event.name;
             this.eventDescription = this.Event.description;
             this.eventStartDate = this.Event.start;
@@ -110,7 +110,27 @@
             await deleteEvent(this.Event.eventID);
             this.$emit('close');
             this.$emit('navigateToHome');
+        },
+        openEventOrClass(event) {
+        let isClass;
+        this.event = event;
+        try {
+          let x = event.meetingTimes.meetingTimesId;
+          isClass = true;
+        } catch (e) {
+          isClass = false;
         }
+        if (isClass) {
+            this.$emit('close');
+            this.$emit('navigateToClass', event, 'Home');
+        } else {
+          this.eventName = this.event.name;
+            this.eventDescription = this.event.description;
+            this.eventStartDate = this.event.start;
+            this.eventEndDate = this.event.end;
+            this.modes = 'editEvent';
+        }
+      }
     },
 }
 </script>
@@ -119,7 +139,7 @@
     <div class="backdrop">
       <div class="modal">
         <div style="position: fixed; cursor: pointer; font-size: 20px; text-align: right; padding-left: 935px;" @click="$emit('close')">X</div>
-        <div v-if="mode === 'addClass'">
+        <div v-if="modes === 'addClass'">
                 <div class="modal-header">Add Class</div>
                 <div class="modal-body">
                     <p>Class Name:</p>
@@ -167,7 +187,7 @@
                     <button class="submit_button" @click="addClass">Add Class</button>
                 </div>
             </div>
-            <div v-if="mode === 'addEvent'">
+            <div v-if="modes === 'addEvent'">
                 <div class="modal-header">Add Event</div>
                 <div class="modal-body">
                     <p>Event Name:</p>
@@ -186,13 +206,13 @@
                     <button class="submit_button" @click="addEvent">Add Event</button>
                 </div>
             </div>
-            <div v-if="mode === 'events'">
+            <div v-if="modes === 'events'">
                 <div class="modal-header">
                     All Events on {{ info[1] }} {{ info[0] }}, {{ info[2] }}
                 </div>
                 <div class="modal-body">
                     <div v-for="(event, index) in this.info[3]" :key="event.name + index" class="plans_style">
-                        <button @click="() => { $emit('close'); $emit('navigateToClass', event, 'Home'); }">{{ event.name }}</button>
+                        <button @click="() => { openEventOrClass(event) }">{{ event.name }}</button>
                         <br>
                     </div>
                 </div>
@@ -200,7 +220,7 @@
                 <div class="modal-footer">
                 </div>
             </div>
-            <div v-if="mode === 'editClass'">
+            <div v-if="modes === 'editClass'">
                 <div class="modal-header">
                     Edit Class
                 </div>
@@ -251,7 +271,7 @@
                   <button class="submit_button" @click="updateClass">Submit</button>
                 </div>
             </div>
-            <div v-if="mode === 'editEvent'">
+            <div v-if="modes === 'editEvent'">
                 <div class="modal-header">Edit Event</div>
                 <div class="modal-body">
                     <p>Event Name:</p>

@@ -249,6 +249,7 @@ import { toRaw } from 'vue';
       },
       openEventOrClass(event, index) {
         let isClass;
+        console.log("Hello");
         try {
           let x = event.meetingTimes.meetingTimesId;
           isClass = true;

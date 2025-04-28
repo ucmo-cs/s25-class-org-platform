@@ -138,7 +138,7 @@
       endModal() {
         this.showModal = false;
         this.reloadData();
-      }
+      },
     }
   }
 </script>
