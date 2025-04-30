@@ -3,7 +3,6 @@ import {
   addNewNotesWithFile,
   updateNotes,
   updateFile,
-  getNotesByID,
   getFile,
   deleteNotes,
   deleteFile
@@ -50,54 +49,49 @@ export default {
         URL.revokeObjectURL(link.href);
       }
       this.blob = form
-      console.log(this.blob)
     },
     async createNote() {
       this.createFile(false);
       try {
         this.note.notesID = null
         this.note.date = new Date()
-        const res = await addNewNotesWithFile(this.note, this.blob);
-        console.log(res);
-      } catch (err) {
-        console.error("Create failed:", err);
-      }
+        await addNewNotesWithFile(this.note, this.blob);
+      } catch (err) {}
       this.getClassNotes()
     },
     async updateNote() {
       this.createFile(false);
       if (this.note.notes === null){
         try{
-          const res = await addFile()
-        }catch (err) {
-          console.error("Update failed:", err)
-        }
+          await addNewNotesWithFile(this.note, this.blob)
+        }catch (err) {}
       } else {
         try {
-          const response = await updateFile(this.blob)
-          this.note.notes = response.data
+          await updateFile(this.note.notes, this.blob)
           this.note.date = new Date()
-          const res = await updateNotes(this.note);
-        } catch (err) {
-          console.error("Update failed:", err);
-        }
+          await updateNotes(this.note);
+        } catch (err) {}
       }
-
       this.getClassNotes()
     },
     async getFile() {
-      try{
-        const res = await getFile(this.$props.note.notes)
-        this.message = atob(atob(res.data))
-      } catch (err) {
-        console.error("No File Exists:", err);
+      if (this.note.notes !== null) {
+        try{
+          const res = await getFile(this.$props.note.notes)
+          this.message = atob(atob(res.data))
+        } catch (err) {}
       }
     },
     async deleteNote() {
       try{
+        const fileID = this.note.notes
+        if (this.note.notes !== null) {
+          this.note.notes = null
+          await updateNotes(this.note)
+          await deleteFile(fileID)
+        }
         await deleteNotes(this.note.notesID)
-      } catch (err) {
-      }
+      } catch (err) {}
       this.getClassNotes()
     }
   }
@@ -121,7 +115,7 @@ export default {
     <h2>Note:</h2>
     <v-row justify="center">
       <v-col lg="9">
-        <v-textarea variant="solo" v-model="message" placeholder="Begin Note Here"></v-textarea>
+        <v-textarea auto-grow variant="solo" v-model="message" placeholder="Begin Note Here"></v-textarea>
       </v-col>
     </v-row>
     <button v-if="note.notesID !== 'New Note'" @click="deleteNote">Delete</button>

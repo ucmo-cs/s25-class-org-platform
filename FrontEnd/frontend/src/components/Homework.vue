@@ -1,5 +1,15 @@
 <script>
-import {addEvent, addEventWithFile, deleteEvent, getEventsByClass, getFile, updateEvent, updateFile} from "@/data/api.js";
+import {
+  addEvent,
+  addEventWithFile,
+  addFile,
+  deleteEvent,
+  deleteFile,
+  getEventsByClass,
+  getFile,
+  updateEvent,
+  updateFile
+} from "@/data/api.js";
 import {Event} from "@/data/Model/Event.js";
 
 export default {
@@ -14,11 +24,11 @@ export default {
       file: false,
       newFile: true,
       fileURL: null,
-      currentFile: null,
     }
   },
   mounted() {
     this.getFile()
+    this.setFile()
   },
   methods: {
     getHome() {
@@ -37,43 +47,75 @@ export default {
     },
     async createHomework() {
       if (this.fileURL){
-        console.log(fileURL)
+        const formData = new FormData
+        formData.append("file", this.fileURL, this.fileURL.name)
         const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
-        await addEventWithFile(newHomework, this.fileURL)
+        await addEventWithFile(newHomework, formData)
       } else {
         const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, false)
-        console.log(newHomework)
         await addEvent(newHomework)
       }
       this.getClassHomework()
     },
     async updateHomework() {
       if (this.fileURL) {
-        const fileID = await updateFile(this.homework.fileID, this.fileURL)
-        const newHomework = new Event(null, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, fileID, this.homework.isFavorite)
-        await updateEvent(newHomework)
+        const formData = new FormData
+        formData.append("file", this.fileURL, this.fileURL.name)
+        if (this.homework.file !== null) {
+          const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, this.homework.file, this.homework.isFavorite)
+          await updateFile(this.homework.file, formData)
+          await updateEvent(newHomework)
+        } else {
+          const res = await addFile(formData)
+          const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, res, this.homework.isFavorite)
+          await updateEvent(newHomework)
+        }
       } else {
-        const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, null, this.homework.isFavorite)
-        console.log(newHomework)
+        const newHomework = new Event(this.homework.eventID, this.name, this.description, this.dueDate, this.dueDate, this.$props.parentClass, this.userID, true, this.homework.file, this.homework.isFavorite)
         await updateEvent(newHomework)
       }
       this.getClassHomework()
     },
     async getFile() {
-      try{
-        const res = await getFile(this.$props.homework.file)
-        console.log(res)
-      } catch (err) {
-        console.error("No File Exists:", err);
-      }
+      try {
+        const res = await getFile(this.$props.homework.file);
+        const binaryString = atob(atob(res.data));
+        const byteArray = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          byteArray[i] = binaryString.charCodeAt(i);
+        }
+        const mimeType = this.getMimeType("filename.pdf")
+        const blob = new Blob([byteArray], { type: mimeType });
+        document.getElementById("pdfFrame").src = URL.createObjectURL(blob);
+
+      } catch (err) {}
     },
     async deleteHomework() {
       try{
-          await deleteEvent(this.homework.eventID)
-      } catch (err) {
-        console.log("Failed to Delete Homework:", err)
-      }
+        if (this.homework.file !== null) {
+          const fileID = this.homework.file
+          this.homework.file = null
+          await updateEvent(this.homework)
+          await deleteFile(fileID)
+        }
+        await deleteEvent(this.homework.eventID)
+      } catch (err) {}
       this.getClassHomework()
+    },
+    setFile() {
+      if (this.homework.file !== null) this.file = true
+      if (this.homework.file === null) this.file = false
+    },
+    getMimeType(filename) {
+      const ext = filename.split('.').pop().toLowerCase();
+      const types = {
+        pdf: 'application/pdf',
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        txt: 'text/plain',
+    };
+      return types[ext] || 'application/octet-stream';
     }
   }
 }
@@ -105,11 +147,12 @@ export default {
     </v-row>
     <h2>File:</h2>
     <div v-if="file !== false">
-      <iframe :src="this.currentFile" width="100%" height="1000px"></iframe>
+      <iframe id="pdfFrame" width="100%" height="1000px"></iframe>
     </div>
-    <button v-if="file !== false" @click="toggleNewFile">New File</button>
-    <v-row justify="center" v-if="file !== true"><v-col lg="9"><v-file-upload v-model="this.fileURL"></v-file-upload></v-col></v-row>
-    <button class="subPages" v-if="homework.eventID !== null" @click="deleteHomework">Delete</button>
+    <v-row justify="center" v-if="file !== true"><v-col lg="9"><v-file-upload clearable v-model="this.fileURL"></v-file-upload></v-col></v-row>
+    <button style="background-color: indianred;  margin-right: 400px;" class="subPages;" v-if="homework.eventID !== null" @click="deleteHomework">Delete Homework</button>
+    <div v-if="file === false" class="space"></div>
+    <button style="background-color: green; margin-left: 400px" v-if="file !== false" @click="toggleNewFile">New File</button>
   </div>
   </body>
 </template>
@@ -198,26 +241,23 @@ export default {
     color: gray;
   }
   .subPages button {
-    object-position: left;
     align-items: start;
     border: none;
     cursor: pointer;
     color: white;
-    background-color: indianred;
     height: 50px;
-    width: 150px;
-    outline: none;
-    margin-right: 200px;
-    margin-left: 10px;
+    width: 225px;
     margin-top: 10px;
     text-align: center;
-    text-decoration: none;
-    display: block;
+    display: inline-block;
     border-radius: 5px;
     font-size: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    justify-self: right;
+  }
+  .subPages .space {
+    width: 625px;
+    display: inline-block;
   }
   hr {
     border-width: 2px;

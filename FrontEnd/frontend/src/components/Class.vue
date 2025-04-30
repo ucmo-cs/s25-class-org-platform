@@ -1,9 +1,20 @@
 <script>
-import {getEventsByClassAndIsFavorite, getNotesByClassID, getNotesByClassIDAndIsFavorite, getEventsByClass} from "@/data/api.js";
+import {
+  addFile,
+  getEventsByClass,
+  getEventsByClassAndIsFavorite,
+  getFile,
+  getNotesByClassID,
+  getNotesByClassIDAndIsFavorite,
+  updateClass,
+  updateEvent,
+  updateFile,
+  updateNotes
+} from "@/data/api.js";
 import {Event} from "@/data/Model/Event.js";
 import {Notes} from "@/data/Model/Notes.js";
 
-  export default {
+export default {
     components: {
     },
     props: ['currentClass', 'classPage'],
@@ -14,11 +25,11 @@ import {Notes} from "@/data/Model/Notes.js";
         notes: [],
         homework: [],
         newSyllabus: false,
-        file: "http://localhost:5173/src/public/CS4920SyllabusSpring2025.pdf"
+        file: false,
+        fileURL: null,
       }
     },
     mounted() {
-      this.fetchFavorites();
       this.fetchNotes();
       this.fetchHomework();
     },
@@ -28,6 +39,8 @@ import {Notes} from "@/data/Model/Notes.js";
       },
       getFavorites() {
         this.currentPage = "Favorites"
+        this.favorites = []
+        this.fetchFavorites()
       },
       getNotes() {
         this.currentPage = "Notes"
@@ -37,9 +50,16 @@ import {Notes} from "@/data/Model/Notes.js";
       },
       getSyllabus() {
         this.currentPage = "Syllabus"
+        this.getSyllabusFile()
       },
-      toggleFav(item) {
-        item.favorite = !item.favorite
+      async toggleFav(item) {
+        item.isFavorite = !item.isFavorite
+        try {
+          if (item.eventID !== undefined) return await updateEvent(item)
+        } catch (err) {}
+        try {
+          if (item.notesID !== undefined) return await updateNotes(item)
+        } catch (err) {}
       },
       callModal() {
         this.$emit('openModal', ['editClass', this.currentClass]);
@@ -60,9 +80,6 @@ import {Notes} from "@/data/Model/Notes.js";
 
         } else if (type === "Syllabus") this.newSyllabus = !this.newSyllabus
       },
-      uploadSyllabus() {
-        console.log("ADD API CALL TO UPLOAD SYLLABUS HERE")
-      },
       async fetchFavorites() {
         await getEventsByClassAndIsFavorite(this.currentClass.classID, true).then(fe => {
           this.favoriteEvents = fe;
@@ -80,6 +97,64 @@ import {Notes} from "@/data/Model/Notes.js";
       async fetchHomework() {
         this.homework = (await getEventsByClass(this.currentClass.classID));
         this.homework = this.homework.filter((homework) => homework.isHomework)
+      },
+      async getSyllabusFile() {
+        if (this.$props.currentClass.syllabus !== null) {
+          this.file = true
+          try {
+            const res = await getFile(this.$props.currentClass.syllabus);
+            const binaryString = atob(atob(res.data))
+            const byteArray = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              byteArray[i] = binaryString.charCodeAt(i);
+            }
+            const mimeType = this.getMimeType("filename.pdf")
+            const blob = new Blob([byteArray], { type: mimeType });
+            document.getElementById("pdfFrame").src = URL.createObjectURL(blob)
+          } catch (err) {}
+        } else {
+          this.file = false;
+          this.newSyllabus = true;
+        }
+      },
+      async uploadSyllabus() {
+        const formData = new FormData
+        formData.append("file", this.fileURL, this.fileURL.name)
+        if (this.$props.currentClass.syllabus === null) {
+          this.$props.currentClass.syllabus = await addFile(formData)
+          await updateClass(this.$props.currentClass)
+        } else {
+          await updateFile(this.$props.currentClass.syllabus, formData)
+        }
+        this.newSyllabus = false
+        this.getSyllabus()
+      },
+      getMimeType(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        const types = {
+          pdf: 'application/pdf',
+          png: 'image/png',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          txt: 'text/plain'
+        };
+        return types[ext] || 'application/octet-stream';
+      },
+      getID(item) {
+        try {
+          if (item.name !== undefined) return item.name
+        } catch (err) {}
+        try {
+          if (item.notesID !== undefined) return item.notesID
+        } catch (err) {}
+      },
+      goToPage(item) {
+        try {
+          if (item.name !== undefined) this.goToHomework(item)
+        } catch (err) {}
+        try {
+          if (item.notesID !== undefined) this.goToNotes(item)
+        } catch (err) {}
       }
     },
   }
@@ -112,30 +187,29 @@ import {Notes} from "@/data/Model/Notes.js";
   </div>
   <div class="subPages" v-if="currentPage === 'Favorites'">
     <li v-for="item in this.favorites" class="subPages">
-      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
-      <h2 class="subPages">{{ item.name }}</h2>
-      <h3 class="subPages">{{ item.type }}</h3>
+      <button class="subPages" v-if="item.isFavorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.isFavorite" @click="toggleFav(item)">☆</button>
+      <h2 class="subPages" @click="goToPage(item)">{{ getID(item) }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Notes'">
     <li class="subPages" v-for="item in this.notes">
-      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
+      <button class="subPages" v-if="item.isFavorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.isFavorite" @click="toggleFav(item)">☆</button>
       <h2 class="subPages" @click="goToNotes(item, currentClass)">{{ item.notesID }}</h2>
       <h2 class="subPages" style="color: #2c3e50; cursor: default">{{ item.date }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Homework'">
     <li class="subPages" v-for="item in this.homework">
-      <button class="subPages" v-if="item.favorite" @click="toggleFav(item)">★</button>
-      <button class="subPages" v-if="!item.favorite" @click="toggleFav(item)">☆</button>
+      <button class="subPages" v-if="item.isFavorite" @click="toggleFav(item)">★</button>
+      <button class="subPages" v-if="!item.isFavorite" @click="toggleFav(item)">☆</button>
       <h2 class="subPages" @click="goToHomework(item, currentClass)">{{ item.name }}</h2>
     </li>
   </div>
   <div class="subPages" v-if="currentPage === 'Syllabus'">
-    <iframe v-if="file !== null && !newSyllabus" :src="this.file" width="100%" height="1000px"></iframe>
-    <v-row justify="center" v-if="newSyllabus"><v-col lg="9"><v-file-upload></v-file-upload></v-col></v-row>
+    <iframe v-if="file !== false && !newSyllabus" id="pdfFrame" width="100%" height="1000px"></iframe>
+    <v-row justify="center" v-if="newSyllabus"><v-col lg="9"><v-file-upload clearable v-model="this.fileURL"></v-file-upload></v-col></v-row>
   </div>
   </body>
 </template>

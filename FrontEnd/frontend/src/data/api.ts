@@ -25,7 +25,6 @@ export async function getAllUsers() {
 }
 
 export async function addUser(user: User) {
-    console.log(user.userName);
     const res = await axios.post(`${baseURL}user/`, user);
 
     return res.data;
@@ -204,7 +203,7 @@ export async function addEventWithFile(event: Event, file) {
     const fileID = await axios.post(`${baseURL}file/`, file);
 
     event.file = fileID.data;
-    const res = await axios.post(`${baseURL}event/`);
+    const res = await axios.post(`${baseURL}event/`, event);
 
     return res.data;
 }

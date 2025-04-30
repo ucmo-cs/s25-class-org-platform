@@ -69,7 +69,6 @@
         this.clickClass = parentClass
       },
       navigateToNotes(note, parentClass) {
-        console.log(note)
         this.currentPage = "Notes"
         this.note= note
         this.clickClass = parentClass
@@ -78,7 +77,6 @@
         this.mode = data[0]
         this.showModal = true
         this.info = data[1]
-        console.log(data)
       },
       openUserModal() {
         this.showUserModal = true;
