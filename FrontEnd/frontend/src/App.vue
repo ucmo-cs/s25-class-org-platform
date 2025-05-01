@@ -133,8 +133,14 @@
         }
         this.reloadData();
       },
-      endModal() {
+      async endModal() {
         this.showModal = false;
+        if(this.clickClass != null) {
+          let classID = this.clickClass.classID;
+          await getClassByID(classID).then(cs => {
+            this.clickClass = cs;
+          });
+        }
         this.reloadData();
       },
     }

@@ -91,10 +91,11 @@ public class EventService {
         if(event.isEmpty()) {
             throw new IllegalArgumentException("Event does not exist.");
         }
-        if(event.get().getFile() != null) {
-            fileRepository.deleteById(event.get().getFile());
-        }
+        Integer fileID = event.get().getFile();
         this.eventRepository.deleteById(event.get().getEventID());
+        if(fileID != null) {
+            this.fileRepository.deleteById(fileID);
+        }
     }
 
     public void deleteEventsByUser(int userID) {
@@ -104,10 +105,11 @@ public class EventService {
         }
         List<Event> events = this.eventRepository.findAllByUser(user.get());
         for(Event event: events) {
-            if(event.getFile() != null) {
-                this.fileRepository.deleteById(event.getFile());
-            }
+            Integer fileID = event.getFile();
             this.eventRepository.deleteById(event.getEventID());
+            if(fileID != null) {
+                this.fileRepository.deleteById(fileID);
+            }
         }
     }
 

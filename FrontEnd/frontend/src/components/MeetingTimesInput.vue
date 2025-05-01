@@ -159,7 +159,7 @@ import { MeetingTimes } from '../data/Model/MeetingTimes';
             },
             emitData() {
                 let meetingTimesOut = new MeetingTimes(
-                    this.MeetingTimesIn.meetingTimesId != null ? this.MeetingTimesIn.meetingTimesId : null,
+                    this.MeetingTimesIn?.meetingTimesId != null ? this.MeetingTimesIn.meetingTimesId : null,
                     this.mondayOn? this.mondayStart + ":00" : null,
                     this.mondayOn? this.mondayEnd + ":00": null,
                     this.tuesdayOn? this.tuesdayStart + ":00": null,

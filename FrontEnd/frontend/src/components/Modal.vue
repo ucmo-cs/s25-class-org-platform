@@ -87,7 +87,10 @@
             this.$emit('close');
         },
         updateMeetingTimes(meetingTimesIn) {
+            console.log(meetingTimesIn);
             this.meetingTimesForClass = meetingTimesIn;
+            console.log(this.meetingTimesForClass);
+            
         },
         updateOfficeHours(officeHoursIn) {
             this.officeHours = officeHoursIn;
@@ -98,6 +101,8 @@
             this.$emit('navigateToHome');
         },
         async updateClass() {
+            console.log(this.meetingTimesForClass);
+            console.log(this.officeHours);
             await updateClass(new Class(this.Class.classID, this.courseName, this.semesters[this.semesterIndex], this.location, this.meetingTimesForClass, this.user, this.instructor, this.description, null, this.officeHours, this.phoneNum, this.email, this.textbook, this.startDate, this.endDate))
             this.$emit('close');
         },

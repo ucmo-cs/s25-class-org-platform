@@ -161,11 +161,29 @@ public class ClassService {
         editingClass.get().setName(in.getName());
         editingClass.get().setSemester(in.getSemester());
         editingClass.get().setMeetingLocation(in.getMeetingLocation());
-        this.meetingTimesService.updateMeetingTimes(in.getMeetingTimes());
+        if(in.getMeetingTimes() == null && editingClass.get().getMeetingTimes() != null) {
+            int id = editingClass.get().getMeetingTimes().getMeetingTimesId();
+            editingClass.get().setMeetingTimes(null);
+            meetingTimesService.deleteMeetingTimes(id);
+        } else if(in.getMeetingTimes() != null && meetingTimesRepository.findById(in.getMeetingTimes().getMeetingTimesId()).isEmpty()) {
+            int newMeetingTimesID = meetingTimesService.addNewMeetingTimes(in.getMeetingTimes());
+            editingClass.get().setMeetingTimes(meetingTimesRepository.findById(newMeetingTimesID).get());
+        } else if (in.getMeetingTimes() != null) {
+            this.meetingTimesService.updateMeetingTimes(in.getMeetingTimes());
+        }
         editingClass.get().setInstructor(in.getInstructor());
         editingClass.get().setDescription(in.getDescription());
         editingClass.get().setOfficeLocation(in.getOfficeLocation());
-        this.meetingTimesService.updateMeetingTimes(in.getOfficeHours());
+        if(in.getOfficeHours() == null && editingClass.get().getOfficeHours() != null) {
+            int id = editingClass.get().getOfficeHours().getMeetingTimesId();
+            editingClass.get().setOfficeHours(null);
+            meetingTimesService.deleteMeetingTimes(id);
+        } else if(in.getOfficeHours() != null && meetingTimesRepository.findById(in.getOfficeHours().getMeetingTimesId()).isEmpty()) {
+            int newMeetingTimesID = meetingTimesService.addNewMeetingTimes(in.getOfficeHours());
+            editingClass.get().setMeetingTimes(meetingTimesRepository.findById(newMeetingTimesID).get());
+        } else if (in.getOfficeHours() != null) {
+            this.meetingTimesService.updateMeetingTimes(in.getOfficeHours());
+        }
         editingClass.get().setInstructorPhone(in.getInstructorPhone());
         editingClass.get().setInstructorEmail(in.getInstructorEmail());
         editingClass.get().setTextbook(in.getTextbook());

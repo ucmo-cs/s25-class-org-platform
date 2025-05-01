@@ -68,10 +68,11 @@ public class NotesService {
         }
         System.out.println(notesToDelete);
         System.out.println(notesToDelete.get().getNotes());
-        if(notesToDelete.get().getNotes() != null) {
-            this.fileService.deleteFile(notesToDelete.get().getNotes());
-        }
+        Integer fileID = notesToDelete.get().getNotes();
         notesRepository.deleteById(notesID);
+        if(fileID != null) {
+            fileService.deleteFile(fileID);
+        }
     }
 
     public void deleteNotesByClass(int classID) {
@@ -82,10 +83,11 @@ public class NotesService {
         List<Notes> notesToDelete = notesRepository.findAllBy_class(class_.get());
 
         for (Notes notes : notesToDelete) {
-            if (notes.getNotes() != null) {
-                this.fileService.deleteFile(notes.getNotes());
-            }
+            Integer fileID = notes.getNotes();
             notesRepository.deleteById(notes.getNotesID());
+            if(fileID != null) {
+                fileService.deleteFile(fileID);
+            }
         }
     }
 
